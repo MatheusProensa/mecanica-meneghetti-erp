@@ -1,0 +1,120 @@
+import type { Nota } from "@/generated/prisma/client";
+
+function toDateInputValue(date: Date | null | undefined): string {
+  if (!date) return "";
+  return date.toISOString().slice(0, 10);
+}
+
+export default function NotaForm({
+  nota,
+  action,
+}: {
+  nota?: Nota;
+  action: (formData: FormData) => void;
+}) {
+  return (
+    <form action={action} className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="numero" className="block text-sm font-medium text-gray-700">
+            Número da nota *
+          </label>
+          <input
+            id="numero"
+            name="numero"
+            required
+            defaultValue={nota?.numero ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="tipo" className="block text-sm font-medium text-gray-700">
+            Tipo *
+          </label>
+          <select
+            id="tipo"
+            name="tipo"
+            defaultValue={nota?.tipo ?? "emitida"}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="emitida">Nota emitida</option>
+            <option value="recebida">Nota recebida</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="dataEmissao" className="block text-sm font-medium text-gray-700">
+            Data de emissão *
+          </label>
+          <input
+            id="dataEmissao"
+            name="dataEmissao"
+            type="date"
+            required
+            defaultValue={toDateInputValue(nota?.dataEmissao ?? new Date())}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="valor" className="block text-sm font-medium text-gray-700">
+            Valor
+          </label>
+          <input
+            id="valor"
+            name="valor"
+            inputMode="decimal"
+            placeholder="Deixe em branco se não souber"
+            defaultValue={nota?.valor ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">
+          Observações
+        </label>
+        <textarea
+          id="observacoes"
+          name="observacoes"
+          rows={3}
+          placeholder="Ex: NF compra de peças, conserto do torno..."
+          defaultValue={nota?.observacoes ?? ""}
+          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="arquivoPdf" className="block text-sm font-medium text-gray-700">
+          Anexo em PDF
+        </label>
+        <input
+          id="arquivoPdf"
+          name="arquivoPdf"
+          type="file"
+          accept="application/pdf"
+          className="mt-1 w-full text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
+        />
+        {nota?.arquivoPdfPath && (
+          <a
+            href={nota.arquivoPdfPath}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-1 inline-block text-sm text-blue-600 hover:underline"
+          >
+            Ver anexo atual
+          </a>
+        )}
+      </div>
+
+      <button
+        type="submit"
+        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+      >
+        {nota ? "Salvar alterações" : "Cadastrar nota"}
+      </button>
+    </form>
+  );
+}

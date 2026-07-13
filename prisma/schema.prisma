@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Cliente {
+  id           String   @id @default(cuid())
+  nome         String
+  cpfCnpj      String?
+  telefone     String?
+  whatsapp     String?
+  cidade       String?
+  endereco     String?
+  email        String?
+  observacoes  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  ordensServico OrdemServico[]
+
+  @@index([nome])
+}
+
+enum StatusOS {
+  aberta
+  em_andamento
+  concluida
+  entregue
+  cancelada
+}
+
+model OrdemServico {
+  id                  Int      @id @default(autoincrement())
+  data                DateTime @default(now())
+  clienteId           String
+  cliente             Cliente  @relation(fields: [clienteId], references: [id])
+  telefone             String?
+  status              StatusOS @default(aberta)
+  mecanicoResponsavel String?
+  previsaoEntrega     DateTime?
+  formaPagamento      String?
+  observacoes         String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  itens ItemServico[]
+
+  @@index([clienteId])
+  @@index([status])
+}
+
+model ItemServico {
+  id             String       @id @default(cuid())
+  ordemServicoId Int
+  ordemServico   OrdemServico @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  descricao      String
+  valor          Float
+
+  @@index([ordemServicoId])
+}
+
+enum TipoNota {
+  emitida
+  recebida
+}
+
+model Nota {
+  id             String   @id @default(cuid())
+  numero         String
+  dataEmissao    DateTime
+  tipo           TipoNota
+  valor          Float?
+  observacoes    String?
+  arquivoPdfPath String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([tipo])
+}

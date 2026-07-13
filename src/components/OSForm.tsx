@@ -1,0 +1,150 @@
+import OSItemsEditor from "./OSItemsEditor";
+import PhoneInput from "@/components/PhoneInput";
+import type { Cliente, OrdemServico, ItemServico } from "@/generated/prisma/client";
+
+const statusOptions = [
+  { value: "aberta", label: "Aberta" },
+  { value: "em_andamento", label: "Em andamento" },
+  { value: "concluida", label: "Concluída" },
+  { value: "entregue", label: "Entregue" },
+  { value: "cancelada", label: "Cancelada" },
+];
+
+function toDateInputValue(date: Date | null | undefined): string {
+  if (!date) return "";
+  return date.toISOString().slice(0, 10);
+}
+
+export default function OSForm({
+  clientes,
+  os,
+  defaultClienteId,
+  action,
+}: {
+  clientes: Cliente[];
+  os?: OrdemServico & { itens: ItemServico[] };
+  defaultClienteId?: string;
+  action: (formData: FormData) => void;
+}) {
+  return (
+    <form action={action} className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="clienteId" className="block text-sm font-medium text-gray-700">
+            Cliente *
+          </label>
+          <select
+            id="clienteId"
+            name="clienteId"
+            required
+            defaultValue={os?.clienteId ?? defaultClienteId ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+          >
+            <option value="" disabled>
+              Selecione um cliente
+            </option>
+            {clientes.map((cliente) => (
+              <option key={cliente.id} value={cliente.id}>
+                {cliente.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="telefone" className="block text-sm font-medium text-gray-700">
+            Telefone
+          </label>
+          <PhoneInput id="telefone" name="telefone" defaultValue={os?.telefone} />
+        </div>
+
+        <div>
+          <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+            Status
+          </label>
+          <select
+            id="status"
+            name="status"
+            defaultValue={os?.status ?? "aberta"}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+          >
+            {statusOptions.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label
+            htmlFor="mecanicoResponsavel"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Mecânico responsável
+          </label>
+          <input
+            id="mecanicoResponsavel"
+            name="mecanicoResponsavel"
+            defaultValue={os?.mecanicoResponsavel ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="previsaoEntrega"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Previsão de entrega
+          </label>
+          <input
+            id="previsaoEntrega"
+            name="previsaoEntrega"
+            type="date"
+            defaultValue={toDateInputValue(os?.previsaoEntrega)}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="formaPagamento"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Forma de pagamento
+          </label>
+          <input
+            id="formaPagamento"
+            name="formaPagamento"
+            placeholder="Pix, dinheiro, cartão..."
+            defaultValue={os?.formaPagamento ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+          />
+        </div>
+      </div>
+
+      <OSItemsEditor initialItens={os?.itens} />
+
+      <div>
+        <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">
+          Observações
+        </label>
+        <textarea
+          id="observacoes"
+          name="observacoes"
+          rows={3}
+          defaultValue={os?.observacoes ?? ""}
+          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+      >
+        {os ? "Salvar alterações" : "Criar ordem de serviço"}
+      </button>
+    </form>
+  );
+}
