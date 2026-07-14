@@ -66,14 +66,14 @@ export default function Nav({ userName }: { userName: string }) {
 
   return (
     <aside className="flex w-64 shrink-0 flex-col bg-sidebar text-gray-300">
-      <div className="flex items-center gap-3 border-b border-sidebar-hover px-5 py-4">
+      <div className="flex flex-col items-center gap-2 border-b border-sidebar-hover px-5 py-6 text-center">
         <Image
           src="/logo.png"
           alt="Mecânica Meneghetti"
-          width={44}
-          height={44}
+          width={88}
+          height={88}
           unoptimized
-          className="h-11 w-11 shrink-0 object-contain"
+          className="h-22 w-22 shrink-0 object-contain"
         />
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-white">

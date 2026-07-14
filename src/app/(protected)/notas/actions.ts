@@ -3,9 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { randomUUID } from "node:crypto";
-import { writeFile, unlink } from "node:fs/promises";
-import path from "node:path";
 import { prisma } from "@/lib/prisma";
+import { uploadPdf, deletePdf } from "@/lib/supabase-storage";
 import type { TipoNota } from "@/generated/prisma/client";
 
 function str(formData: FormData, key: string): string | null {
@@ -24,10 +23,8 @@ async function savePdfIfPresent(formData: FormData): Promise<string | null> {
   const bytes = Buffer.from(await file.arrayBuffer());
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const fileName = `${randomUUID()}-${safeName}`;
-  const uploadsDir = path.join(process.cwd(), "public", "uploads");
-  await writeFile(path.join(uploadsDir, fileName), bytes);
 
-  return `/uploads/${fileName}`;
+  return uploadPdf(fileName, bytes);
 }
 
 function buildData(formData: FormData) {
@@ -65,9 +62,7 @@ export async function updateNota(id: string, formData: FormData) {
 
   const existing = await prisma.nota.findUniqueOrThrow({ where: { id } });
   if (novoArquivo && existing.arquivoPdfPath) {
-    await unlink(
-      path.join(process.cwd(), "public", existing.arquivoPdfPath)
-    ).catch(() => {});
+    await deletePdf(existing.arquivoPdfPath).catch(() => {});
   }
 
   await prisma.nota.update({
@@ -87,9 +82,7 @@ export async function deleteNota(id: string) {
   const existing = await prisma.nota.findUniqueOrThrow({ where: { id } });
   await prisma.nota.delete({ where: { id } });
   if (existing.arquivoPdfPath) {
-    await unlink(path.join(process.cwd(), "public", existing.arquivoPdfPath)).catch(
-      () => {}
-    );
+    await deletePdf(existing.arquivoPdfPath).catch(() => {});
   }
   revalidatePath("/notas");
   redirect("/notas");

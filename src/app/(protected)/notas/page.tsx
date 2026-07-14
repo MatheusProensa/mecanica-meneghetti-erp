@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FileText } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getSignedPdfUrls } from "@/lib/supabase-storage";
 import { formatCurrency, formatDate } from "@/lib/format";
 import type { Prisma, TipoNota } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
@@ -39,6 +40,11 @@ export default async function NotasPage({
     .filter((n) => n.tipo === "recebida")
     .reduce((s, n) => s + (n.valor ?? 0), 0);
   const semValorCount = notas.filter((n) => n.valor === null).length;
+
+  const pdfPaths = notas
+    .map((n) => n.arquivoPdfPath)
+    .filter((p): p is string => Boolean(p));
+  const pdfUrls = await getSignedPdfUrls(pdfPaths);
 
   return (
     <div>
@@ -151,9 +157,9 @@ export default async function NotasPage({
                     {nota.valor !== null ? formatCurrency(nota.valor) : "-"}
                   </td>
                   <td className="px-6 py-3">
-                    {nota.arquivoPdfPath ? (
+                    {nota.arquivoPdfPath && pdfUrls[nota.arquivoPdfPath] ? (
                       <a
-                        href={nota.arquivoPdfPath}
+                        href={pdfUrls[nota.arquivoPdfPath]}
                         target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center gap-1 text-blue-600 hover:underline"

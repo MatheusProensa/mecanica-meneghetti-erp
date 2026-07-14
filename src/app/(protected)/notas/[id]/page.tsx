@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getSignedPdfUrl } from "@/lib/supabase-storage";
 import NotaForm from "@/components/NotaForm";
 import { updateNota, deleteNota } from "../actions";
 
@@ -14,6 +15,8 @@ export default async function NotaDetalhePage({
   const nota = await prisma.nota.findUnique({ where: { id } });
 
   if (!nota) notFound();
+
+  const pdfUrl = nota.arquivoPdfPath ? await getSignedPdfUrl(nota.arquivoPdfPath) : null;
 
   const updateNotaWithId = updateNota.bind(null, nota.id);
   const deleteNotaWithId = deleteNota.bind(null, nota.id);
@@ -40,7 +43,7 @@ export default async function NotaDetalhePage({
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <NotaForm nota={nota} action={updateNotaWithId} />
+        <NotaForm nota={nota} pdfUrl={pdfUrl} action={updateNotaWithId} />
       </div>
     </div>
   );

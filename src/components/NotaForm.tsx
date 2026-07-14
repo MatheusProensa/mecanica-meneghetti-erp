@@ -7,9 +7,11 @@ function toDateInputValue(date: Date | null | undefined): string {
 
 export default function NotaForm({
   nota,
+  pdfUrl,
   action,
 }: {
   nota?: Nota;
+  pdfUrl?: string | null;
   action: (formData: FormData) => void;
 }) {
   return (
@@ -97,9 +99,9 @@ export default function NotaForm({
           accept="application/pdf"
           className="mt-1 w-full text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
         />
-        {nota?.arquivoPdfPath && (
+        {pdfUrl && (
           <a
-            href={nota.arquivoPdfPath}
+            href={pdfUrl}
             target="_blank"
             rel="noreferrer"
             className="mt-1 inline-block text-sm text-blue-600 hover:underline"
