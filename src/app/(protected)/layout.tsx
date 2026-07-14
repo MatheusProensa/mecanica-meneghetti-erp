@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Nav from "@/components/Nav";
 import TopBar from "@/components/TopBar";
+import Toast from "@/components/ui/Toast";
 
 export default async function ProtectedLayout({
   children,
@@ -20,6 +21,7 @@ export default async function ProtectedLayout({
         <TopBar />
         <main className="flex-1 overflow-y-auto bg-gray-50 p-8">{children}</main>
       </div>
+      <Toast />
     </div>
   );
 }

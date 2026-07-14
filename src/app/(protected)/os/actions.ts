@@ -28,6 +28,8 @@ export async function createOS(formData: FormData) {
   if (!clienteId) throw new Error("Cliente é obrigatório");
 
   const itens = parseItens(formData);
+  if (itens.length === 0) throw new Error("Adicione ao menos um item de serviço");
+
   const previsaoEntregaRaw = str(formData, "previsaoEntrega");
 
   const os = await prisma.ordemServico.create({
@@ -45,7 +47,7 @@ export async function createOS(formData: FormData) {
 
   revalidatePath("/os");
   revalidatePath("/");
-  redirect(`/os/${os.id}`);
+  redirect(`/os/${os.id}?sucesso=${encodeURIComponent("Ordem de serviço criada")}`);
 }
 
 export async function updateOS(id: number, formData: FormData) {
@@ -53,6 +55,8 @@ export async function updateOS(id: number, formData: FormData) {
   if (!clienteId) throw new Error("Cliente é obrigatório");
 
   const itens = parseItens(formData);
+  if (itens.length === 0) throw new Error("Adicione ao menos um item de serviço");
+
   const previsaoEntregaRaw = str(formData, "previsaoEntrega");
 
   await prisma.$transaction([
@@ -75,12 +79,19 @@ export async function updateOS(id: number, formData: FormData) {
   revalidatePath("/os");
   revalidatePath(`/os/${id}`);
   revalidatePath("/");
-  redirect(`/os/${id}`);
+  redirect(`/os/${id}?sucesso=${encodeURIComponent("Ordem de serviço atualizada")}`);
+}
+
+export async function updateOSStatus(id: number, status: StatusOS) {
+  await prisma.ordemServico.update({ where: { id }, data: { status } });
+  revalidatePath("/os");
+  revalidatePath(`/os/${id}`);
+  revalidatePath("/");
 }
 
 export async function deleteOS(id: number) {
   await prisma.ordemServico.delete({ where: { id } });
   revalidatePath("/os");
   revalidatePath("/");
-  redirect("/os");
+  redirect(`/os?sucesso=${encodeURIComponent("Ordem de serviço excluída")}`);
 }

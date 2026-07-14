@@ -51,17 +51,18 @@ export async function createNota(formData: FormData) {
   });
 
   revalidatePath("/notas");
-  redirect(`/notas/${nota.id}`);
+  redirect(`/notas/${nota.id}?sucesso=${encodeURIComponent("Nota cadastrada")}`);
 }
 
 export async function updateNota(id: string, formData: FormData) {
   const data = buildData(formData);
   if (!data.numero) throw new Error("Número da nota é obrigatório");
 
+  const removerArquivo = formData.get("removerArquivo") === "on";
   const novoArquivo = await savePdfIfPresent(formData);
 
   const existing = await prisma.nota.findUniqueOrThrow({ where: { id } });
-  if (novoArquivo && existing.arquivoPdfPath) {
+  if ((novoArquivo || removerArquivo) && existing.arquivoPdfPath) {
     await deletePdf(existing.arquivoPdfPath).catch(() => {});
   }
 
@@ -69,13 +70,13 @@ export async function updateNota(id: string, formData: FormData) {
     where: { id },
     data: {
       ...data,
-      ...(novoArquivo ? { arquivoPdfPath: novoArquivo } : {}),
+      arquivoPdfPath: novoArquivo ?? (removerArquivo ? null : undefined),
     },
   });
 
   revalidatePath("/notas");
   revalidatePath(`/notas/${id}`);
-  redirect(`/notas/${id}`);
+  redirect(`/notas/${id}?sucesso=${encodeURIComponent("Nota atualizada")}`);
 }
 
 export async function deleteNota(id: string) {
@@ -85,5 +86,5 @@ export async function deleteNota(id: string) {
     await deletePdf(existing.arquivoPdfPath).catch(() => {});
   }
   revalidatePath("/notas");
-  redirect("/notas");
+  redirect(`/notas?sucesso=${encodeURIComponent("Nota excluída")}`);
 }

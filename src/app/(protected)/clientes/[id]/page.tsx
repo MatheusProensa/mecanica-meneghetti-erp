@@ -5,6 +5,7 @@ import { formatCurrency, formatDate } from "@/lib/format";
 import ClienteForm from "@/components/ClienteForm";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import { StatusBadge, osStatusMap } from "@/components/ui/StatusBadge";
 import { updateCliente, deleteCliente } from "../actions";
 
@@ -46,14 +47,12 @@ export default async function ClienteDetalhePage({
           </Link>
           <h1 className="mt-1 text-xl font-semibold text-gray-900">{cliente.nome}</h1>
         </div>
-        <form action={deleteClienteWithId}>
-          <button
-            type="submit"
-            className="rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
-          >
-            Excluir cliente
-          </button>
-        </form>
+        <ConfirmModal
+          triggerLabel="Excluir cliente"
+          title="Excluir este cliente?"
+          description={`Tem certeza que deseja excluir "${cliente.nome}"? Essa ação não pode ser desfeita.`}
+          action={deleteClienteWithId}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">

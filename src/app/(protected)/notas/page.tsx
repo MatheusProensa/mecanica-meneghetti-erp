@@ -9,15 +9,43 @@ import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
 import { StatusBadge, notaTipoMap } from "@/components/ui/StatusBadge";
 
+const MESES = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
+
 export default async function NotasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tipo?: string; q?: string }>;
+  searchParams: Promise<{ tipo?: string; q?: string; mes?: string; ano?: string }>;
 }) {
-  const { tipo, q } = await searchParams;
+  const { tipo, q, mes, ano } = await searchParams;
+
+  const anoAtual = new Date().getFullYear();
+  const anosDisponiveis = Array.from({ length: 5 }, (_, i) => anoAtual - i);
+
+  const mesNum = mes ? Number(mes) : null;
+  const anoNum = ano ? Number(ano) : null;
+  const periodo =
+    mesNum && anoNum
+      ? { gte: new Date(anoNum, mesNum - 1, 1), lt: new Date(anoNum, mesNum, 1) }
+      : anoNum
+        ? { gte: new Date(anoNum, 0, 1), lt: new Date(anoNum + 1, 0, 1) }
+        : undefined;
 
   const where: Prisma.NotaWhereInput = {
     ...(tipo ? { tipo: tipo as TipoNota } : {}),
+    ...(periodo ? { dataEmissao: periodo } : {}),
     ...(q
       ? {
           OR: [
@@ -87,6 +115,36 @@ export default async function NotasPage({
             <option value="">Todos</option>
             <option value="emitida">Emitida</option>
             <option value="recebida">Recebida</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500">Mês</label>
+          <select
+            name="mes"
+            defaultValue={mes ?? ""}
+            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+          >
+            <option value="">Todos</option>
+            {MESES.map((label, i) => (
+              <option key={label} value={i + 1}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500">Ano</label>
+          <select
+            name="ano"
+            defaultValue={ano ?? ""}
+            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+          >
+            <option value="">Todos</option>
+            {anosDisponiveis.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
           </select>
         </div>
         <div>

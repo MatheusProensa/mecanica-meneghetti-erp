@@ -100,14 +100,20 @@ export default function NotaForm({
           className="mt-1 w-full text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
         />
         {pdfUrl && (
-          <a
-            href={pdfUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-1 inline-block text-sm text-blue-600 hover:underline"
-          >
-            Ver anexo atual
-          </a>
+          <div className="mt-2 flex items-center gap-3">
+            <a
+              href={pdfUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Ver anexo atual
+            </a>
+            <label className="flex items-center gap-1.5 text-sm text-gray-600">
+              <input type="checkbox" name="removerArquivo" className="rounded border-gray-300" />
+              Remover anexo
+            </label>
+          </div>
         )}
       </div>
 

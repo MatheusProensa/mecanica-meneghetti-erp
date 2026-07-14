@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/format";
 import OSForm from "@/components/OSForm";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import { updateOS, deleteOS } from "../actions";
 
 export default async function OSDetalhePage({
@@ -39,14 +40,12 @@ export default async function OSDetalhePage({
           </h1>
           <p className="text-sm text-gray-500">Aberta em {formatDate(os.data)}</p>
         </div>
-        <form action={deleteOSWithId}>
-          <button
-            type="submit"
-            className="rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
-          >
-            Excluir OS
-          </button>
-        </form>
+        <ConfirmModal
+          triggerLabel="Excluir OS"
+          title="Excluir esta OS?"
+          description={`Tem certeza que deseja excluir a OS #${String(os.id).padStart(4, "0")}? Essa ação não pode ser desfeita.`}
+          action={deleteOSWithId}
+        />
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-6">

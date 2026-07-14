@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 
 function str(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -28,7 +29,7 @@ export async function createCliente(formData: FormData) {
   });
 
   revalidatePath("/clientes");
-  redirect(`/clientes/${cliente.id}`);
+  redirect(`/clientes/${cliente.id}?sucesso=${encodeURIComponent("Cliente cadastrado com sucesso")}`);
 }
 
 export async function updateCliente(id: string, formData: FormData) {
@@ -51,11 +52,24 @@ export async function updateCliente(id: string, formData: FormData) {
 
   revalidatePath("/clientes");
   revalidatePath(`/clientes/${id}`);
-  redirect(`/clientes/${id}`);
+  redirect(`/clientes/${id}?sucesso=${encodeURIComponent("Cliente atualizado")}`);
 }
 
 export async function deleteCliente(id: string) {
-  await prisma.cliente.delete({ where: { id } });
+  try {
+    await prisma.cliente.delete({ where: { id } });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2003") {
+      const qtdOS = await prisma.ordemServico.count({ where: { clienteId: id } });
+      const mensagem =
+        qtdOS > 0
+          ? `Não é possível excluir: este cliente tem ${qtdOS} ordem(ns) de serviço vinculada(s). Exclua-as primeiro.`
+          : "Não é possível excluir: este cliente possui registros vinculados.";
+      redirect(`/clientes/${id}?erro=${encodeURIComponent(mensagem)}`);
+    }
+    throw e;
+  }
+
   revalidatePath("/clientes");
-  redirect("/clientes");
+  redirect(`/clientes?sucesso=${encodeURIComponent("Cliente excluído")}`);
 }
