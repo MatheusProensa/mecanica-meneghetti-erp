@@ -8,5 +8,7 @@ export function middleware(...args: Parameters<typeof auth>) {
 }
 
 export const config = {
-  matcher: ["/((?!api/auth|login|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api/auth|login|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+  ],
 };
