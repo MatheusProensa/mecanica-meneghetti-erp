@@ -18,11 +18,6 @@ async function main() {
     process.env.SEED_OWNER_EMAIL ?? "dono@oficina.local",
     process.env.SEED_OWNER_PASSWORD ?? "mudar123"
   );
-  await upsertUser(
-    process.env.SEED_WIFE_NAME ?? "Esposa",
-    process.env.SEED_WIFE_EMAIL ?? "esposa@oficina.local",
-    process.env.SEED_WIFE_PASSWORD ?? "mudar123"
-  );
 }
 
 main()
