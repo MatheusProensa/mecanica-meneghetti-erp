@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/format";
 import OSForm from "@/components/OSForm";
+import OSPagoToggle from "@/components/OSPagoToggle";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { updateOS, deleteOS } from "../actions";
 
@@ -39,6 +40,9 @@ export default async function OSDetalhePage({
             OS #{String(os.id).padStart(4, "0")} — {os.cliente.nome}
           </h1>
           <p className="text-sm text-gray-500">Aberta em {formatDate(os.data)}</p>
+          <div className="mt-2">
+            <OSPagoToggle id={os.id} pago={os.pago} previsaoEntrega={os.previsaoEntrega} />
+          </div>
         </div>
         <ConfirmModal
           triggerLabel="Excluir OS"

@@ -27,6 +27,8 @@ export default async function DashboardPage({
   const inicioMes = startOfMonth(now);
   const inicioPeriodo = new Date(now.getFullYear(), now.getMonth() - (periodo - 1), 1);
 
+  const fimMes = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
   const [
     ordensDoPeriodo,
     osAbertaCount,
@@ -35,6 +37,9 @@ export default async function DashboardPage({
     notasNoMes,
     ultimasNotas,
     ultimasOS,
+    osPagasNoMes,
+    osAReceber,
+    despesasNoMesAgg,
   ] = await Promise.all([
     prisma.ordemServico.findMany({
       where: { data: { gte: inicioPeriodo } },
@@ -52,7 +57,29 @@ export default async function DashboardPage({
       take: 5,
       include: { cliente: true, itens: true },
     }),
+    prisma.ordemServico.findMany({
+      where: { pago: true, dataPagamento: { gte: inicioMes, lt: fimMes } },
+      include: { itens: true },
+    }),
+    prisma.ordemServico.findMany({
+      where: { pago: false, status: { not: "cancelada" } },
+      include: { itens: true },
+    }),
+    prisma.despesa.aggregate({
+      where: { data: { gte: inicioMes, lt: fimMes } },
+      _sum: { valor: true },
+    }),
   ]);
+
+  const recebidoNoMes = osPagasNoMes.reduce(
+    (sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0),
+    0
+  );
+  const aReceber = osAReceber.reduce(
+    (sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0),
+    0
+  );
+  const despesasNoMes = despesasNoMesAgg._sum.valor ?? 0;
 
   const osAbertasCount = osAbertaCount + osEmAndamentoCount;
 
@@ -104,6 +131,36 @@ export default async function DashboardPage({
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
         <PeriodFilter value={String(periodo)} />
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-gray-900">Financeiro</h2>
+          <Link href="/financeiro" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+            Ver detalhes →
+          </Link>
+        </div>
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <MetricCard
+            icon="trending-up"
+            iconColor="text-green-600"
+            label="Recebido no mês"
+            value={formatCurrency(recebidoNoMes)}
+          />
+          <MetricCard
+            icon="clock"
+            iconColor="text-amber-600"
+            label="A receber"
+            value={formatCurrency(aReceber)}
+            context={`${osAReceber.length} OS em aberto`}
+          />
+          <MetricCard
+            icon="trending-down"
+            iconColor="text-red-600"
+            label="Despesas no mês"
+            value={formatCurrency(despesasNoMes)}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">

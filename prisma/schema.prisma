@@ -39,6 +39,8 @@ model Cliente {
 enum StatusOS {
   aberta
   em_andamento
+  aguardando_peca
+  aguardando_cliente
   concluida
   entregue
   cancelada
@@ -55,6 +57,8 @@ model OrdemServico {
   previsaoEntrega     DateTime?
   formaPagamento      String?
   observacoes         String?
+  pago                Boolean  @default(false)
+  dataPagamento       DateTime?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -62,6 +66,7 @@ model OrdemServico {
 
   @@index([clienteId])
   @@index([status])
+  @@index([pago])
 }
 
 model ItemServico {
@@ -91,4 +96,16 @@ model Nota {
   updatedAt      DateTime @updatedAt
 
   @@index([tipo])
+}
+
+model Despesa {
+  id          String   @id @default(cuid())
+  descricao   String
+  valor       Float
+  data        DateTime
+  categoria   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([data])
 }

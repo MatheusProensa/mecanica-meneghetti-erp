@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Users,
   Wrench,
+  Wallet,
   FileText,
   Settings,
   HelpCircle,
@@ -18,6 +19,7 @@ const links = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/clientes", label: "Clientes", icon: Users },
   { href: "/os", label: "Ordens de Serviço", icon: Wrench },
+  { href: "/financeiro", label: "Financeiro", icon: Wallet },
   { href: "/notas", label: "Notas", icon: FileText },
 ];
 
@@ -49,13 +51,13 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 rounded-md border-l-[3px] py-2 pl-2.5 pr-3 text-sm font-medium transition-colors ${
+      className={`flex items-center gap-3 rounded-md border-l-[3px] py-2.5 pl-2.5 pr-3 text-sm font-medium transition-colors ${
         active
           ? "border-l-blue-600 bg-sidebar-active text-blue-400"
           : "border-l-transparent text-gray-400 hover:bg-sidebar-hover hover:text-gray-200"
       }`}
     >
-      <Icon className="h-4 w-4 shrink-0" />
+      <Icon className="h-5 w-5 shrink-0" />
       {label}
     </Link>
   );

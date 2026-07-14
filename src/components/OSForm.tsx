@@ -5,6 +5,8 @@ import type { Cliente, OrdemServico, ItemServico } from "@/generated/prisma/clie
 const statusOptions = [
   { value: "aberta", label: "Aberta" },
   { value: "em_andamento", label: "Em andamento" },
+  { value: "aguardando_peca", label: "Aguardando peça" },
+  { value: "aguardando_cliente", label: "Aguardando cliente" },
   { value: "concluida", label: "Concluída" },
   { value: "entregue", label: "Entregue" },
   { value: "cancelada", label: "Cancelada" },

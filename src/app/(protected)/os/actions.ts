@@ -89,6 +89,17 @@ export async function updateOSStatus(id: number, status: StatusOS) {
   revalidatePath("/");
 }
 
+export async function toggleOSPago(id: number, pago: boolean) {
+  await prisma.ordemServico.update({
+    where: { id },
+    data: { pago, dataPagamento: pago ? new Date() : null },
+  });
+  revalidatePath("/os");
+  revalidatePath(`/os/${id}`);
+  revalidatePath("/");
+  revalidatePath("/financeiro");
+}
+
 export async function deleteOS(id: number) {
   await prisma.ordemServico.delete({ where: { id } });
   revalidatePath("/os");
