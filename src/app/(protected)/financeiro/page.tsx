@@ -50,21 +50,26 @@ export default async function FinanceiroPage({
 
   const where: Prisma.DespesaWhereInput = periodo ? { data: periodo } : {};
 
-  const [osPagasNoMes, osAReceber, despesasNoMes, despesas] = await Promise.all([
-    prisma.ordemServico.findMany({
-      where: { pago: true, dataPagamento: { gte: inicioMes, lt: fimMes } },
-      include: { itens: true },
-    }),
-    prisma.ordemServico.findMany({
-      where: { pago: false, status: { not: "cancelada" } },
-      include: { itens: true },
-    }),
-    prisma.despesa.aggregate({
-      where: { data: { gte: inicioMes, lt: fimMes } },
-      _sum: { valor: true },
-    }),
-    prisma.despesa.findMany({ where, orderBy: { data: "desc" } }),
-  ]);
+  const [osPagasNoMes, osAReceber, despesasNoMes, funcionariosNoMesAgg, despesas] =
+    await Promise.all([
+      prisma.ordemServico.findMany({
+        where: { pago: true, dataPagamento: { gte: inicioMes, lt: fimMes } },
+        include: { itens: true },
+      }),
+      prisma.ordemServico.findMany({
+        where: { pago: false, status: { not: "cancelada" } },
+        include: { itens: true },
+      }),
+      prisma.despesa.aggregate({
+        where: { data: { gte: inicioMes, lt: fimMes } },
+        _sum: { valor: true },
+      }),
+      prisma.despesa.aggregate({
+        where: { data: { gte: inicioMes, lt: fimMes }, categoria: "Funcionários" },
+        _sum: { valor: true },
+      }),
+      prisma.despesa.findMany({ where, orderBy: { data: "desc" } }),
+    ]);
 
   const recebidoNoMes = osPagasNoMes.reduce(
     (sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0),
@@ -75,6 +80,8 @@ export default async function FinanceiroPage({
     0
   );
   const despesasTotal = despesasNoMes._sum.valor ?? 0;
+  const funcionariosNoMes = funcionariosNoMesAgg._sum.valor ?? 0;
+  const lucroNoMes = recebidoNoMes - despesasTotal;
 
   return (
     <div>
@@ -103,6 +110,22 @@ export default async function FinanceiroPage({
           iconColor="text-red-600"
           label="Despesas no mês"
           value={formatCurrency(despesasTotal)}
+        />
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <MetricCard
+          icon="users"
+          iconColor="text-gray-500"
+          label="Gasto com funcionários no mês"
+          value={formatCurrency(funcionariosNoMes)}
+        />
+        <MetricCard
+          icon="wallet"
+          iconColor={lucroNoMes >= 0 ? "text-green-600" : "text-red-600"}
+          label="Lucro no mês"
+          value={formatCurrency(lucroNoMes)}
+          context="Recebido − Despesas"
         />
       </div>
 
@@ -166,6 +189,9 @@ export default async function FinanceiroPage({
                 <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
                   Categoria
                 </th>
+                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                  Fornecedor
+                </th>
                 <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
                 <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
               </tr>
@@ -182,6 +208,7 @@ export default async function FinanceiroPage({
                     </Link>
                   </td>
                   <td className="px-6 py-3 text-gray-500">{despesa.categoria ?? "-"}</td>
+                  <td className="px-6 py-3 text-gray-500">{despesa.fornecedor ?? "-"}</td>
                   <td className="px-6 py-3 text-gray-500">{formatDate(despesa.data)}</td>
                   <td className="px-6 py-3 text-gray-500">{formatCurrency(despesa.valor)}</td>
                 </tr>

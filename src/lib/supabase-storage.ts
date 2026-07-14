@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 const BUCKET = "notas-pdfs";
+const DESPESAS_BUCKET = "despesas-anexos";
 const SIGNED_URL_EXPIRES_IN = 60 * 60; // 1 hora
 
 function getClient() {
@@ -54,4 +55,33 @@ export async function getSignedPdfUrls(paths: string[]): Promise<Record<string, 
     if (item.signedUrl && item.path) map[item.path] = item.signedUrl;
   }
   return map;
+}
+
+/** Envia o anexo de despesa (PDF ou imagem) para o bucket privado. */
+export async function uploadDespesaAnexo(
+  fileName: string,
+  bytes: Buffer,
+  contentType: string
+): Promise<string> {
+  const supabase = getClient();
+  const { error } = await supabase.storage.from(DESPESAS_BUCKET).upload(fileName, bytes, {
+    contentType,
+    upsert: false,
+  });
+  if (error) throw error;
+  return fileName;
+}
+
+export async function deleteDespesaAnexo(path: string): Promise<void> {
+  const supabase = getClient();
+  await supabase.storage.from(DESPESAS_BUCKET).remove([path]);
+}
+
+export async function getSignedDespesaAnexoUrl(path: string): Promise<string | null> {
+  const supabase = getClient();
+  const { data, error } = await supabase.storage
+    .from(DESPESAS_BUCKET)
+    .createSignedUrl(path, SIGNED_URL_EXPIRES_IN);
+  if (error) return null;
+  return data.signedUrl;
 }

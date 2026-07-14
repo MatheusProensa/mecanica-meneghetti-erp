@@ -1,4 +1,18 @@
-import type { Despesa } from "@/generated/prisma/client";
+"use client";
+
+import { useState } from "react";
+import type { Despesa, DespesaItem } from "@/generated/prisma/client";
+import DespesaItemsEditor from "./DespesaItemsEditor";
+
+const CATEGORIAS = [
+  "Funcionários",
+  "Peças",
+  "Fornecedores",
+  "Aluguel",
+  "Energia",
+  "Água",
+  "Outros",
+];
 
 function toDateInputValue(date: Date | null | undefined): string {
   if (!date) return "";
@@ -7,40 +21,41 @@ function toDateInputValue(date: Date | null | undefined): string {
 
 export default function DespesaForm({
   despesa,
+  itens,
+  anexoUrl,
   action,
 }: {
   despesa?: Despesa;
+  itens?: DespesaItem[];
+  anexoUrl?: string | null;
   action: (formData: FormData) => void;
 }) {
+  const [categoria, setCategoria] = useState(despesa?.categoria ?? "");
+  const [valor, setValor] = useState(despesa?.valor ? String(despesa.valor) : "");
+  const isFuncionario = categoria === "Funcionários";
+  const isPecas = categoria === "Peças";
+
   return (
     <form action={action} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="sm:col-span-2">
-          <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">
-            Descrição *
-          </label>
-          <input
-            id="descricao"
-            name="descricao"
-            required
-            placeholder="Ex: Conta de luz, compra de material..."
-            defaultValue={despesa?.descricao ?? ""}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-        </div>
-
         <div>
-          <label htmlFor="valor" className="block text-sm font-medium text-gray-700">
-            Valor *
+          <label htmlFor="categoria" className="block text-sm font-medium text-gray-700">
+            Categoria
           </label>
-          <input
-            id="valor"
-            name="valor"
-            required
-            inputMode="decimal"
-            defaultValue={despesa?.valor ?? ""}
+          <select
+            id="categoria"
+            name="categoria"
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
+          >
+            <option value="">Selecione...</option>
+            {CATEGORIAS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -58,17 +73,109 @@ export default function DespesaForm({
         </div>
 
         <div className="sm:col-span-2">
-          <label htmlFor="categoria" className="block text-sm font-medium text-gray-700">
-            Categoria
+          <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">
+            Descrição *
           </label>
           <input
-            id="categoria"
-            name="categoria"
-            placeholder="Ex: Fornecedor, aluguel, energia..."
-            defaultValue={despesa?.categoria ?? ""}
+            id="descricao"
+            name="descricao"
+            required
+            placeholder={
+              isFuncionario
+                ? "Ex: Pagamento semanal - Victor"
+                : "Ex: Conta de luz, compra de material..."
+            }
+            defaultValue={despesa?.descricao ?? ""}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
+
+        <div>
+          <label htmlFor="fornecedor" className="block text-sm font-medium text-gray-700">
+            {isFuncionario ? "Funcionário" : "Fornecedor"}
+          </label>
+          <input
+            id="fornecedor"
+            name="fornecedor"
+            placeholder={isFuncionario ? "Ex: Victor" : "Ex: Casa dos Rolamentos"}
+            defaultValue={despesa?.fornecedor ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="formaPagamento" className="block text-sm font-medium text-gray-700">
+            Forma de pagamento
+          </label>
+          <input
+            id="formaPagamento"
+            name="formaPagamento"
+            placeholder="Pix, dinheiro, cartão..."
+            defaultValue={despesa?.formaPagamento ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label htmlFor="valor" className="block text-sm font-medium text-gray-700">
+            Valor total *
+          </label>
+          <input
+            id="valor"
+            name="valor"
+            required
+            inputMode="decimal"
+            value={valor}
+            onChange={(e) => setValor(e.target.value)}
+            className="mt-1 w-full max-w-xs rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      {isPecas && (
+        <DespesaItemsEditor initialItens={itens} onUseTotal={(total) => setValor(String(total))} />
+      )}
+
+      <div>
+        <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">
+          Observações
+        </label>
+        <textarea
+          id="observacoes"
+          name="observacoes"
+          rows={3}
+          defaultValue={despesa?.observacoes ?? ""}
+          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="anexo" className="block text-sm font-medium text-gray-700">
+          Nota fiscal ou comprovante (PDF ou imagem)
+        </label>
+        <input
+          id="anexo"
+          name="anexo"
+          type="file"
+          accept="application/pdf,image/*"
+          className="mt-1 w-full text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
+        />
+        {anexoUrl && (
+          <div className="mt-2 flex items-center gap-3">
+            <a
+              href={anexoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Ver anexo atual
+            </a>
+            <label className="flex items-center gap-1.5 text-sm text-gray-600">
+              <input type="checkbox" name="removerAnexo" className="rounded border-gray-300" />
+              Remover anexo
+            </label>
+          </div>
+        )}
       </div>
 
       <button

@@ -99,13 +99,30 @@ model Nota {
 }
 
 model Despesa {
-  id          String   @id @default(cuid())
-  descricao   String
-  valor       Float
-  data        DateTime
-  categoria   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  descricao      String
+  valor          Float
+  data           DateTime
+  categoria      String?
+  fornecedor     String?
+  formaPagamento String?
+  anexoPath      String?
+  observacoes    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  itens DespesaItem[]
 
   @@index([data])
+  @@index([categoria])
+}
+
+model DespesaItem {
+  id        String  @id @default(cuid())
+  despesaId String
+  despesa   Despesa @relation(fields: [despesaId], references: [id], onDelete: Cascade)
+  descricao String
+  valor     Float
+
+  @@index([despesaId])
 }

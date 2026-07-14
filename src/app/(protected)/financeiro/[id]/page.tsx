@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getSignedDespesaAnexoUrl } from "@/lib/supabase-storage";
 import DespesaForm from "@/components/DespesaForm";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { updateDespesa, deleteDespesa } from "../actions";
@@ -12,9 +13,14 @@ export default async function DespesaDetalhePage({
 }) {
   const { id } = await params;
 
-  const despesa = await prisma.despesa.findUnique({ where: { id } });
+  const despesa = await prisma.despesa.findUnique({
+    where: { id },
+    include: { itens: true },
+  });
 
   if (!despesa) notFound();
+
+  const anexoUrl = despesa.anexoPath ? await getSignedDespesaAnexoUrl(despesa.anexoPath) : null;
 
   const updateDespesaWithId = updateDespesa.bind(null, despesa.id);
   const deleteDespesaWithId = deleteDespesa.bind(null, despesa.id);
@@ -37,7 +43,12 @@ export default async function DespesaDetalhePage({
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <DespesaForm despesa={despesa} action={updateDespesaWithId} />
+        <DespesaForm
+          despesa={despesa}
+          itens={despesa.itens}
+          anexoUrl={anexoUrl}
+          action={updateDespesaWithId}
+        />
       </div>
     </div>
   );
