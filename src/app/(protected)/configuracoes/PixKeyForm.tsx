@@ -18,7 +18,7 @@ export default function PixKeyForm({ pixKey }: { pixKey: string | null }) {
           name="pixKey"
           rows={4}
           defaultValue={pixKey ?? ""}
-          placeholder={"Ex:\nChave Pix: 000.000.000-00\nBanco: Nu Pagamentos S.A. (260)\nAgência: 0001\nConta: 91596898-9"}
+          placeholder={"Ex:\nChave Pix: 000.000.000-00\nBanco: Nome do banco (000)\nAgência: 0000\nConta: 00000000-0"}
           className="mt-1 w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <p className="mt-1 text-xs text-gray-500">
