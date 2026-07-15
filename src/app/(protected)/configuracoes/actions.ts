@@ -44,3 +44,21 @@ export async function updatePassword(
 
   return "Senha atualizada com sucesso.";
 }
+
+export async function updatePixKey(
+  _prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
+  const session = await auth();
+  if (!session?.user?.email) return "Sessão inválida. Faça login novamente.";
+
+  const pixKeyRaw = formData.get("pixKey");
+  const pixKey = typeof pixKeyRaw === "string" && pixKeyRaw.trim() ? pixKeyRaw.trim() : null;
+
+  await prisma.user.update({
+    where: { email: session.user.email },
+    data: { pixKey },
+  });
+
+  return "Dados de pagamento atualizados com sucesso.";
+}

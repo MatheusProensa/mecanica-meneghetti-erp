@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { auth } from "@/lib/auth";
+import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
 import ClienteForm from "@/components/ClienteForm";
+import CobrancaCliente from "@/components/CobrancaCliente";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -16,17 +18,24 @@ export default async function ClienteDetalhePage({
 }) {
   const { id } = await params;
 
-  const cliente = await prisma.cliente.findUnique({
-    where: { id },
-    include: {
-      ordensServico: {
-        include: { itens: true },
-        orderBy: { data: "desc" },
+  const [cliente, session] = await Promise.all([
+    prisma.cliente.findUnique({
+      where: { id },
+      include: {
+        ordensServico: {
+          include: { itens: true },
+          orderBy: { data: "desc" },
+        },
       },
-    },
-  });
+    }),
+    auth(),
+  ]);
 
   if (!cliente) notFound();
+
+  const usuario = session?.user?.email
+    ? await prisma.user.findUnique({ where: { email: session.user.email }, select: { pixKey: true } })
+    : null;
 
   const valorTotalGasto = cliente.ordensServico.reduce(
     (sum, os) => sum + os.itens.reduce((s, item) => s + item.valor, 0),
@@ -34,6 +43,15 @@ export default async function ClienteDetalhePage({
   );
   const quantidadeServicos = cliente.ordensServico.length;
   const ultimaVisita = cliente.ordensServico[0]?.data ?? null;
+
+  const ordensAbertas = cliente.ordensServico
+    .filter((os) => !os.pago && os.status !== "cancelada")
+    .map((os) => ({
+      id: os.id,
+      data: os.data,
+      descricao: os.itens.map((i) => i.descricao).join(", "),
+      valor: os.itens.reduce((s, i) => s + i.valor, 0),
+    }));
 
   const updateClienteWithId = updateCliente.bind(null, cliente.id);
   const deleteClienteWithId = deleteCliente.bind(null, cliente.id);
@@ -83,6 +101,21 @@ export default async function ClienteDetalhePage({
           <ClienteForm cliente={cliente} action={updateClienteWithId} />
         </div>
       </div>
+
+      {ordensAbertas.length > 0 && (
+        <div>
+          <CobrancaCliente
+            cliente={{
+              nome: cliente.nome,
+              telefone: formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || null,
+              endereco: cliente.endereco,
+              cpfCnpj: cliente.cpfCnpj,
+            }}
+            ordensAbertas={ordensAbertas}
+            pixKeyPadrao={usuario?.pixKey ?? null}
+          />
+        </div>
+      )}
 
       <div>
         <div className="flex items-center justify-between">
