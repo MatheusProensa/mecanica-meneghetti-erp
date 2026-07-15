@@ -10,13 +10,13 @@ export default function PageHeader({ title, description, action }: PageHeaderPro
   return (
     <div className="flex items-center justify-between gap-4">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">{title}</h1>
         {description && <p className="mt-1 text-sm text-gray-500">{description}</p>}
       </div>
       {action && (
         <Link
           href={action.href}
-          className="shrink-0 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="shrink-0 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
         >
           {action.label}
         </Link>

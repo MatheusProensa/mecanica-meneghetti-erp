@@ -166,7 +166,7 @@ export default async function NotasPage({
         </button>
       </form>
 
-      <div className="mt-6 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
         {notas.length === 0 ? (
           <EmptyState
             icon="file-text"

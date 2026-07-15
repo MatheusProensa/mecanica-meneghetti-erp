@@ -10,11 +10,22 @@ const toneClasses: Record<BadgeTone, string> = {
   purple: "bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-600/20",
 };
 
+const dotClasses: Record<BadgeTone, string> = {
+  blue: "bg-blue-500",
+  amber: "bg-amber-500",
+  green: "bg-green-500",
+  gray: "bg-gray-400",
+  red: "bg-red-500",
+  orange: "bg-orange-500",
+  purple: "bg-purple-500",
+};
+
 export function StatusBadge({ label, tone }: { label: string; tone: BadgeTone }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${toneClasses[tone]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${toneClasses[tone]}`}
     >
+      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotClasses[tone]}`} />
       {label}
     </span>
   );

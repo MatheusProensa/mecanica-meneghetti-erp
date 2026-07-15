@@ -4,6 +4,7 @@ import { formatCurrency, formatDate } from "@/lib/format";
 import DashboardCharts, { type MonthlyPoint } from "@/components/DashboardCharts";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
+import PageHeader from "@/components/ui/PageHeader";
 import PeriodFilter from "@/components/PeriodFilter";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
 
@@ -129,7 +130,7 @@ export default async function DashboardPage({
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
+        <PageHeader title="Dashboard" />
         <PeriodFilter value={String(periodo)} />
       </div>
 
@@ -193,7 +194,7 @@ export default async function DashboardPage({
 
       <DashboardCharts data={monthlyData} periodo={periodo} />
 
-      <div className="rounded-[10px] border border-gray-200 bg-white">
+      <div className="rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
           <h2 className="text-sm font-semibold text-gray-900">Últimas movimentações</h2>
           <Link href="/os" className="text-sm font-medium text-blue-600 hover:text-blue-700">

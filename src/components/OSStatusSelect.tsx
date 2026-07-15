@@ -3,10 +3,21 @@
 import { useTransition } from "react";
 import { updateOSStatus } from "@/app/(protected)/os/actions";
 import type { StatusOS } from "@/generated/prisma/client";
-import { osStatusMap } from "@/components/ui/StatusBadge";
+import { osStatusMap, type BadgeTone } from "@/components/ui/StatusBadge";
+
+const selectToneClasses: Record<BadgeTone, string> = {
+  blue: "bg-blue-50 border-blue-200 text-blue-700",
+  amber: "bg-amber-50 border-amber-200 text-amber-800",
+  green: "bg-green-50 border-green-200 text-green-800",
+  gray: "bg-gray-100 border-gray-200 text-gray-700",
+  red: "bg-red-50 border-red-200 text-red-700",
+  orange: "bg-orange-50 border-orange-200 text-orange-800",
+  purple: "bg-purple-50 border-purple-200 text-purple-800",
+};
 
 export default function OSStatusSelect({ id, status }: { id: number; status: StatusOS }) {
   const [pending, startTransition] = useTransition();
+  const tone = osStatusMap[status].tone;
 
   return (
     <select
@@ -19,7 +30,7 @@ export default function OSStatusSelect({ id, status }: { id: number; status: Sta
           updateOSStatus(id, next);
         });
       }}
-      className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 disabled:opacity-60"
+      className={`h-8 rounded-lg border px-3 text-xs font-semibold shadow-sm disabled:opacity-60 ${selectToneClasses[tone]}`}
     >
       {Object.entries(osStatusMap).map(([value, { label }]) => (
         <option key={value} value={value}>

@@ -10,7 +10,7 @@ export default async function ConfiguracoesPage() {
 
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Conta</h2>
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-6">
+        <div className="mt-4 rounded-xl border border-gray-200 bg-white p-6">
           <p className="text-sm text-gray-500">Logado como</p>
           <p className="mt-1 text-sm font-medium text-gray-900">
             {session?.user?.name} — {session?.user?.email}
@@ -20,7 +20,7 @@ export default async function ConfiguracoesPage() {
 
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Trocar senha</h2>
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-6">
+        <div className="mt-4 rounded-xl border border-gray-200 bg-white p-6">
           <PasswordForm />
         </div>
       </div>

@@ -172,7 +172,7 @@ export default async function FinanceiroPage({
         </button>
       </form>
 
-      <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-gray-200 bg-white">
         {despesas.length === 0 ? (
           <EmptyState
             icon="receipt"

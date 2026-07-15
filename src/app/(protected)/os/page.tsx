@@ -102,7 +102,7 @@ export default async function OSListPage({
         />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
         {ordens.length === 0 ? (
           <EmptyState
             icon="tools"

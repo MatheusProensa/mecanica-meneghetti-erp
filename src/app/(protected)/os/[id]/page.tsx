@@ -52,7 +52,7 @@ export default async function OSDetalhePage({
         />
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-xl border border-gray-200 bg-white p-6">
         <OSForm clientes={clientes} os={os} action={updateOSWithId} />
       </div>
     </div>
