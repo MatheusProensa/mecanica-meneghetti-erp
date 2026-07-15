@@ -24,7 +24,7 @@ export default async function OSListPage({
     ...(q
       ? {
           OR: [
-            { cliente: { nome: { contains: q } } },
+            { cliente: { nome: { contains: q, mode: "insensitive" } } },
             ...(numeroBuscado ? [{ id: numeroBuscado }] : []),
           ],
         }

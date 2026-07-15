@@ -49,8 +49,8 @@ export default async function NotasPage({
     ...(q
       ? {
           OR: [
-            { numero: { contains: q } },
-            { observacoes: { contains: q } },
+            { numero: { contains: q, mode: "insensitive" } },
+            { observacoes: { contains: q, mode: "insensitive" } },
           ],
         }
       : {}),

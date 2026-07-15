@@ -84,10 +84,6 @@ export default async function DashboardPage({
 
   const osAbertasCount = osAbertaCount + osEmAndamentoCount;
 
-  const faturamentoNoMes = ordensDoPeriodo
-    .filter((os) => os.data >= inicioMes)
-    .reduce((sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0), 0);
-
   const monthlyData: MonthlyPoint[] = [];
   for (let i = periodo - 1; i >= 0; i--) {
     const mesInicio = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -168,13 +164,7 @@ export default async function DashboardPage({
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
           Operacional
         </p>
-        <div className="mt-3 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <MetricCard
-          icon="trending-up"
-          iconColor="text-green-600"
-          label="Faturamento no mês"
-          value={formatCurrency(faturamentoNoMes)}
-        />
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <MetricCard
           icon="tools"
           iconColor="text-blue-600"

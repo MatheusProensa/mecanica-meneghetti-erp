@@ -1,15 +1,37 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Search, Bell } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 
-export default function TopBar() {
+export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   const router = useRouter();
 
   return (
-    <header className="flex h-14 items-center justify-between gap-4 border-b border-gray-200 bg-white px-8">
+    <header className="flex h-14 items-center gap-3 border-b border-gray-200 bg-white px-4 sm:px-6 lg:px-8">
+      <button
+        type="button"
+        onClick={onMenuClick}
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:hidden"
+        aria-label="Abrir menu"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
+      <div className="flex flex-1 items-center gap-2 lg:hidden">
+        <Image
+          src="/logo.png"
+          alt="Mecânica Meneghetti"
+          width={28}
+          height={28}
+          unoptimized
+          className="h-7 w-7 shrink-0 object-contain"
+        />
+        <p className="truncate text-sm font-semibold text-gray-900">Oficina Meneghetti</p>
+      </div>
+
       <form
-        className="relative w-full max-w-sm"
+        className="relative hidden w-full max-w-sm lg:block"
         onSubmit={(e) => {
           e.preventDefault();
           const q = new FormData(e.currentTarget).get("q");
@@ -26,16 +48,6 @@ export default function TopBar() {
           className="w-full rounded-md border border-gray-200 bg-gray-50 py-2 pl-9 pr-3 text-sm text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </form>
-
-      <div className="flex shrink-0 items-center gap-3">
-        <button
-          type="button"
-          title="Notificações (em breve)"
-          className="flex h-9 w-9 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-        >
-          <Bell className="h-4 w-4" />
-        </button>
-      </div>
     </header>
   );
 }

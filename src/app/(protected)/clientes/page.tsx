@@ -16,9 +16,9 @@ export default async function ClientesPage({
       where: q
         ? {
             OR: [
-              { nome: { contains: q } },
-              { cpfCnpj: { contains: q } },
-              { telefone: { contains: q } },
+              { nome: { contains: q, mode: "insensitive" } },
+              { cpfCnpj: { contains: q, mode: "insensitive" } },
+              { telefone: { contains: q, mode: "insensitive" } },
             ],
           }
         : undefined,

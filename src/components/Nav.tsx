@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -12,6 +13,7 @@ import {
   Settings,
   HelpCircle,
   LogOut,
+  X,
 } from "lucide-react";
 import { logoutAction } from "@/app/(protected)/actions";
 
@@ -63,11 +65,51 @@ function NavLink({
   );
 }
 
-export default function Nav({ userName }: { userName: string }) {
+export default function Nav({
+  userName,
+  open,
+  onClose,
+}: {
+  userName: string;
+  open: boolean;
+  onClose: () => void;
+}) {
   const pathname = usePathname();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col bg-sidebar text-gray-300">
+    <>
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        style={{
+          translate: "none",
+          transform: "none",
+          left: isDesktop ? 0 : open ? 0 : -280,
+        }}
+        className="fixed inset-y-0 z-50 flex w-[280px] shrink-0 flex-col bg-sidebar text-gray-300 lg:static lg:z-auto lg:w-64"
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-md text-gray-400 hover:bg-sidebar-hover hover:text-gray-200 lg:hidden"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
       <div className="flex flex-col items-center gap-2 border-b border-sidebar-hover px-5 py-6 text-center">
         <Image
           src="/logo.png"
@@ -123,6 +165,7 @@ export default function Nav({ userName }: { userName: string }) {
           </button>
         </form>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

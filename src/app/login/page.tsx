@@ -13,16 +13,13 @@ export default function LoginPage() {
         <Image
           src="/logo.png"
           alt="Mecânica Meneghetti"
-          width={72}
-          height={72}
+          width={140}
+          height={140}
           unoptimized
-          className="mx-auto h-18 w-18 object-contain"
+          className="mx-auto h-[140px] w-[140px] object-contain"
           priority
         />
-        <h1 className="mt-3 text-center text-xl font-semibold text-gray-900">
-          Oficina Meneghetti
-        </h1>
-        <p className="mt-1 text-center text-sm text-gray-500">
+        <p className="mt-3 text-center text-sm text-gray-500">
           Entre com seu e-mail e senha para acessar o sistema.
         </p>
 

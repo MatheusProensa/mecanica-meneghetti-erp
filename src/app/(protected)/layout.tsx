@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import Nav from "@/components/Nav";
-import TopBar from "@/components/TopBar";
+import AppShell from "@/components/AppShell";
 import Toast from "@/components/ui/Toast";
 
 export default async function ProtectedLayout({
@@ -15,13 +14,9 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="flex flex-1">
-      <Nav userName={session.user.name ?? session.user.email ?? ""} />
-      <div className="flex flex-1 flex-col">
-        <TopBar />
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-8">{children}</main>
-      </div>
+    <>
+      <AppShell userName={session.user.name ?? session.user.email ?? ""}>{children}</AppShell>
       <Toast />
-    </div>
+    </>
   );
 }

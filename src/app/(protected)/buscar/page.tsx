@@ -18,10 +18,10 @@ export default async function BuscarPage({
         prisma.cliente.findMany({
           where: {
             OR: [
-              { nome: { contains: query } },
-              { cpfCnpj: { contains: query } },
-              { telefone: { contains: query } },
-              { whatsapp: { contains: query } },
+              { nome: { contains: query, mode: "insensitive" } },
+              { cpfCnpj: { contains: query, mode: "insensitive" } },
+              { telefone: { contains: query, mode: "insensitive" } },
+              { whatsapp: { contains: query, mode: "insensitive" } },
             ],
           },
           take: 10,
@@ -30,9 +30,9 @@ export default async function BuscarPage({
         prisma.ordemServico.findMany({
           where: {
             OR: [
-              { cliente: { nome: { contains: query } } },
-              { mecanicoResponsavel: { contains: query } },
-              { observacoes: { contains: query } },
+              { cliente: { nome: { contains: query, mode: "insensitive" } } },
+              { mecanicoResponsavel: { contains: query, mode: "insensitive" } },
+              { observacoes: { contains: query, mode: "insensitive" } },
               ...(numeroBuscado ? [{ id: numeroBuscado }] : []),
             ],
           },
@@ -42,7 +42,10 @@ export default async function BuscarPage({
         }),
         prisma.nota.findMany({
           where: {
-            OR: [{ numero: { contains: query } }, { observacoes: { contains: query } }],
+            OR: [
+              { numero: { contains: query, mode: "insensitive" } },
+              { observacoes: { contains: query, mode: "insensitive" } },
+            ],
           },
           take: 10,
           orderBy: { dataEmissao: "desc" },
