@@ -31,7 +31,7 @@ export default async function OSDetalhePage({
 
   return (
     <div className="max-w-2xl space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/os" className="text-sm text-gray-500 hover:underline">
             ← Ordens de Serviço
@@ -52,7 +52,7 @@ export default async function OSDetalhePage({
         />
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6">
+      <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
         <OSForm clientes={clientes} os={os} action={updateOSWithId} />
       </div>
     </div>

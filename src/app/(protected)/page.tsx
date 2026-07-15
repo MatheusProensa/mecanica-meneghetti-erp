@@ -137,7 +137,7 @@ export default async function DashboardPage({
             Ver detalhes →
           </Link>
         </div>
-        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           <MetricCard
             icon="trending-up"
             iconColor="text-green-600"
@@ -164,7 +164,7 @@ export default async function DashboardPage({
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
           Operacional
         </p>
-        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
         <MetricCard
           icon="tools"
           iconColor="text-blue-600"
@@ -204,43 +204,72 @@ export default async function DashboardPage({
             description="Cadastre uma OS ou uma nota para começar a ver o histórico aqui."
           />
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead className="text-gray-500">
-              <tr>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Tipo</th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Descrição
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
-              </tr>
-            </thead>
-            <tbody>
-              {movimentacoes.map((m) => (
-                <tr key={m.id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="px-6 py-3">
-                    <StatusBadge
-                      label={m.tipoLabel}
-                      tone={m.tipoLabel === "OS" ? "gray" : "blue"}
-                    />
-                  </td>
-                  <td className="px-6 py-3">
-                    <Link href={m.href} className="font-medium text-gray-900 hover:underline">
-                      {m.descricao}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-3 text-gray-500">{formatDate(m.data)}</td>
-                  <td className="px-6 py-3">
-                    <StatusBadge label={m.badge.label} tone={m.badge.tone} />
-                  </td>
-                  <td className="px-6 py-3 text-gray-500">
-                    {m.valor !== null ? formatCurrency(m.valor) : "-"}
-                  </td>
+          <>
+            <table className="hidden w-full text-left text-sm md:table">
+              <thead className="text-gray-500">
+                <tr>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Tipo</th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Descrição
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
                 </tr>
+              </thead>
+              <tbody>
+                {movimentacoes.map((m) => (
+                  <tr key={m.id} className="border-t border-gray-100 hover:bg-gray-50">
+                    <td className="px-6 py-3">
+                      <StatusBadge
+                        label={m.tipoLabel}
+                        tone={m.tipoLabel === "OS" ? "gray" : "blue"}
+                      />
+                    </td>
+                    <td className="px-6 py-3">
+                      <Link href={m.href} className="font-medium text-gray-900 hover:underline">
+                        {m.descricao}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-3 text-gray-500">{formatDate(m.data)}</td>
+                    <td className="px-6 py-3">
+                      <StatusBadge label={m.badge.label} tone={m.badge.tone} />
+                    </td>
+                    <td className="px-6 py-3 text-gray-500">
+                      {m.valor !== null ? formatCurrency(m.valor) : "-"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="divide-y divide-gray-100 md:hidden">
+              {movimentacoes.map((m) => (
+                <Link
+                  key={m.id}
+                  href={m.href}
+                  className="flex flex-col gap-1.5 px-4 py-3 active:bg-gray-50"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <StatusBadge
+                        label={m.tipoLabel}
+                        tone={m.tipoLabel === "OS" ? "gray" : "blue"}
+                      />
+                      <StatusBadge label={m.badge.label} tone={m.badge.tone} />
+                    </div>
+                    <span className="text-xs text-gray-500">{formatDate(m.data)}</span>
+                  </div>
+                  <p className="font-medium text-gray-900">{m.descricao}</p>
+                  {m.valor !== null && (
+                    <p className="text-sm text-gray-600">{formatCurrency(m.valor)}</p>
+                  )}
+                </Link>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
     </div>

@@ -190,64 +190,101 @@ export default async function NotasPage({
             description="Anexe uma nota emitida ou recebida para guardar o registro em PDF."
           />
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead className="text-gray-500">
-              <tr>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Número
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Tipo</th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Emissão
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Observações
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Anexo
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            <table className="hidden w-full text-left text-sm md:table">
+              <thead className="text-gray-500">
+                <tr>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Número
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Tipo</th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Emissão
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Observações
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Anexo
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {notas.map((nota) => (
+                  <tr key={nota.id} className="border-t border-gray-100 hover:bg-gray-50">
+                    <td className="px-6 py-3">
+                      <Link
+                        href={`/notas/${nota.id}`}
+                        className="font-medium text-gray-900 hover:underline"
+                      >
+                        {nota.numero}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-3">
+                      <StatusBadge {...notaTipoMap[nota.tipo]} />
+                    </td>
+                    <td className="px-6 py-3 text-gray-500">{formatDate(nota.dataEmissao)}</td>
+                    <td className="max-w-xs truncate px-6 py-3 text-gray-500">
+                      {nota.observacoes ?? "-"}
+                    </td>
+                    <td className="px-6 py-3 text-gray-500">
+                      {nota.valor !== null ? formatCurrency(nota.valor) : "-"}
+                    </td>
+                    <td className="px-6 py-3">
+                      {nota.arquivoPdfPath && pdfUrls[nota.arquivoPdfPath] ? (
+                        <a
+                          href={pdfUrls[nota.arquivoPdfPath]}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                        >
+                          <FileText className="h-4 w-4" /> PDF
+                        </a>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="divide-y divide-gray-100 md:hidden">
               {notas.map((nota) => (
-                <tr key={nota.id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="px-6 py-3">
+                <div key={nota.id} className="px-4 py-3">
+                  <div className="flex items-center justify-between gap-2">
                     <Link
                       href={`/notas/${nota.id}`}
                       className="font-medium text-gray-900 hover:underline"
                     >
                       {nota.numero}
                     </Link>
-                  </td>
-                  <td className="px-6 py-3">
                     <StatusBadge {...notaTipoMap[nota.tipo]} />
-                  </td>
-                  <td className="px-6 py-3 text-gray-500">{formatDate(nota.dataEmissao)}</td>
-                  <td className="max-w-xs truncate px-6 py-3 text-gray-500">
-                    {nota.observacoes ?? "-"}
-                  </td>
-                  <td className="px-6 py-3 text-gray-500">
-                    {nota.valor !== null ? formatCurrency(nota.valor) : "-"}
-                  </td>
-                  <td className="px-6 py-3">
-                    {nota.arquivoPdfPath && pdfUrls[nota.arquivoPdfPath] ? (
+                  </div>
+                  <p className="mt-1 text-sm text-gray-500">{formatDate(nota.dataEmissao)}</p>
+                  {nota.observacoes && (
+                    <p className="mt-1 text-sm text-gray-500">{nota.observacoes}</p>
+                  )}
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-gray-900">
+                      {nota.valor !== null ? formatCurrency(nota.valor) : "-"}
+                    </span>
+                    {nota.arquivoPdfPath && pdfUrls[nota.arquivoPdfPath] && (
                       <a
                         href={pdfUrls[nota.arquivoPdfPath]}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 px-3 py-1.5 text-sm font-medium text-blue-600 active:bg-blue-50"
                       >
-                        <FileText className="h-4 w-4" /> PDF
+                        <FileText className="h-4 w-4" /> Ver PDF
                       </a>
-                    ) : (
-                      <span className="text-gray-400">-</span>
                     )}
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
     </div>

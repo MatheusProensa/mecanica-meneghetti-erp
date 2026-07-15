@@ -79,7 +79,7 @@ export default function ClienteForm({
 
       <button
         type="submit"
-        className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 sm:w-auto"
       >
         {cliente ? "Salvar alterações" : "Cadastrar cliente"}
       </button>

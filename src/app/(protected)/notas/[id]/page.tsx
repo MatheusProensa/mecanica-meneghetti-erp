@@ -24,7 +24,7 @@ export default async function NotaDetalhePage({
 
   return (
     <div className="max-w-2xl space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/notas" className="text-sm text-gray-500 hover:underline">
             ← Notas
@@ -41,7 +41,7 @@ export default async function NotaDetalhePage({
         />
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
         <NotaForm nota={nota} pdfUrl={pdfUrl} action={updateNotaWithId} />
       </div>
     </div>

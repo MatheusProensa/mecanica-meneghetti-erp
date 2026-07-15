@@ -40,7 +40,7 @@ export default async function ClienteDetalhePage({
 
   return (
     <div className="max-w-4xl space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/clientes" className="text-sm text-gray-500 hover:underline">
             ← Clientes
@@ -78,7 +78,7 @@ export default async function ClienteDetalhePage({
 
       <div>
         <h2 className="text-sm font-semibold text-gray-900">Dados cadastrais</h2>
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-6">
+        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
           <ClienteForm cliente={cliente} action={updateClienteWithId} />
         </div>
       </div>
@@ -104,43 +104,68 @@ export default async function ClienteDetalhePage({
               description="Quando este cliente tiver uma OS, ela aparece aqui."
             />
           ) : (
-            <table className="w-full text-left text-sm">
-              <thead className="text-gray-500">
-                <tr>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">OS</th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Data
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Valor
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {cliente.ordensServico.map((os) => (
-                  <tr key={os.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <Link
-                        href={`/os/${os.id}`}
-                        className="font-medium text-gray-900 hover:underline"
-                      >
-                        #{String(os.id).padStart(4, "0")}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
-                    <td className="px-6 py-3">
-                      <StatusBadge {...osStatusMap[os.status]} />
-                    </td>
-                    <td className="px-6 py-3 text-gray-500">
-                      {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
-                    </td>
+            <>
+              <table className="hidden w-full text-left text-sm md:table">
+                <thead className="text-gray-500">
+                  <tr>
+                    <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">OS</th>
+                    <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                      Data
+                    </th>
+                    <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                      Valor
+                    </th>
                   </tr>
+                </thead>
+                <tbody>
+                  {cliente.ordensServico.map((os) => (
+                    <tr key={os.id} className="border-t border-gray-100 hover:bg-gray-50">
+                      <td className="px-6 py-3">
+                        <Link
+                          href={`/os/${os.id}`}
+                          className="font-medium text-gray-900 hover:underline"
+                        >
+                          #{String(os.id).padStart(4, "0")}
+                        </Link>
+                      </td>
+                      <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
+                      <td className="px-6 py-3">
+                        <StatusBadge {...osStatusMap[os.status]} />
+                      </td>
+                      <td className="px-6 py-3 text-gray-500">
+                        {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="divide-y divide-gray-100 md:hidden">
+                {cliente.ordensServico.map((os) => (
+                  <Link
+                    key={os.id}
+                    href={`/os/${os.id}`}
+                    className="flex items-center justify-between gap-2 px-4 py-3 active:bg-gray-50"
+                  >
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        #{String(os.id).padStart(4, "0")}
+                      </p>
+                      <p className="text-sm text-gray-500">{formatDate(os.data)}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      <StatusBadge {...osStatusMap[os.status]} />
+                      <span className="text-sm text-gray-600">
+                        {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
+                      </span>
+                    </div>
+                  </Link>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </>
           )}
         </div>
       </div>

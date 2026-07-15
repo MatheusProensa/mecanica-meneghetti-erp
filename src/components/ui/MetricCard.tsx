@@ -41,20 +41,20 @@ export default function MetricCard({
 
   return (
     <div
-      className={`min-h-[110px] rounded-xl border p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04)] transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${
+      className={`min-h-[90px] rounded-xl border p-3.5 shadow-[0_1px_2px_rgba(17,24,39,0.04)] transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:min-h-[110px] sm:p-5 ${
         style ? `${style.border} ${style.bg}` : "border-gray-200 bg-white"
       }`}
     >
-      <div className="flex items-center gap-2.5">
-        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconBg}`}>
-          <Icon className={`h-4 w-4 ${iconColor}`} />
+      <div className="flex items-center gap-2 sm:gap-2.5">
+        <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg sm:h-8 sm:w-8 ${iconBg}`}>
+          <Icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${iconColor}`} />
         </span>
-        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 sm:text-xs">
           {label}
         </p>
       </div>
       <p
-        className={`mt-3.5 text-[26px] font-bold leading-tight tracking-tight ${style ? style.value : "text-gray-900"}`}
+        className={`mt-2.5 text-[20px] font-bold leading-tight tracking-tight sm:mt-3.5 sm:text-[26px] ${style ? style.value : "text-gray-900"}`}
       >
         {value}
       </p>

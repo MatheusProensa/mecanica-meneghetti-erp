@@ -72,34 +72,40 @@ export default async function OSListPage({
         </button>
       </form>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <FilterLink label="Todas" href={osHref({ status: null })} active={!status} />
-        {Object.entries(osStatusMap).map(([value, { label }]) => (
-          <FilterLink
-            key={value}
-            label={label}
-            href={osHref({ status: value })}
-            active={status === value}
-          />
-        ))}
+      <div className="mt-4">
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Status</p>
+        <div className="mt-1.5 flex flex-wrap gap-2">
+          <FilterLink label="Todas" href={osHref({ status: null })} active={!status} />
+          {Object.entries(osStatusMap).map(([value, { label }]) => (
+            <FilterLink
+              key={value}
+              label={label}
+              href={osHref({ status: value })}
+              active={status === value}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="mt-2 flex flex-wrap gap-2">
-        <FilterLink
-          label="Todos pagamentos"
-          href={osHref({ pagamento: null })}
-          active={!pagamento}
-        />
-        <FilterLink
-          label="A receber"
-          href={osHref({ pagamento: "a_receber" })}
-          active={pagamento === "a_receber"}
-        />
-        <FilterLink
-          label="Pagos"
-          href={osHref({ pagamento: "pago" })}
-          active={pagamento === "pago"}
-        />
+      <div className="mt-3">
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Pagamento</p>
+        <div className="mt-1.5 flex flex-wrap gap-2">
+          <FilterLink
+            label="Todos pagamentos"
+            href={osHref({ pagamento: null })}
+            active={!pagamento}
+          />
+          <FilterLink
+            label="A receber"
+            href={osHref({ pagamento: "a_receber" })}
+            active={pagamento === "a_receber"}
+          />
+          <FilterLink
+            label="Pagos"
+            href={osHref({ pagamento: "pago" })}
+            active={pagamento === "pago"}
+          />
+        </div>
       </div>
 
       <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -110,53 +116,78 @@ export default async function OSListPage({
             description="Crie a primeira OS para começar a acompanhar os serviços da oficina."
           />
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead className="text-gray-500">
-              <tr>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">OS</th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Cliente
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Pagamento
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            <table className="hidden w-full text-left text-sm md:table">
+              <thead className="text-gray-500">
+                <tr>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">OS</th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Cliente
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Pagamento
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ordens.map((os) => (
+                  <tr key={os.id} className="border-t border-gray-100 hover:bg-gray-50">
+                    <td className="px-6 py-3">
+                      <Link
+                        href={`/os/${os.id}`}
+                        className="font-medium text-gray-900 hover:underline"
+                      >
+                        #{String(os.id).padStart(4, "0")}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-3 text-gray-500">{os.cliente.nome}</td>
+                    <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
+                    <td className="px-6 py-3">
+                      <OSStatusSelect id={os.id} status={os.status} />
+                    </td>
+                    <td className="px-6 py-3">
+                      <OSPagoToggle
+                        id={os.id}
+                        pago={os.pago}
+                        previsaoEntrega={os.previsaoEntrega}
+                      />
+                    </td>
+                    <td className="px-6 py-3 text-gray-500">
+                      {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="divide-y divide-gray-100 md:hidden">
               {ordens.map((os) => (
-                <tr key={os.id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="px-6 py-3">
+                <div key={os.id} className="px-4 py-3">
+                  <div className="flex items-center justify-between gap-2">
                     <Link
                       href={`/os/${os.id}`}
                       className="font-medium text-gray-900 hover:underline"
                     >
-                      #{String(os.id).padStart(4, "0")}
+                      #{String(os.id).padStart(4, "0")} — {os.cliente.nome}
                     </Link>
-                  </td>
-                  <td className="px-6 py-3 text-gray-500">{os.cliente.nome}</td>
-                  <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
-                  <td className="px-6 py-3">
+                    <span className="shrink-0 text-xs text-gray-500">{formatDate(os.data)}</span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
                     <OSStatusSelect id={os.id} status={os.status} />
-                  </td>
-                  <td className="px-6 py-3">
-                    <OSPagoToggle
-                      id={os.id}
-                      pago={os.pago}
-                      previsaoEntrega={os.previsaoEntrega}
-                    />
-                  </td>
-                  <td className="px-6 py-3 text-gray-500">
+                    <OSPagoToggle id={os.id} pago={os.pago} previsaoEntrega={os.previsaoEntrega} />
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-gray-900">
                     {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
-                  </td>
-                </tr>
+                  </p>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
     </div>

@@ -56,13 +56,13 @@ export default function DashboardCharts({
   const periodoLabel = periodo === 1 ? "último mês" : `últimos ${periodo} meses`;
 
   return (
-    <div className="rounded-[10px] border border-gray-200 bg-white p-6">
+    <div className="rounded-[10px] border border-gray-200 bg-white p-4 sm:p-6">
       <p className="mb-4 text-sm font-medium text-gray-700">
         Faturamento das OS ({periodoLabel})
       </p>
-      <div className="h-64 w-full">
+      <div className="h-[220px] w-full sm:h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+          <AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="faturamentoFill" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1} />
@@ -70,9 +70,9 @@ export default function DashboardCharts({
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-            <XAxis dataKey="mes" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="mes" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               domain={yDomain}

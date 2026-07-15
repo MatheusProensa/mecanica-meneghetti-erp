@@ -21,3 +21,13 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
+
+/* Área de toque mínima (44px) em campos de formulário e botões no mobile. */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select,
+  textarea,
+  button[type="submit"] {
+    min-height: 44px;
+  }
+}

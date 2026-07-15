@@ -178,41 +178,67 @@ export default async function FinanceiroPage({
             description="Cadastre as despesas da oficina para acompanhar o quanto está saindo por mês."
           />
         ) : (
-          <table className="w-full text-left text-sm">
-            <thead className="text-gray-500">
-              <tr>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Descrição
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Categoria
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  Fornecedor
-                </th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
-              </tr>
-            </thead>
-            <tbody>
-              {despesas.map((despesa) => (
-                <tr key={despesa.id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="px-6 py-3">
-                    <Link
-                      href={`/financeiro/${despesa.id}`}
-                      className="font-medium text-gray-900 hover:underline"
-                    >
-                      {despesa.descricao}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-3 text-gray-500">{despesa.categoria ?? "-"}</td>
-                  <td className="px-6 py-3 text-gray-500">{despesa.fornecedor ?? "-"}</td>
-                  <td className="px-6 py-3 text-gray-500">{formatDate(despesa.data)}</td>
-                  <td className="px-6 py-3 text-gray-500">{formatCurrency(despesa.valor)}</td>
+          <>
+            <table className="hidden w-full text-left text-sm md:table">
+              <thead className="text-gray-500">
+                <tr>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Descrição
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Categoria
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Fornecedor
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
                 </tr>
+              </thead>
+              <tbody>
+                {despesas.map((despesa) => (
+                  <tr key={despesa.id} className="border-t border-gray-100 hover:bg-gray-50">
+                    <td className="px-6 py-3">
+                      <Link
+                        href={`/financeiro/${despesa.id}`}
+                        className="font-medium text-gray-900 hover:underline"
+                      >
+                        {despesa.descricao}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-3 text-gray-500">{despesa.categoria ?? "-"}</td>
+                    <td className="px-6 py-3 text-gray-500">{despesa.fornecedor ?? "-"}</td>
+                    <td className="px-6 py-3 text-gray-500">{formatDate(despesa.data)}</td>
+                    <td className="px-6 py-3 text-gray-500">{formatCurrency(despesa.valor)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="divide-y divide-gray-100 md:hidden">
+              {despesas.map((despesa) => (
+                <Link
+                  key={despesa.id}
+                  href={`/financeiro/${despesa.id}`}
+                  className="block px-4 py-3 active:bg-gray-50"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-medium text-gray-900">{despesa.descricao}</p>
+                    <span className="shrink-0 text-xs text-gray-500">
+                      {formatDate(despesa.data)}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {despesa.categoria ?? "-"}
+                    {despesa.fornecedor ? ` · ${despesa.fornecedor}` : ""}
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {formatCurrency(despesa.valor)}
+                  </p>
+                </Link>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
     </div>

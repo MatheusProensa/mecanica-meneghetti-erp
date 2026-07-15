@@ -27,7 +27,7 @@ export default async function DespesaDetalhePage({
 
   return (
     <div className="max-w-2xl space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/financeiro" className="text-sm text-gray-500 hover:underline">
             ← Financeiro
@@ -42,7 +42,7 @@ export default async function DespesaDetalhePage({
         />
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
         <DespesaForm
           despesa={despesa}
           itens={despesa.itens}
