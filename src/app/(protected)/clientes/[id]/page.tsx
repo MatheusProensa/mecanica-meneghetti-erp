@@ -73,6 +73,7 @@ export default async function ClienteDetalhePage({
           iconColor="text-amber-600"
           label="Última visita"
           value={formatDate(ultimaVisita)}
+          className="col-span-2 lg:col-span-1"
         />
       </div>
 

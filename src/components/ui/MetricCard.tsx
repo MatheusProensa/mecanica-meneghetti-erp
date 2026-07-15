@@ -7,6 +7,7 @@ export interface MetricCardProps {
   iconColor: string;
   context?: string;
   highlight?: "danger" | "warning" | "success";
+  className?: string;
 }
 
 const highlightStyles: Record<
@@ -34,6 +35,7 @@ export default function MetricCard({
   iconColor,
   context,
   highlight,
+  className,
 }: MetricCardProps) {
   const Icon = iconMap[icon];
   const iconBg = iconBgByColor[iconColor] ?? "bg-gray-100";
@@ -43,7 +45,7 @@ export default function MetricCard({
     <div
       className={`min-h-[90px] rounded-xl border p-3.5 shadow-[0_1px_2px_rgba(17,24,39,0.04)] transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:min-h-[110px] sm:p-5 ${
         style ? `${style.border} ${style.bg}` : "border-gray-200 bg-white"
-      }`}
+      } ${className ?? ""}`}
     >
       <div className="flex items-center gap-2 sm:gap-2.5">
         <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg sm:h-8 sm:w-8 ${iconBg}`}>

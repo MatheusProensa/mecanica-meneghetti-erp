@@ -124,6 +124,7 @@ export default async function FinanceiroPage({
           value={formatCurrency(lucroNoMes)}
           context="Recebido − Despesas"
           highlight={lucroNoMes >= 0 ? "success" : "danger"}
+          className="col-span-2 lg:col-span-1"
         />
       </div>
 

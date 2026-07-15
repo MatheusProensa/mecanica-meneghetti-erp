@@ -156,6 +156,7 @@ export default async function DashboardPage({
             iconColor="text-red-600"
             label="Despesas no mês"
             value={formatCurrency(despesasNoMes)}
+            className="col-span-2 lg:col-span-1"
           />
         </div>
       </div>
@@ -183,6 +184,7 @@ export default async function DashboardPage({
           iconColor="text-gray-500"
           label="Notas anexadas no mês"
           value={notasNoMes}
+          className="col-span-2 lg:col-span-1"
         />
         </div>
       </div>

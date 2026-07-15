@@ -114,6 +114,7 @@ export default async function NotasPage({
           label="Sem valor informado"
           value={semValorCount}
           context={semValorCount > 0 ? "não entram na soma" : undefined}
+          className="col-span-2 lg:col-span-1"
         />
       </div>
 
