@@ -78,7 +78,7 @@ export default async function BuscarPage({
         <section>
           <h2 className="text-sm font-semibold text-gray-900">Clientes</h2>
           <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
-            <table className="w-full text-left text-sm">
+            <table className="hidden w-full text-left text-sm md:table">
               <tbody>
                 {clientes.map((cliente) => (
                   <tr key={cliente.id} className="border-t border-gray-100 first:border-t-0 hover:bg-gray-50">
@@ -98,6 +98,22 @@ export default async function BuscarPage({
                 ))}
               </tbody>
             </table>
+
+            <div className="divide-y divide-gray-100 md:hidden">
+              {clientes.map((cliente) => (
+                <Link
+                  key={cliente.id}
+                  href={`/clientes/${cliente.id}`}
+                  className="block px-4 py-3 active:bg-gray-50"
+                >
+                  <p className="font-medium text-gray-900">{cliente.nome}</p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || "Telefone não informado"}
+                    {cliente.cpfCnpj ? ` · ${cliente.cpfCnpj}` : ""}
+                  </p>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -106,7 +122,7 @@ export default async function BuscarPage({
         <section>
           <h2 className="text-sm font-semibold text-gray-900">Ordens de Serviço</h2>
           <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
-            <table className="w-full text-left text-sm">
+            <table className="hidden w-full text-left text-sm md:table">
               <tbody>
                 {ordens.map((os) => (
                   <tr key={os.id} className="border-t border-gray-100 first:border-t-0 hover:bg-gray-50">
@@ -129,6 +145,29 @@ export default async function BuscarPage({
                 ))}
               </tbody>
             </table>
+
+            <div className="divide-y divide-gray-100 md:hidden">
+              {ordens.map((os) => (
+                <Link
+                  key={os.id}
+                  href={`/os/${os.id}`}
+                  className="block px-4 py-3 active:bg-gray-50"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="min-w-0 flex-1 truncate font-medium text-gray-900">
+                      #{String(os.id).padStart(4, "0")} — {os.cliente.nome}
+                    </p>
+                    <span className="shrink-0 text-sm font-semibold text-gray-900">
+                      {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex items-center justify-between gap-2">
+                    <StatusBadge {...osStatusMap[os.status]} />
+                    <span className="shrink-0 text-xs text-gray-500">{formatDate(os.data)}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -137,7 +176,7 @@ export default async function BuscarPage({
         <section>
           <h2 className="text-sm font-semibold text-gray-900">Notas</h2>
           <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
-            <table className="w-full text-left text-sm">
+            <table className="hidden w-full text-left text-sm md:table">
               <tbody>
                 {notas.map((nota) => (
                   <tr key={nota.id} className="border-t border-gray-100 first:border-t-0 hover:bg-gray-50">
@@ -157,6 +196,22 @@ export default async function BuscarPage({
                 ))}
               </tbody>
             </table>
+
+            <div className="divide-y divide-gray-100 md:hidden">
+              {notas.map((nota) => (
+                <Link
+                  key={nota.id}
+                  href={`/notas/${nota.id}`}
+                  className="flex items-center justify-between gap-2 px-4 py-3 active:bg-gray-50"
+                >
+                  <p className="min-w-0 flex-1 truncate font-medium text-gray-900">{nota.numero}</p>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <StatusBadge {...notaTipoMap[nota.tipo]} />
+                    <span className="text-xs text-gray-500">{formatDate(nota.dataEmissao)}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       )}

@@ -155,11 +155,9 @@ export default async function ClientesPage({
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {cliente.cpfCnpj ?? "CPF/CNPJ não informado"}
-                    </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="mt-1 truncate text-sm text-gray-500">
                       {formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || "Telefone não informado"}
+                      {cliente.cpfCnpj ? ` · ${cliente.cpfCnpj}` : ""}
                     </p>
                     <div className="mt-1.5 flex items-center justify-between text-sm">
                       <span className="font-medium text-gray-900">
