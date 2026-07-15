@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import PageHeader from "@/components/ui/PageHeader";
 import PasswordForm from "./PasswordForm";
 
 export default async function ConfiguracoesPage() {
@@ -6,7 +7,7 @@ export default async function ConfiguracoesPage() {
 
   return (
     <div className="max-w-2xl space-y-8">
-      <h1 className="text-2xl font-semibold text-gray-900">Configurações</h1>
+      <PageHeader title="Configurações" />
 
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Conta</h2>

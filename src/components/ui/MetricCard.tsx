@@ -9,10 +9,13 @@ export interface MetricCardProps {
   highlight?: "danger" | "warning" | "success";
 }
 
-const highlightBorder: Record<NonNullable<MetricCardProps["highlight"]>, string> = {
-  danger: "border-l-4 border-l-red-600",
-  warning: "border-l-4 border-l-amber-600",
-  success: "border-l-4 border-l-green-600",
+const highlightStyles: Record<
+  NonNullable<MetricCardProps["highlight"]>,
+  { border: string; bg: string; value: string }
+> = {
+  danger: { border: "border-red-200", bg: "bg-red-50/60", value: "text-red-700" },
+  warning: { border: "border-amber-200", bg: "bg-amber-50/60", value: "text-amber-700" },
+  success: { border: "border-green-200", bg: "bg-green-50/60", value: "text-green-700" },
 };
 
 // deriva o fundo do chip de ícone a partir da cor de texto já passada, sem exigir uma prop nova
@@ -34,11 +37,12 @@ export default function MetricCard({
 }: MetricCardProps) {
   const Icon = iconMap[icon];
   const iconBg = iconBgByColor[iconColor] ?? "bg-gray-100";
+  const style = highlight ? highlightStyles[highlight] : null;
 
   return (
     <div
-      className={`min-h-[110px] rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04)] transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${
-        highlight ? highlightBorder[highlight] : ""
+      className={`min-h-[110px] rounded-xl border p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04)] transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${
+        style ? `${style.border} ${style.bg}` : "border-gray-200 bg-white"
       }`}
     >
       <div className="flex items-center gap-2.5">
@@ -49,7 +53,9 @@ export default function MetricCard({
           {label}
         </p>
       </div>
-      <p className="mt-3.5 text-[26px] font-bold leading-tight tracking-tight text-gray-900">
+      <p
+        className={`mt-3.5 text-[26px] font-bold leading-tight tracking-tight ${style ? style.value : "text-gray-900"}`}
+      >
         {value}
       </p>
       {context && <p className="mt-1 text-xs text-gray-500">{context}</p>}

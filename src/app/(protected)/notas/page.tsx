@@ -74,6 +74,19 @@ export default async function NotasPage({
     .filter((p): p is string => Boolean(p));
   const pdfUrls = await getSignedPdfUrls(pdfPaths);
 
+  // undefined = mantém o filtro atual da URL; null = remove o filtro
+  function notaHref(overrides: { tipo?: string | null }) {
+    const nextTipo = "tipo" in overrides ? overrides.tipo : tipo;
+
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (mes) params.set("mes", mes);
+    if (ano) params.set("ano", ano);
+    if (nextTipo) params.set("tipo", nextTipo);
+    const qs = params.toString();
+    return qs ? `/notas?${qs}` : "/notas";
+  }
+
   return (
     <div>
       <PageHeader
@@ -104,25 +117,28 @@ export default async function NotasPage({
         />
       </div>
 
-      <form className="mt-6 flex flex-wrap items-end gap-3">
-        <div>
-          <label className="block text-xs font-medium text-gray-500">Tipo</label>
-          <select
-            name="tipo"
-            defaultValue={tipo ?? ""}
-            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
-          >
-            <option value="">Todos</option>
-            <option value="emitida">Emitida</option>
-            <option value="recebida">Recebida</option>
-          </select>
-        </div>
+      <div className="mt-6 flex flex-wrap gap-2">
+        <FilterLink label="Todos os tipos" href={notaHref({ tipo: null })} active={!tipo} />
+        <FilterLink
+          label="Emitida"
+          href={notaHref({ tipo: "emitida" })}
+          active={tipo === "emitida"}
+        />
+        <FilterLink
+          label="Recebida"
+          href={notaHref({ tipo: "recebida" })}
+          active={tipo === "recebida"}
+        />
+      </div>
+
+      <form className="mt-3 flex flex-wrap items-end gap-3">
+        {tipo && <input type="hidden" name="tipo" value={tipo} />}
         <div>
           <label className="block text-xs font-medium text-gray-500">Mês</label>
           <select
             name="mes"
             defaultValue={mes ?? ""}
-            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="mt-1 h-[38px] rounded-lg border border-gray-300 px-3 text-sm"
           >
             <option value="">Todos</option>
             {MESES.map((label, i) => (
@@ -137,7 +153,7 @@ export default async function NotasPage({
           <select
             name="ano"
             defaultValue={ano ?? ""}
-            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="mt-1 h-[38px] rounded-lg border border-gray-300 px-3 text-sm"
           >
             <option value="">Todos</option>
             {anosDisponiveis.map((a) => (
@@ -155,12 +171,12 @@ export default async function NotasPage({
             type="text"
             name="q"
             defaultValue={q}
-            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="mt-1 h-[38px] rounded-lg border border-gray-300 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <button
           type="submit"
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="h-[38px] rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           Filtrar
         </button>
@@ -235,5 +251,28 @@ export default async function NotasPage({
         )}
       </div>
     </div>
+  );
+}
+
+function FilterLink({
+  label,
+  href,
+  active,
+}: {
+  label: string;
+  href: string;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`rounded-full px-3 py-1 text-xs font-medium ${
+        active
+          ? "bg-blue-600 text-white"
+          : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+      }`}
+    >
+      {label}
+    </Link>
   );
 }

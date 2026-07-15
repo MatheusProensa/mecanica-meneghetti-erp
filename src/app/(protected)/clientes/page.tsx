@@ -11,27 +11,38 @@ export default async function ClientesPage({
 }) {
   const { q } = await searchParams;
 
-  const clientes = await prisma.cliente.findMany({
-    where: q
-      ? {
-          OR: [
-            { nome: { contains: q } },
-            { cpfCnpj: { contains: q } },
-            { telefone: { contains: q } },
-          ],
-        }
-      : undefined,
-    orderBy: { nome: "asc" },
-    include: {
-      ordensServico: {
-        select: { data: true, itens: { select: { valor: true } } },
+  const [clientes, totalClientes] = await Promise.all([
+    prisma.cliente.findMany({
+      where: q
+        ? {
+            OR: [
+              { nome: { contains: q } },
+              { cpfCnpj: { contains: q } },
+              { telefone: { contains: q } },
+            ],
+          }
+        : undefined,
+      orderBy: { nome: "asc" },
+      include: {
+        ordensServico: {
+          select: { data: true, itens: { select: { valor: true } } },
+        },
       },
-    },
-  });
+    }),
+    prisma.cliente.count(),
+  ]);
+
+  const contadorDescricao = q
+    ? `${clientes.length} resultado${clientes.length === 1 ? "" : "s"} para "${q}"`
+    : `${totalClientes} cliente${totalClientes === 1 ? "" : "s"} cadastrado${totalClientes === 1 ? "" : "s"}`;
 
   return (
     <div>
-      <PageHeader title="Clientes" action={{ label: "+ Novo cliente", href: "/clientes/novo" }} />
+      <PageHeader
+        title="Clientes"
+        description={contadorDescricao}
+        action={{ label: "+ Novo cliente", href: "/clientes/novo" }}
+      />
 
       <form className="mt-4">
         <input
@@ -91,13 +102,23 @@ export default async function ClientesPage({
                         {cliente.nome}
                       </Link>
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{cliente.cpfCnpj ?? "-"}</td>
                     <td className="px-6 py-3 text-gray-500">
-                      {formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || "-"}
+                      {cliente.cpfCnpj ?? <span className="text-gray-300">não informado</span>}
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{cliente.cidade ?? "-"}</td>
+                    <td className="px-6 py-3 text-gray-500">
+                      {formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || (
+                        <span className="text-gray-300">não informado</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-3 text-gray-500">
+                      {cliente.cidade ?? <span className="text-gray-300">não informado</span>}
+                    </td>
                     <td className="px-6 py-3 text-gray-500">{formatCurrency(totalGasto)}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(ultimaVisita)}</td>
+                    <td className="px-6 py-3 text-gray-500">
+                      {ultimaVisita ? formatDate(ultimaVisita) : (
+                        <span className="text-gray-300">nunca</span>
+                      )}
+                    </td>
                   </tr>
                 );
               })}

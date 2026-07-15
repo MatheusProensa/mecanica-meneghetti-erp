@@ -164,7 +164,11 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+          Operacional
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
@@ -190,6 +194,7 @@ export default async function DashboardPage({
           label="Notas anexadas no mês"
           value={notasNoMes}
         />
+        </div>
       </div>
 
       <DashboardCharts data={monthlyData} periodo={periodo} />

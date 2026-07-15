@@ -91,7 +91,7 @@ export default async function FinanceiroPage({
         action={{ label: "+ Nova despesa", href: "/financeiro/nova" }}
       />
 
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-5">
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
@@ -111,9 +111,6 @@ export default async function FinanceiroPage({
           label="Despesas no mês"
           value={formatCurrency(despesasTotal)}
         />
-      </div>
-
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <MetricCard
           icon="users"
           iconColor="text-gray-500"
@@ -126,6 +123,7 @@ export default async function FinanceiroPage({
           label="Lucro no mês"
           value={formatCurrency(lucroNoMes)}
           context="Recebido − Despesas"
+          highlight={lucroNoMes >= 0 ? "success" : "danger"}
         />
       </div>
 
@@ -139,7 +137,7 @@ export default async function FinanceiroPage({
           <select
             name="mes"
             defaultValue={mes ?? ""}
-            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="mt-1 h-[38px] rounded-lg border border-gray-300 px-3 text-sm"
           >
             <option value="">Todos</option>
             {MESES.map((label, i) => (
@@ -154,7 +152,7 @@ export default async function FinanceiroPage({
           <select
             name="ano"
             defaultValue={ano ?? ""}
-            className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="mt-1 h-[38px] rounded-lg border border-gray-300 px-3 text-sm"
           >
             <option value="">Todos</option>
             {anosDisponiveis.map((a) => (
@@ -166,7 +164,7 @@ export default async function FinanceiroPage({
         </div>
         <button
           type="submit"
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="h-[38px] rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           Filtrar
         </button>
