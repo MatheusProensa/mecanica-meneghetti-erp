@@ -128,14 +128,21 @@ export async function gerarCobrancaPdf({
   autoTable(doc, {
     startY: y + 3,
     margin: { left: marginX, right: marginX },
-    head: [["OS", "Data", "Descrição", "Valor"]],
+    head: [["OS", "Data", "Descrição", { content: "Valor", styles: { halign: "right" } }]],
     body: ordens.map((os) => [
       `#${String(os.id).padStart(4, "0")}`,
       formatDate(os.data),
       os.descricao || "-",
       formatCurrency(os.valor),
     ]),
-    foot: [["", "", "Total em aberto", formatCurrency(total)]],
+    foot: [
+      [
+        "",
+        "",
+        "Total em aberto",
+        { content: formatCurrency(total), styles: { halign: "right" } },
+      ],
+    ],
     headStyles: { fillColor: [17, 24, 39], textColor: 255, fontStyle: "bold" },
     footStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold" },
     columnStyles: {
