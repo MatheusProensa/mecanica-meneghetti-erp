@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import type { StatusOS } from "@/generated/prisma/client";
+import { parseCurrencyBR } from "@/lib/format";
 
 function str(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -18,7 +19,7 @@ function parseItens(formData: FormData) {
   return descricoes
     .map((descricao, i) => ({
       descricao: descricao.trim(),
-      valor: Number(valores[i]?.replace(",", ".") || 0),
+      valor: parseCurrencyBR(valores[i]),
     }))
     .filter((item) => item.descricao !== "" && item.valor > 0);
 }

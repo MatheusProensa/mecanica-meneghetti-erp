@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { Despesa, DespesaItem } from "@/generated/prisma/client";
 import DespesaItemsEditor from "./DespesaItemsEditor";
+import CurrencyInput from "./CurrencyInput";
+import { formatNumberToCurrencyInput } from "@/lib/format";
 
 const CATEGORIAS = [
   "Funcionários",
@@ -31,7 +33,7 @@ export default function DespesaForm({
   action: (formData: FormData) => void;
 }) {
   const [categoria, setCategoria] = useState(despesa?.categoria ?? "");
-  const [valor, setValor] = useState(despesa?.valor ? String(despesa.valor) : "");
+  const [valor, setValor] = useState(() => formatNumberToCurrencyInput(despesa?.valor));
   const isFuncionario = categoria === "Funcionários";
   const isPecas = categoria === "Peças";
 
@@ -120,21 +122,13 @@ export default function DespesaForm({
           <label htmlFor="valor" className="block text-sm font-medium text-gray-700">
             Valor total *
           </label>
-          <input
-            id="valor"
-            name="valor"
-            required
-            inputMode="decimal"
-            value={valor}
-            onChange={(e) => setValor(e.target.value)}
-            className="mt-1 w-full max-w-xs rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
+          <div className="mt-1 max-w-xs">
+            <CurrencyInput id="valor" name="valor" required value={valor} onChange={setValor} />
+          </div>
         </div>
       </div>
 
-      {isPecas && (
-        <DespesaItemsEditor initialItens={itens} onUseTotal={(total) => setValor(String(total))} />
-      )}
+      {isPecas && <DespesaItemsEditor initialItens={itens} onUseTotal={setValor} />}
 
       <div>
         <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { uploadDespesaAnexo, deleteDespesaAnexo } from "@/lib/supabase-storage";
+import { parseCurrencyBR } from "@/lib/format";
 
 const ALLOWED_ANEXO_TYPES = new Set([
   "application/pdf",
@@ -27,7 +28,7 @@ function parseItens(formData: FormData) {
   return descricoes
     .map((descricao, i) => ({
       descricao: descricao.trim(),
-      valor: Number(valores[i]?.replace(",", ".") || 0),
+      valor: parseCurrencyBR(valores[i]),
     }))
     .filter((item) => item.descricao !== "" && item.valor > 0);
 }
@@ -52,7 +53,7 @@ function buildData(formData: FormData) {
 
   return {
     descricao: str(formData, "descricao") ?? "",
-    valor: valorRaw ? Number(valorRaw.replace(",", ".")) : 0,
+    valor: parseCurrencyBR(valorRaw),
     data: dataRaw ? new Date(dataRaw) : new Date(),
     categoria: str(formData, "categoria"),
     fornecedor: str(formData, "fornecedor"),

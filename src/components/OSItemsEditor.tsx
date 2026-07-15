@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import CurrencyInput from "./CurrencyInput";
+import { formatNumberToCurrencyInput, parseCurrencyBR } from "@/lib/format";
 
 type Item = { descricao: string; valor: string };
 
@@ -11,14 +13,11 @@ export default function OSItemsEditor({
 }) {
   const [itens, setItens] = useState<Item[]>(
     initialItens && initialItens.length > 0
-      ? initialItens.map((i) => ({ descricao: i.descricao, valor: String(i.valor) }))
+      ? initialItens.map((i) => ({ descricao: i.descricao, valor: formatNumberToCurrencyInput(i.valor) }))
       : [{ descricao: "", valor: "" }]
   );
 
-  const total = itens.reduce((sum, item) => {
-    const v = Number(item.valor.replace(",", "."));
-    return sum + (Number.isFinite(v) ? v : 0);
-  }, 0);
+  const total = itens.reduce((sum, item) => sum + parseCurrencyBR(item.valor), 0);
 
   function updateItem(index: number, field: keyof Item, value: string) {
     setItens((prev) =>
@@ -51,14 +50,11 @@ export default function OSItemsEditor({
               onChange={(e) => updateItem(index, "descricao", e.target.value)}
               className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
             />
-            <input
-              type="text"
-              inputMode="decimal"
+            <CurrencyInput
               name="valor"
-              placeholder="Valor"
               value={item.valor}
-              onChange={(e) => updateItem(index, "valor", e.target.value)}
-              className="w-32 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+              onChange={(v) => updateItem(index, "valor", v)}
+              className="w-36 rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
             />
             <button
               type="button"

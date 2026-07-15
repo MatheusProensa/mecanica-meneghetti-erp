@@ -78,10 +78,7 @@ export default function Nav({ userName }: { userName: string }) {
           className="h-22 w-22 shrink-0 object-contain"
         />
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-white">
-            Oficina Meneghetti
-          </p>
-          <p className="truncate text-xs text-gray-400">{userName}</p>
+          <p className="truncate text-sm font-semibold text-white">{userName}</p>
         </div>
       </div>
 

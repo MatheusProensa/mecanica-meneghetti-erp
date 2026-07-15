@@ -112,7 +112,7 @@ export default async function DashboardPage({
       descricao: n.numero,
       data: n.createdAt,
       badge: notaTipoMap[n.tipo],
-      valor: null as number | null,
+      valor: n.valor,
     })),
     ...ultimasOS.map((os) => ({
       id: `os-${os.id}`,

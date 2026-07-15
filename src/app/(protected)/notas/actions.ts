@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { uploadPdf, deletePdf } from "@/lib/supabase-storage";
+import { parseCurrencyBR } from "@/lib/format";
 import type { TipoNota } from "@/generated/prisma/client";
 
 function str(formData: FormData, key: string): string | null {
@@ -35,7 +36,7 @@ function buildData(formData: FormData) {
     numero: str(formData, "numero") ?? "",
     dataEmissao: dataEmissaoRaw ? new Date(dataEmissaoRaw) : new Date(),
     tipo: (str(formData, "tipo") as TipoNota) ?? "emitida",
-    valor: valorRaw ? Number(valorRaw.replace(",", ".")) : null,
+    valor: valorRaw ? parseCurrencyBR(valorRaw) : null,
     observacoes: str(formData, "observacoes"),
   };
 }

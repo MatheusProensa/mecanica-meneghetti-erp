@@ -1,4 +1,5 @@
 import type { Nota } from "@/generated/prisma/client";
+import CurrencyInput from "./CurrencyInput";
 
 function toDateInputValue(date: Date | null | undefined): string {
   if (!date) return "";
@@ -63,13 +64,12 @@ export default function NotaForm({
           <label htmlFor="valor" className="block text-sm font-medium text-gray-700">
             Valor
           </label>
-          <input
+          <CurrencyInput
             id="valor"
             name="valor"
-            inputMode="decimal"
+            defaultValue={nota?.valor}
             placeholder="Deixe em branco se não souber"
-            defaultValue={nota?.valor ?? ""}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
       </div>
