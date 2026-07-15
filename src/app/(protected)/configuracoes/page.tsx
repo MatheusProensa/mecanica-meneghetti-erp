@@ -7,7 +7,10 @@ import PixKeyForm from "./PixKeyForm";
 export default async function ConfiguracoesPage() {
   const session = await auth();
   const user = session?.user?.email
-    ? await prisma.user.findUnique({ where: { email: session.user.email }, select: { pixKey: true } })
+    ? await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { pixKey: true, dadosBancarios: true },
+      })
     : null;
 
   return (
@@ -34,7 +37,7 @@ export default async function ConfiguracoesPage() {
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Cobrança</h2>
         <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-          <PixKeyForm pixKey={user?.pixKey ?? null} />
+          <PixKeyForm pixKey={user?.pixKey ?? null} dadosBancarios={user?.dadosBancarios ?? null} />
         </div>
       </div>
     </div>

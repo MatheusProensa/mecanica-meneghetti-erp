@@ -3,7 +3,13 @@
 import { useActionState } from "react";
 import { updatePixKey } from "./actions";
 
-export default function PixKeyForm({ pixKey }: { pixKey: string | null }) {
+export default function PixKeyForm({
+  pixKey,
+  dadosBancarios,
+}: {
+  pixKey: string | null;
+  dadosBancarios: string | null;
+}) {
   const [message, formAction, pending] = useActionState(updatePixKey, undefined);
   const success = message === "Dados de pagamento atualizados com sucesso.";
 
@@ -11,19 +17,34 @@ export default function PixKeyForm({ pixKey }: { pixKey: string | null }) {
     <form action={formAction} className="space-y-4">
       <div>
         <label htmlFor="pixKey" className="block text-sm font-medium text-gray-700">
-          Dados para pagamento
+          Chave Pix
         </label>
-        <textarea
+        <input
           id="pixKey"
           name="pixKey"
-          rows={4}
           defaultValue={pixKey ?? ""}
-          placeholder={"Ex:\nChave Pix: 000.000.000-00\nBanco: Nome do banco (000)\nAgência: 0000\nConta: 00000000-0"}
+          placeholder="CPF/CNPJ, e-mail, telefone ou chave aleatória"
           className="mt-1 w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <p className="mt-1 text-xs text-gray-500">
-          Chave Pix e/ou dados bancários (banco, agência, conta) — aparece como opção nos PDFs de
-          cobrança gerados na página de cada cliente.
+          Usada para gerar o QR Code de pagamento nos PDFs de cobrança.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="dadosBancarios" className="block text-sm font-medium text-gray-700">
+          Dados bancários adicionais (opcional)
+        </label>
+        <textarea
+          id="dadosBancarios"
+          name="dadosBancarios"
+          rows={3}
+          defaultValue={dadosBancarios ?? ""}
+          placeholder={"Ex:\nBanco: Nome do banco (000)\nAgência: 0000\nConta: 00000000-0"}
+          className="mt-1 w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          Aparece como texto no PDF, para clientes que preferem transferência bancária.
         </p>
       </div>
 

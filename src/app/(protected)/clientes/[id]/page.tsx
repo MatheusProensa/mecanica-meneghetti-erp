@@ -34,7 +34,10 @@ export default async function ClienteDetalhePage({
   if (!cliente) notFound();
 
   const usuario = session?.user?.email
-    ? await prisma.user.findUnique({ where: { email: session.user.email }, select: { pixKey: true } })
+    ? await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { pixKey: true, dadosBancarios: true },
+      })
     : null;
 
   const valorTotalGasto = cliente.ordensServico.reduce(
@@ -113,6 +116,7 @@ export default async function ClienteDetalhePage({
             }}
             ordensAbertas={ordensAbertas}
             pixKeyPadrao={usuario?.pixKey ?? null}
+            dadosBancariosPadrao={usuario?.dadosBancarios ?? null}
           />
         </div>
       )}

@@ -1,7 +1,9 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import QRCode from "qrcode";
 import { EMPRESA } from "./business";
 import { formatCurrency, formatDate } from "./format";
+import { gerarPayloadPix } from "./pixPayload";
 
 export interface CobrancaOS {
   id: number;
@@ -21,6 +23,7 @@ export interface GerarCobrancaPdfParams {
   cliente: CobrancaCliente;
   ordens: CobrancaOS[];
   pixKey?: string | null;
+  dadosBancarios?: string | null;
   observacoes?: string | null;
 }
 
@@ -58,6 +61,7 @@ export async function gerarCobrancaPdf({
   cliente,
   ordens,
   pixKey,
+  dadosBancarios,
   observacoes,
 }: GerarCobrancaPdfParams): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
@@ -147,15 +151,57 @@ export async function gerarCobrancaPdf({
   let afterTableY = (doc as any).lastAutoTable.finalY + 10;
 
   if (pixKey) {
+    let qrDataUrl: string | null = null;
+    try {
+      const payload = gerarPayloadPix({
+        chave: pixKey,
+        nomeRecebedor: EMPRESA.nome,
+        cidade: EMPRESA.cidade,
+        valor: total,
+      });
+      qrDataUrl = await QRCode.toDataURL(payload, { margin: 1, width: 300 });
+    } catch {
+      qrDataUrl = null;
+    }
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
     doc.setTextColor(17, 24, 39);
-    doc.text("Dados para pagamento", marginX, afterTableY);
+    doc.text("Pagamento via Pix", marginX, afterTableY);
+
+    if (qrDataUrl) {
+      const qrSize = 30;
+      const qrY = afterTableY + 3;
+      doc.addImage(qrDataUrl, "PNG", marginX, qrY, qrSize, qrSize);
+
+      const textX = marginX + qrSize + 6;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(55, 65, 81);
+      doc.text("Escaneie o QR Code no app do seu banco", textX, qrY + 6);
+      doc.text(`Chave Pix: ${pixKey}`, textX, qrY + 13);
+      doc.text(`Valor: ${formatCurrency(total)}`, textX, qrY + 20);
+
+      afterTableY = qrY + qrSize + 8;
+    } else {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(55, 65, 81);
+      doc.text(`Chave Pix: ${pixKey}`, marginX, afterTableY + 5);
+      afterTableY += 13;
+    }
+  }
+
+  if (dadosBancarios) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.5);
+    doc.setTextColor(17, 24, 39);
+    doc.text("Dados bancários", marginX, afterTableY);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(55, 65, 81);
-    const linhasPix = doc.splitTextToSize(pixKey, pageWidth - marginX * 2);
-    doc.text(linhasPix, marginX, afterTableY + 5);
-    afterTableY += 5 + linhasPix.length * 4.5 + 5;
+    const linhasBanco = doc.splitTextToSize(dadosBancarios, pageWidth - marginX * 2);
+    doc.text(linhasBanco, marginX, afterTableY + 5);
+    afterTableY += 5 + linhasBanco.length * 4.5 + 5;
   }
 
   if (observacoes) {

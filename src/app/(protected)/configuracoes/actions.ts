@@ -55,9 +55,15 @@ export async function updatePixKey(
   const pixKeyRaw = formData.get("pixKey");
   const pixKey = typeof pixKeyRaw === "string" && pixKeyRaw.trim() ? pixKeyRaw.trim() : null;
 
+  const dadosBancariosRaw = formData.get("dadosBancarios");
+  const dadosBancarios =
+    typeof dadosBancariosRaw === "string" && dadosBancariosRaw.trim()
+      ? dadosBancariosRaw.trim()
+      : null;
+
   await prisma.user.update({
     where: { email: session.user.email },
-    data: { pixKey },
+    data: { pixKey, dadosBancarios },
   });
 
   return "Dados de pagamento atualizados com sucesso.";

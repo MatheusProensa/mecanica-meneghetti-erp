@@ -28,6 +28,7 @@ export default function CobrancaCliente({
   cliente,
   ordensAbertas,
   pixKeyPadrao,
+  dadosBancariosPadrao,
 }: {
   cliente: {
     nome: string;
@@ -37,11 +38,12 @@ export default function CobrancaCliente({
   };
   ordensAbertas: CobrancaOS[];
   pixKeyPadrao: string | null;
+  dadosBancariosPadrao: string | null;
 }) {
   const [selecionadas, setSelecionadas] = useState<Set<number>>(
     new Set(ordensAbertas.map((os) => os.id))
   );
-  const [incluirPix, setIncluirPix] = useState(Boolean(pixKeyPadrao));
+  const [incluirPix, setIncluirPix] = useState(Boolean(pixKeyPadrao || dadosBancariosPadrao));
   const [observacoes, setObservacoes] = useState("");
   const [gerando, setGerando] = useState<"baixar" | "compartilhar" | null>(null);
 
@@ -68,6 +70,7 @@ export default function CobrancaCliente({
       cliente,
       ordens: ordensSelecionadas,
       pixKey: incluirPix ? pixKeyPadrao : null,
+      dadosBancarios: incluirPix ? dadosBancariosPadrao : null,
       observacoes: observacoes.trim() || null,
     });
   }
@@ -110,6 +113,8 @@ export default function CobrancaCliente({
   }
 
   if (ordensAbertas.length === 0) return null;
+
+  const temDadosPagamento = Boolean(pixKeyPadrao || dadosBancariosPadrao);
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
@@ -159,7 +164,7 @@ export default function CobrancaCliente({
         </span>
       </div>
 
-      {pixKeyPadrao ? (
+      {temDadosPagamento ? (
         <div className="mt-3">
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input
@@ -171,9 +176,17 @@ export default function CobrancaCliente({
             Incluir dados de pagamento no PDF
           </label>
           {incluirPix && (
-            <p className="mt-1.5 whitespace-pre-line rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-600">
-              {pixKeyPadrao}
-            </p>
+            <div className="mt-1.5 space-y-1 rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-600">
+              {pixKeyPadrao && (
+                <p>
+                  Chave Pix: {pixKeyPadrao}{" "}
+                  <span className="text-gray-400">(QR Code entra automaticamente)</span>
+                </p>
+              )}
+              {dadosBancariosPadrao && (
+                <p className="whitespace-pre-line">{dadosBancariosPadrao}</p>
+              )}
+            </div>
           )}
         </div>
       ) : (
