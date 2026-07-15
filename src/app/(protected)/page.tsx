@@ -162,9 +162,7 @@ export default async function DashboardPage({
       </div>
 
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Operacional
-        </p>
+        <h2 className="text-sm font-semibold text-gray-900">Operacional</h2>
         <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
         <MetricCard
           icon="tools"
