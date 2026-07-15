@@ -171,19 +171,26 @@ export default async function OSListPage({
                   <div className="flex items-center justify-between gap-2">
                     <Link
                       href={`/os/${os.id}`}
-                      className="font-medium text-gray-900 hover:underline"
+                      className="min-w-0 flex-1 truncate font-medium text-gray-900 hover:underline"
                     >
                       #{String(os.id).padStart(4, "0")} — {os.cliente.nome}
                     </Link>
+                    <span className="shrink-0 text-sm font-semibold text-gray-900">
+                      {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <OSStatusSelect id={os.id} status={os.status} compact />
+                      <OSPagoToggle
+                        id={os.id}
+                        pago={os.pago}
+                        previsaoEntrega={os.previsaoEntrega}
+                        compact
+                      />
+                    </div>
                     <span className="shrink-0 text-xs text-gray-500">{formatDate(os.data)}</span>
                   </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <OSStatusSelect id={os.id} status={os.status} />
-                    <OSPagoToggle id={os.id} pago={os.pago} previsaoEntrega={os.previsaoEntrega} />
-                  </div>
-                  <p className="mt-2 text-sm font-medium text-gray-900">
-                    {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
-                  </p>
                 </div>
               ))}
             </div>

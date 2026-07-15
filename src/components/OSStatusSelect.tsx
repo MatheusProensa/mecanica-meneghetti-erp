@@ -15,7 +15,15 @@ const selectToneClasses: Record<BadgeTone, string> = {
   purple: "bg-purple-50 border-purple-200 text-purple-800",
 };
 
-export default function OSStatusSelect({ id, status }: { id: number; status: StatusOS }) {
+export default function OSStatusSelect({
+  id,
+  status,
+  compact = false,
+}: {
+  id: number;
+  status: StatusOS;
+  compact?: boolean;
+}) {
   const [pending, startTransition] = useTransition();
   const tone = osStatusMap[status].tone;
 
@@ -30,7 +38,9 @@ export default function OSStatusSelect({ id, status }: { id: number; status: Sta
           updateOSStatus(id, next);
         });
       }}
-      className={`h-8 rounded-lg border px-3 text-xs font-semibold shadow-sm disabled:opacity-60 ${selectToneClasses[tone]}`}
+      className={`select-compact rounded-lg border font-semibold shadow-sm disabled:opacity-60 ${selectToneClasses[tone]} ${
+        compact ? "h-7 max-w-[132px] px-2 text-[11px]" : "h-8 px-3 text-xs"
+      }`}
     >
       {Object.entries(osStatusMap).map(([value, { label }]) => (
         <option key={value} value={value}>

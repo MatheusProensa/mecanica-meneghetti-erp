@@ -250,22 +250,28 @@ export default async function DashboardPage({
                 <Link
                   key={m.id}
                   href={m.href}
-                  className="flex flex-col gap-1.5 px-4 py-3 active:bg-gray-50"
+                  className="flex flex-col gap-1 px-4 py-3 active:bg-gray-50"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
+                    <p className="min-w-0 flex-1 truncate font-medium text-gray-900">
+                      {m.descricao}
+                    </p>
+                    {m.valor !== null && (
+                      <span className="shrink-0 text-sm font-semibold text-gray-900">
+                        {formatCurrency(m.valor)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
                       <StatusBadge
                         label={m.tipoLabel}
                         tone={m.tipoLabel === "OS" ? "gray" : "blue"}
                       />
                       <StatusBadge label={m.badge.label} tone={m.badge.tone} />
                     </div>
-                    <span className="text-xs text-gray-500">{formatDate(m.data)}</span>
+                    <span className="shrink-0 text-xs text-gray-500">{formatDate(m.data)}</span>
                   </div>
-                  <p className="font-medium text-gray-900">{m.descricao}</p>
-                  {m.valor !== null && (
-                    <p className="text-sm text-gray-600">{formatCurrency(m.valor)}</p>
-                  )}
                 </Link>
               ))}
             </div>
