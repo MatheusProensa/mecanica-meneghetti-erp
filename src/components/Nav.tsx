@@ -110,18 +110,15 @@ export default function Nav({
           <X className="h-5 w-5" />
         </button>
 
-      <div className="flex flex-col items-center gap-2 border-b border-sidebar-hover px-5 py-6 text-center">
+      <div className="flex items-center justify-center border-b border-sidebar-hover px-5 py-7">
         <Image
           src="/logo.png"
           alt="Mecânica Meneghetti"
-          width={88}
-          height={88}
+          width={140}
+          height={140}
           unoptimized
-          className="h-22 w-22 shrink-0 object-contain"
+          className="h-32 w-32 shrink-0 object-contain"
         />
-        <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-white">{userName}</p>
-        </div>
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">

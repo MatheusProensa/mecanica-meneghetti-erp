@@ -96,7 +96,10 @@ export async function gerarCobrancaPdf({
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(107, 114, 128);
-  doc.text(`Emitido em ${formatDate(new Date())}`, pageWidth - marginX, 47, { align: "right" });
+  // formatDate força UTC (correto pra datas sem hora vindas do banco); aqui é o instante atual,
+  // então usa o fuso local do navegador de quem está gerando o PDF, senão a data vem adiantada.
+  const emitidoEm = new Date().toLocaleDateString("pt-BR");
+  doc.text(`Emitido em ${emitidoEm}`, pageWidth - marginX, 47, { align: "right" });
 
   let y = 56;
   doc.setFont("helvetica", "bold");
