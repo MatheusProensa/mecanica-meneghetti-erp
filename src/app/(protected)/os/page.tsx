@@ -78,6 +78,7 @@ export default async function OSListPage({
           type="text"
           name="q"
           defaultValue={q}
+          autoComplete="off"
           placeholder="Buscar por número (#0001) ou cliente..."
           className="w-full max-w-xs rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />

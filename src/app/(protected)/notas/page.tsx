@@ -199,6 +199,7 @@ export default async function NotasPage({
             type="text"
             name="q"
             defaultValue={q}
+            autoComplete="off"
             className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>

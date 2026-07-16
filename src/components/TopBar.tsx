@@ -27,6 +27,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
             type="text"
             name="q"
             autoFocus
+            autoComplete="off"
             placeholder="Pesquisar cliente, OS, telefone, nota..."
             className="w-full rounded-md border border-gray-200 bg-gray-50 py-2 pl-9 pr-9 text-sm text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
@@ -78,6 +79,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
         <input
           type="text"
           name="q"
+          autoComplete="off"
           placeholder="Pesquisar cliente, OS, telefone, nota..."
           className="w-full rounded-md border border-gray-200 bg-gray-50 py-2 pl-9 pr-3 text-sm text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
