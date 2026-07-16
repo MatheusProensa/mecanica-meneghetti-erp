@@ -61,8 +61,11 @@ export async function updatePixKey(
       ? dadosBancariosRaw.trim()
       : null;
 
+  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+  if (!user) return "Sessão desatualizada. Saia e entre novamente para continuar.";
+
   await prisma.user.update({
-    where: { email: session.user.email },
+    where: { id: user.id },
     data: { pixKey, dadosBancarios },
   });
 
