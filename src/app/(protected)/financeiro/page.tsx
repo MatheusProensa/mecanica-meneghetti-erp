@@ -5,6 +5,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
+import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 
 const MESES = [
   "Janeiro",
@@ -28,9 +29,10 @@ function startOfMonth(d: Date) {
 export default async function FinanceiroPage({
   searchParams,
 }: {
-  searchParams: Promise<{ mes?: string; ano?: string }>;
+  searchParams: Promise<{ mes?: string; ano?: string; pagina?: string }>;
 }) {
-  const { mes, ano } = await searchParams;
+  const { mes, ano, pagina: paginaRaw } = await searchParams;
+  const pagina = Math.max(1, Number(paginaRaw) || 1);
 
   const now = new Date();
   const inicioMes = startOfMonth(now);
@@ -50,7 +52,7 @@ export default async function FinanceiroPage({
 
   const where: Prisma.DespesaWhereInput = periodo ? { data: periodo } : {};
 
-  const [osPagasNoMes, osAReceber, despesasNoMes, funcionariosNoMesAgg, despesas] =
+  const [osPagasNoMes, osAReceber, despesasNoMes, funcionariosNoMesAgg, despesas, totalDespesas] =
     await Promise.all([
       prisma.ordemServico.findMany({
         where: { pago: true, dataPagamento: { gte: inicioMes, lt: fimMes } },
@@ -68,7 +70,13 @@ export default async function FinanceiroPage({
         where: { data: { gte: inicioMes, lt: fimMes }, categoria: "Funcionários" },
         _sum: { valor: true },
       }),
-      prisma.despesa.findMany({ where, orderBy: { data: "desc" } }),
+      prisma.despesa.findMany({
+        where,
+        orderBy: { data: "desc" },
+        skip: (pagina - 1) * PAGE_SIZE,
+        take: PAGE_SIZE,
+      }),
+      prisma.despesa.count({ where }),
     ]);
 
   const recebidoNoMes = osPagasNoMes.reduce(
@@ -82,6 +90,15 @@ export default async function FinanceiroPage({
   const despesasTotal = despesasNoMes._sum.valor ?? 0;
   const funcionariosNoMes = funcionariosNoMesAgg._sum.valor ?? 0;
   const lucroNoMes = recebidoNoMes - despesasTotal;
+
+  function despesaHrefPagina(p: number) {
+    const params = new URLSearchParams();
+    if (mes) params.set("mes", mes);
+    if (ano) params.set("ano", ano);
+    if (p > 1) params.set("pagina", String(p));
+    const qs = params.toString();
+    return qs ? `/financeiro?${qs}` : "/financeiro";
+  }
 
   return (
     <div>
@@ -245,6 +262,12 @@ export default async function FinanceiroPage({
                 </Link>
               ))}
             </div>
+
+            <Pagination
+              paginaAtual={pagina}
+              totalItens={totalDespesas}
+              hrefForPage={despesaHrefPagina}
+            />
           </>
         )}
       </div>

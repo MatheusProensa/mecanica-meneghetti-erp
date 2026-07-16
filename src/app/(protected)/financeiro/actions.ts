@@ -6,6 +6,8 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { uploadDespesaAnexo, deleteDespesaAnexo } from "@/lib/supabase-storage";
 import { parseCurrencyBR } from "@/lib/format";
+import { assinaturaCondizComTipo } from "@/lib/fileSignature";
+import { requireAuth } from "@/lib/requireAuth";
 
 const ALLOWED_ANEXO_TYPES = new Set([
   "application/pdf",
@@ -41,6 +43,9 @@ async function saveAnexoIfPresent(formData: FormData): Promise<string | null> {
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
+  if (!assinaturaCondizComTipo(bytes, file.type)) {
+    throw new Error("O arquivo enviado não corresponde a um PDF ou imagem válido");
+  }
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const fileName = `${randomUUID()}-${safeName}`;
 
@@ -63,6 +68,7 @@ function buildData(formData: FormData) {
 }
 
 export async function createDespesa(formData: FormData) {
+  await requireAuth();
   const data = buildData(formData);
   if (!data.descricao) throw new Error("Descrição é obrigatória");
   if (data.valor <= 0) throw new Error("Valor precisa ser maior que zero");
@@ -84,6 +90,7 @@ export async function createDespesa(formData: FormData) {
 }
 
 export async function updateDespesa(id: string, formData: FormData) {
+  await requireAuth();
   const data = buildData(formData);
   if (!data.descricao) throw new Error("Descrição é obrigatória");
   if (data.valor <= 0) throw new Error("Valor precisa ser maior que zero");
@@ -115,6 +122,7 @@ export async function updateDespesa(id: string, formData: FormData) {
 }
 
 export async function deleteDespesa(id: string) {
+  await requireAuth();
   const existing = await prisma.despesa.findUniqueOrThrow({ where: { id } });
   await prisma.despesa.delete({ where: { id } });
   if (existing.anexoPath) {

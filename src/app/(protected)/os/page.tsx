@@ -7,13 +7,15 @@ import EmptyState from "@/components/ui/EmptyState";
 import { osStatusMap } from "@/components/ui/StatusBadge";
 import OSStatusSelect from "@/components/OSStatusSelect";
 import OSPagoToggle from "@/components/OSPagoToggle";
+import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 
 export default async function OSListPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; q?: string; pagamento?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; pagamento?: string; pagina?: string }>;
 }) {
-  const { status, q, pagamento } = await searchParams;
+  const { status, q, pagamento, pagina: paginaRaw } = await searchParams;
+  const pagina = Math.max(1, Number(paginaRaw) || 1);
 
   const numeroBuscado = q ? Number(q.replace(/\D/g, "")) : null;
 
@@ -44,11 +46,26 @@ export default async function OSListPage({
     return qs ? `/os?${qs}` : "/os";
   }
 
-  const ordens = await prisma.ordemServico.findMany({
-    where,
-    include: { cliente: true, itens: true },
-    orderBy: { data: "desc" },
-  });
+  function osHrefPagina(p: number) {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (status) params.set("status", status);
+    if (pagamento) params.set("pagamento", pagamento);
+    if (p > 1) params.set("pagina", String(p));
+    const qs = params.toString();
+    return qs ? `/os?${qs}` : "/os";
+  }
+
+  const [ordens, totalOrdens] = await Promise.all([
+    prisma.ordemServico.findMany({
+      where,
+      include: { cliente: true, itens: true },
+      orderBy: { data: "desc" },
+      skip: (pagina - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.ordemServico.count({ where }),
+  ]);
 
   return (
     <div>
@@ -194,6 +211,8 @@ export default async function OSListPage({
                 </div>
               ))}
             </div>
+
+            <Pagination paginaAtual={pagina} totalItens={totalOrdens} hrefForPage={osHrefPagina} />
           </>
         )}
       </div>

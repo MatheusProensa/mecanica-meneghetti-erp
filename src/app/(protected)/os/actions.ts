@@ -5,6 +5,25 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import type { StatusOS } from "@/generated/prisma/client";
 import { parseCurrencyBR } from "@/lib/format";
+import { requireAuth } from "@/lib/requireAuth";
+
+const STATUS_VALIDOS: StatusOS[] = [
+  "aberta",
+  "em_andamento",
+  "aguardando_peca",
+  "aguardando_cliente",
+  "concluida",
+  "entregue",
+  "cancelada",
+];
+
+function statusOS(formData: FormData): StatusOS {
+  const value = formData.get("status");
+  if (typeof value === "string" && STATUS_VALIDOS.includes(value as StatusOS)) {
+    return value as StatusOS;
+  }
+  return "aberta";
+}
 
 function str(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -25,6 +44,7 @@ function parseItens(formData: FormData) {
 }
 
 export async function createOS(formData: FormData) {
+  await requireAuth();
   const clienteId = str(formData, "clienteId");
   if (!clienteId) throw new Error("Cliente é obrigatório");
 
@@ -37,7 +57,7 @@ export async function createOS(formData: FormData) {
     data: {
       clienteId,
       telefone: str(formData, "telefone"),
-      status: (str(formData, "status") as StatusOS) ?? "aberta",
+      status: statusOS(formData),
       mecanicoResponsavel: str(formData, "mecanicoResponsavel"),
       formaPagamento: str(formData, "formaPagamento"),
       observacoes: str(formData, "observacoes"),
@@ -52,6 +72,7 @@ export async function createOS(formData: FormData) {
 }
 
 export async function updateOS(id: number, formData: FormData) {
+  await requireAuth();
   const clienteId = str(formData, "clienteId");
   if (!clienteId) throw new Error("Cliente é obrigatório");
 
@@ -67,7 +88,7 @@ export async function updateOS(id: number, formData: FormData) {
       data: {
         clienteId,
         telefone: str(formData, "telefone"),
-        status: (str(formData, "status") as StatusOS) ?? "aberta",
+        status: statusOS(formData),
         mecanicoResponsavel: str(formData, "mecanicoResponsavel"),
         formaPagamento: str(formData, "formaPagamento"),
         observacoes: str(formData, "observacoes"),
@@ -84,6 +105,8 @@ export async function updateOS(id: number, formData: FormData) {
 }
 
 export async function updateOSStatus(id: number, status: StatusOS) {
+  await requireAuth();
+  if (!STATUS_VALIDOS.includes(status)) throw new Error("Status inválido");
   await prisma.ordemServico.update({ where: { id }, data: { status } });
   revalidatePath("/os");
   revalidatePath(`/os/${id}`);
@@ -91,6 +114,7 @@ export async function updateOSStatus(id: number, status: StatusOS) {
 }
 
 export async function toggleOSPago(id: number, pago: boolean) {
+  await requireAuth();
   await prisma.ordemServico.update({
     where: { id },
     data: { pago, dataPagamento: pago ? new Date() : null },
@@ -102,6 +126,7 @@ export async function toggleOSPago(id: number, pago: boolean) {
 }
 
 export async function deleteOS(id: number) {
+  await requireAuth();
   await prisma.ordemServico.delete({ where: { id } });
   revalidatePath("/os");
   revalidatePath("/");

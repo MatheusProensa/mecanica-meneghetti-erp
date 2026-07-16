@@ -3,37 +3,52 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
+import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 
 export default async function ClientesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; pagina?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, pagina: paginaRaw } = await searchParams;
+  const pagina = Math.max(1, Number(paginaRaw) || 1);
 
-  const [clientes, totalClientes] = await Promise.all([
+  const where = q
+    ? {
+        OR: [
+          { nome: { contains: q, mode: "insensitive" as const } },
+          { cpfCnpj: { contains: q, mode: "insensitive" as const } },
+          { telefone: { contains: q, mode: "insensitive" as const } },
+        ],
+      }
+    : undefined;
+
+  const [clientes, totalFiltrados, totalClientes] = await Promise.all([
     prisma.cliente.findMany({
-      where: q
-        ? {
-            OR: [
-              { nome: { contains: q, mode: "insensitive" } },
-              { cpfCnpj: { contains: q, mode: "insensitive" } },
-              { telefone: { contains: q, mode: "insensitive" } },
-            ],
-          }
-        : undefined,
+      where,
       orderBy: { nome: "asc" },
+      skip: (pagina - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
       include: {
         ordensServico: {
           select: { data: true, itens: { select: { valor: true } } },
         },
       },
     }),
+    prisma.cliente.count({ where }),
     prisma.cliente.count(),
   ]);
 
+  function clienteHref(pagina: number) {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (pagina > 1) params.set("pagina", String(pagina));
+    const qs = params.toString();
+    return qs ? `/clientes?${qs}` : "/clientes";
+  }
+
   const contadorDescricao = q
-    ? `${clientes.length} resultado${clientes.length === 1 ? "" : "s"} para "${q}"`
+    ? `${totalFiltrados} resultado${totalFiltrados === 1 ? "" : "s"} para "${q}"`
     : `${totalClientes} cliente${totalClientes === 1 ? "" : "s"} cadastrado${totalClientes === 1 ? "" : "s"}`;
 
   return (
@@ -171,6 +186,8 @@ export default async function ClientesPage({
                 );
               })}
             </div>
+
+            <Pagination paginaAtual={pagina} totalItens={totalFiltrados} hrefForPage={clienteHref} />
           </>
         )}
       </div>

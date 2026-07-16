@@ -25,8 +25,8 @@ export async function updatePassword(
     return "Preencha todos os campos.";
   }
 
-  if (novaSenha.length < 6) {
-    return "A nova senha precisa ter pelo menos 6 caracteres.";
+  if (novaSenha.length < 8) {
+    return "A nova senha precisa ter pelo menos 8 caracteres.";
   }
 
   if (novaSenha !== confirmarSenha) {

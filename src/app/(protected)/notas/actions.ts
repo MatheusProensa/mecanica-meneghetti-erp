@@ -6,12 +6,24 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { uploadPdf, deletePdf } from "@/lib/supabase-storage";
 import { parseCurrencyBR } from "@/lib/format";
+import { assinaturaCondizComTipo } from "@/lib/fileSignature";
+import { requireAuth } from "@/lib/requireAuth";
 import type { TipoNota } from "@/generated/prisma/client";
+
+const TIPOS_VALIDOS: TipoNota[] = ["emitida", "recebida"];
 
 function str(formData: FormData, key: string): string | null {
   const value = formData.get(key);
   if (typeof value !== "string" || value.trim() === "") return null;
   return value.trim();
+}
+
+function tipoNota(formData: FormData): TipoNota {
+  const value = formData.get("tipo");
+  if (typeof value === "string" && TIPOS_VALIDOS.includes(value as TipoNota)) {
+    return value as TipoNota;
+  }
+  return "emitida";
 }
 
 async function savePdfIfPresent(formData: FormData): Promise<string | null> {
@@ -22,6 +34,9 @@ async function savePdfIfPresent(formData: FormData): Promise<string | null> {
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
+  if (!assinaturaCondizComTipo(bytes, file.type)) {
+    throw new Error("O arquivo enviado não é um PDF válido");
+  }
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const fileName = `${randomUUID()}-${safeName}`;
 
@@ -31,17 +46,22 @@ async function savePdfIfPresent(formData: FormData): Promise<string | null> {
 function buildData(formData: FormData) {
   const dataEmissaoRaw = str(formData, "dataEmissao");
   const valorRaw = str(formData, "valor");
+  const valor = valorRaw ? parseCurrencyBR(valorRaw) : null;
+  if (valor !== null && valor <= 0) {
+    throw new Error("Valor precisa ser maior que zero");
+  }
 
   return {
     numero: str(formData, "numero") ?? "",
     dataEmissao: dataEmissaoRaw ? new Date(dataEmissaoRaw) : new Date(),
-    tipo: (str(formData, "tipo") as TipoNota) ?? "emitida",
-    valor: valorRaw ? parseCurrencyBR(valorRaw) : null,
+    tipo: tipoNota(formData),
+    valor,
     observacoes: str(formData, "observacoes"),
   };
 }
 
 export async function createNota(formData: FormData) {
+  await requireAuth();
   const data = buildData(formData);
   if (!data.numero) throw new Error("Número da nota é obrigatório");
 
@@ -56,6 +76,7 @@ export async function createNota(formData: FormData) {
 }
 
 export async function updateNota(id: string, formData: FormData) {
+  await requireAuth();
   const data = buildData(formData);
   if (!data.numero) throw new Error("Número da nota é obrigatório");
 
@@ -81,6 +102,7 @@ export async function updateNota(id: string, formData: FormData) {
 }
 
 export async function deleteNota(id: string) {
+  await requireAuth();
   const existing = await prisma.nota.findUniqueOrThrow({ where: { id } });
   await prisma.nota.delete({ where: { id } });
   if (existing.arquivoPdfPath) {

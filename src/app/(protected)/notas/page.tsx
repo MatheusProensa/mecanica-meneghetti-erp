@@ -7,6 +7,7 @@ import type { Prisma, TipoNota } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
+import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, notaTipoMap } from "@/components/ui/StatusBadge";
 
 const MESES = [
@@ -27,9 +28,16 @@ const MESES = [
 export default async function NotasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tipo?: string; q?: string; mes?: string; ano?: string }>;
+  searchParams: Promise<{
+    tipo?: string;
+    q?: string;
+    mes?: string;
+    ano?: string;
+    pagina?: string;
+  }>;
 }) {
-  const { tipo, q, mes, ano } = await searchParams;
+  const { tipo, q, mes, ano, pagina: paginaRaw } = await searchParams;
+  const pagina = Math.max(1, Number(paginaRaw) || 1);
 
   const anoAtual = new Date().getFullYear();
   const anosDisponiveis = Array.from({ length: 5 }, (_, i) => anoAtual - i);
@@ -56,18 +64,24 @@ export default async function NotasPage({
       : {}),
   };
 
-  const notas = await prisma.nota.findMany({
-    where,
-    orderBy: { dataEmissao: "desc" },
-  });
+  const [notas, totalNotas, todasParaAgregados] = await Promise.all([
+    prisma.nota.findMany({
+      where,
+      orderBy: { dataEmissao: "desc" },
+      skip: (pagina - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.nota.count({ where }),
+    prisma.nota.findMany({ where, select: { tipo: true, valor: true } }),
+  ]);
 
-  const totalEmitidas = notas
+  const totalEmitidas = todasParaAgregados
     .filter((n) => n.tipo === "emitida")
     .reduce((s, n) => s + (n.valor ?? 0), 0);
-  const totalRecebidas = notas
+  const totalRecebidas = todasParaAgregados
     .filter((n) => n.tipo === "recebida")
     .reduce((s, n) => s + (n.valor ?? 0), 0);
-  const semValorCount = notas.filter((n) => n.valor === null).length;
+  const semValorCount = todasParaAgregados.filter((n) => n.valor === null).length;
 
   const pdfPaths = notas
     .map((n) => n.arquivoPdfPath)
@@ -83,6 +97,17 @@ export default async function NotasPage({
     if (mes) params.set("mes", mes);
     if (ano) params.set("ano", ano);
     if (nextTipo) params.set("tipo", nextTipo);
+    const qs = params.toString();
+    return qs ? `/notas?${qs}` : "/notas";
+  }
+
+  function notaHrefPagina(p: number) {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (mes) params.set("mes", mes);
+    if (ano) params.set("ano", ano);
+    if (tipo) params.set("tipo", tipo);
+    if (p > 1) params.set("pagina", String(p));
     const qs = params.toString();
     return qs ? `/notas?${qs}` : "/notas";
   }
@@ -287,6 +312,8 @@ export default async function NotasPage({
                 </div>
               ))}
             </div>
+
+            <Pagination paginaAtual={pagina} totalItens={totalNotas} hrefForPage={notaHrefPagina} />
           </>
         )}
       </div>
