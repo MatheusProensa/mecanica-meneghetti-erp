@@ -17,7 +17,7 @@ export type ChartPoint = {
   faturamento: number;
 };
 
-export type Agrupamento = "mensal" | "semanal";
+export type Agrupamento = "diario" | "semanal" | "mensal";
 
 function formatCompactBRL(value: number): string {
   if (value === 0) return "R$ 0";
@@ -48,23 +48,13 @@ function ChartTooltip({ active, payload, label }: TooltipContentProps) {
 
 export default function DashboardCharts({
   data,
-  periodo,
-  agrupamento,
+  periodoLabel,
 }: {
   data: ChartPoint[];
-  periodo: number;
-  agrupamento: Agrupamento;
+  periodoLabel: string;
 }) {
   const maxValue = Math.max(0, ...data.map((d) => d.faturamento));
   const yDomain: [number, number] | undefined = maxValue === 0 ? [0, 100] : undefined;
-  const periodoLabel =
-    agrupamento === "semanal"
-      ? periodo === 1
-        ? "última semana"
-        : `últimas ${periodo} semanas`
-      : periodo === 1
-        ? "último mês"
-        : `últimos ${periodo} meses`;
 
   return (
     <div className="rounded-[10px] border border-gray-200 bg-white p-4 sm:p-6">

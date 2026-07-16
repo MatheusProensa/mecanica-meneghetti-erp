@@ -8,8 +8,10 @@ import PageHeader from "@/components/ui/PageHeader";
 import PeriodFilter from "@/components/PeriodFilter";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
 
-const PERIODOS_MENSAL = [1, 3, 6, 12];
+const PERIODOS_DIARIO = [7, 14, 30, 60, 90];
 const PERIODOS_SEMANAL = [4, 8, 12, 26];
+const PERIODOS_MENSAL = [1, 3, 6, 12];
+const PERIODO_PADRAO: Record<Agrupamento, number> = { diario: 30, semanal: 8, mensal: 6 };
 const UM_DIA_MS = 24 * 60 * 60 * 1000;
 
 function startOfMonth(d: Date) {
@@ -25,27 +27,112 @@ function startOfWeek(d: Date) {
   return data;
 }
 
+function startOfDay(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+/** Converte "AAAA-MM-DD" (de um <input type="date">) numa data local, sem risco de fuso. */
+function parseDataInput(valor: string | undefined): Date | null {
+  const match = valor ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(valor) : null;
+  if (!match) return null;
+  const [, ano, mes, dia] = match;
+  return new Date(Number(ano), Number(mes) - 1, Number(dia));
+}
+
+function pad2(n: number) {
+  return String(n).padStart(2, "0");
+}
+
+function rotuloDia(d: Date) {
+  return `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}`;
+}
+
+/** Gera os intervalos (dia/semana/mês) que cobrem [inicio, fim], com o rótulo de cada um. */
+function gerarBuckets(inicio: Date, fim: Date, agrupamento: Agrupamento) {
+  const buckets: { inicio: Date; fim: Date; rotulo: string }[] = [];
+
+  if (agrupamento === "mensal") {
+    let cursor = new Date(inicio.getFullYear(), inicio.getMonth(), 1);
+    while (cursor <= fim) {
+      const fimBucket = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+      buckets.push({
+        inicio: cursor,
+        fim: fimBucket,
+        rotulo: cursor.toLocaleDateString("pt-BR", { month: "short" }),
+      });
+      cursor = fimBucket;
+    }
+  } else if (agrupamento === "semanal") {
+    let cursor = startOfWeek(inicio);
+    while (cursor <= fim) {
+      const fimBucket = new Date(cursor.getTime() + 7 * UM_DIA_MS);
+      buckets.push({ inicio: cursor, fim: fimBucket, rotulo: rotuloDia(cursor) });
+      cursor = fimBucket;
+    }
+  } else {
+    let cursor = startOfDay(inicio);
+    const fimDia = startOfDay(fim);
+    while (cursor <= fimDia) {
+      const fimBucket = new Date(cursor.getTime() + UM_DIA_MS);
+      buckets.push({ inicio: cursor, fim: fimBucket, rotulo: rotuloDia(cursor) });
+      cursor = fimBucket;
+    }
+  }
+
+  return buckets;
+}
+
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ periodo?: string; agrupamento?: string }>;
+  searchParams: Promise<{ periodo?: string; agrupamento?: string; de?: string; ate?: string }>;
 }) {
-  const { periodo: periodoRaw, agrupamento: agrupamentoRaw } = await searchParams;
-  const agrupamento: Agrupamento = agrupamentoRaw === "semanal" ? "semanal" : "mensal";
-  const periodosValidos = agrupamento === "semanal" ? PERIODOS_SEMANAL : PERIODOS_MENSAL;
-  const periodoPadrao = agrupamento === "semanal" ? 8 : 6;
+  const {
+    periodo: periodoRaw,
+    agrupamento: agrupamentoRaw,
+    de,
+    ate,
+  } = await searchParams;
+
+  const agrupamento: Agrupamento =
+    agrupamentoRaw === "diario" ? "diario" : agrupamentoRaw === "semanal" ? "semanal" : "mensal";
+
+  const periodosValidos =
+    agrupamento === "diario" ? PERIODOS_DIARIO : agrupamento === "semanal" ? PERIODOS_SEMANAL : PERIODOS_MENSAL;
   const periodo = periodosValidos.includes(Number(periodoRaw))
     ? Number(periodoRaw)
-    : periodoPadrao;
+    : PERIODO_PADRAO[agrupamento];
 
   const now = new Date();
   const inicioMes = startOfMonth(now);
   const inicioSemanaAtual = startOfWeek(now);
-  const inicioPeriodo =
-    agrupamento === "semanal"
-      ? new Date(inicioSemanaAtual.getTime() - (periodo - 1) * 7 * UM_DIA_MS)
-      : new Date(now.getFullYear(), now.getMonth() - (periodo - 1), 1);
 
+  const dePersonalizado = parseDataInput(de);
+  const atePersonalizado = parseDataInput(ate);
+  const usarPersonalizado = Boolean(
+    periodoRaw === "personalizado" &&
+      dePersonalizado &&
+      atePersonalizado &&
+      dePersonalizado <= atePersonalizado
+  );
+
+  let inicioPeriodo: Date;
+  let fimPeriodo: Date;
+  if (usarPersonalizado && dePersonalizado && atePersonalizado) {
+    inicioPeriodo = dePersonalizado;
+    fimPeriodo = atePersonalizado;
+  } else {
+    fimPeriodo = now;
+    if (agrupamento === "diario") {
+      inicioPeriodo = new Date(startOfDay(now).getTime() - (periodo - 1) * UM_DIA_MS);
+    } else if (agrupamento === "semanal") {
+      inicioPeriodo = new Date(inicioSemanaAtual.getTime() - (periodo - 1) * 7 * UM_DIA_MS);
+    } else {
+      inicioPeriodo = new Date(now.getFullYear(), now.getMonth() - (periodo - 1), 1);
+    }
+  }
+
+  const fimConsultaPeriodo = new Date(startOfDay(fimPeriodo).getTime() + UM_DIA_MS);
   const fimMes = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
   const [
@@ -61,7 +148,7 @@ export default async function DashboardPage({
     despesasNoMesAgg,
   ] = await Promise.all([
     prisma.ordemServico.findMany({
-      where: { data: { gte: inicioPeriodo } },
+      where: { data: { gte: inicioPeriodo, lt: fimConsultaPeriodo } },
       include: { itens: true },
     }),
     prisma.ordemServico.count({ where: { status: "aberta" } }),
@@ -102,38 +189,28 @@ export default async function DashboardPage({
 
   const osAbertasCount = osAbertaCount + osEmAndamentoCount;
 
-  const chartData: ChartPoint[] = [];
-  if (agrupamento === "semanal") {
-    for (let i = periodo - 1; i >= 0; i--) {
-      const semanaInicio = new Date(inicioSemanaAtual.getTime() - i * 7 * UM_DIA_MS);
-      const semanaFim = new Date(semanaInicio.getTime() + 7 * UM_DIA_MS);
-      const osDaSemana = ordensDoPeriodo.filter(
-        (os) => os.data >= semanaInicio && os.data < semanaFim
-      );
-      chartData.push({
-        rotulo: `${String(semanaInicio.getDate()).padStart(2, "0")}/${String(semanaInicio.getMonth() + 1).padStart(2, "0")}`,
-        faturamento: osDaSemana.reduce(
-          (sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0),
-          0
-        ),
-      });
-    }
-  } else {
-    for (let i = periodo - 1; i >= 0; i--) {
-      const mesInicio = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const mesFim = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
-      const osDoMes = ordensDoPeriodo.filter(
-        (os) => os.data >= mesInicio && os.data < mesFim
-      );
-      chartData.push({
-        rotulo: mesInicio.toLocaleDateString("pt-BR", { month: "short" }),
-        faturamento: osDoMes.reduce(
-          (sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0),
-          0
-        ),
-      });
-    }
-  }
+  const chartData: ChartPoint[] = gerarBuckets(inicioPeriodo, fimPeriodo, agrupamento).map(
+    (bucket) => ({
+      rotulo: bucket.rotulo,
+      faturamento: ordensDoPeriodo
+        .filter((os) => os.data >= bucket.inicio && os.data < bucket.fim)
+        .reduce((sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0), 0),
+    })
+  );
+
+  const periodoLabel = usarPersonalizado
+    ? `${inicioPeriodo.toLocaleDateString("pt-BR")} a ${fimPeriodo.toLocaleDateString("pt-BR")}`
+    : agrupamento === "diario"
+      ? periodo === 1
+        ? "último dia"
+        : `últimos ${periodo} dias`
+      : agrupamento === "semanal"
+        ? periodo === 1
+          ? "última semana"
+          : `últimas ${periodo} semanas`
+        : periodo === 1
+          ? "último mês"
+          : `últimos ${periodo} meses`;
 
   const movimentacoes = [
     ...ultimasNotas.map((n) => ({
@@ -162,7 +239,12 @@ export default async function DashboardPage({
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <PageHeader title="Dashboard" />
-        <PeriodFilter agrupamento={agrupamento} periodo={String(periodo)} />
+        <PeriodFilter
+          agrupamento={agrupamento}
+          periodo={usarPersonalizado ? "personalizado" : String(periodo)}
+          de={de}
+          ate={ate}
+        />
       </div>
 
       <div>
@@ -222,7 +304,7 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      <DashboardCharts data={chartData} periodo={periodo} agrupamento={agrupamento} />
+      <DashboardCharts data={chartData} periodoLabel={periodoLabel} />
 
       <div className="rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
