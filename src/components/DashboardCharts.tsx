@@ -12,10 +12,12 @@ import {
 } from "recharts";
 import { formatCurrency } from "@/lib/format";
 
-export type MonthlyPoint = {
-  mes: string;
+export type ChartPoint = {
+  rotulo: string;
   faturamento: number;
 };
+
+export type Agrupamento = "mensal" | "semanal";
 
 function formatCompactBRL(value: number): string {
   if (value === 0) return "R$ 0";
@@ -47,13 +49,22 @@ function ChartTooltip({ active, payload, label }: TooltipContentProps) {
 export default function DashboardCharts({
   data,
   periodo,
+  agrupamento,
 }: {
-  data: MonthlyPoint[];
+  data: ChartPoint[];
   periodo: number;
+  agrupamento: Agrupamento;
 }) {
   const maxValue = Math.max(0, ...data.map((d) => d.faturamento));
   const yDomain: [number, number] | undefined = maxValue === 0 ? [0, 100] : undefined;
-  const periodoLabel = periodo === 1 ? "último mês" : `últimos ${periodo} meses`;
+  const periodoLabel =
+    agrupamento === "semanal"
+      ? periodo === 1
+        ? "última semana"
+        : `últimas ${periodo} semanas`
+      : periodo === 1
+        ? "último mês"
+        : `últimos ${periodo} meses`;
 
   return (
     <div className="rounded-[10px] border border-gray-200 bg-white p-4 sm:p-6">
@@ -70,7 +81,7 @@ export default function DashboardCharts({
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-            <XAxis dataKey="mes" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="rotulo" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis
               tick={{ fontSize: 11 }}
               axisLine={false}

@@ -1,32 +1,50 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/format";
-import DashboardCharts, { type MonthlyPoint } from "@/components/DashboardCharts";
+import DashboardCharts, { type ChartPoint, type Agrupamento } from "@/components/DashboardCharts";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
 import PeriodFilter from "@/components/PeriodFilter";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
 
-const PERIODOS_VALIDOS = [1, 3, 6, 12];
+const PERIODOS_MENSAL = [1, 3, 6, 12];
+const PERIODOS_SEMANAL = [4, 8, 12, 26];
+const UM_DIA_MS = 24 * 60 * 60 * 1000;
 
 function startOfMonth(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), 1);
 }
 
+/** Início da semana (segunda-feira) que contém a data informada. */
+function startOfWeek(d: Date) {
+  const data = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diaSemana = data.getDay();
+  const deslocamento = diaSemana === 0 ? -6 : 1 - diaSemana;
+  data.setDate(data.getDate() + deslocamento);
+  return data;
+}
+
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ periodo?: string }>;
+  searchParams: Promise<{ periodo?: string; agrupamento?: string }>;
 }) {
-  const { periodo: periodoRaw } = await searchParams;
-  const periodo = PERIODOS_VALIDOS.includes(Number(periodoRaw))
+  const { periodo: periodoRaw, agrupamento: agrupamentoRaw } = await searchParams;
+  const agrupamento: Agrupamento = agrupamentoRaw === "semanal" ? "semanal" : "mensal";
+  const periodosValidos = agrupamento === "semanal" ? PERIODOS_SEMANAL : PERIODOS_MENSAL;
+  const periodoPadrao = agrupamento === "semanal" ? 8 : 6;
+  const periodo = periodosValidos.includes(Number(periodoRaw))
     ? Number(periodoRaw)
-    : 6;
+    : periodoPadrao;
 
   const now = new Date();
   const inicioMes = startOfMonth(now);
-  const inicioPeriodo = new Date(now.getFullYear(), now.getMonth() - (periodo - 1), 1);
+  const inicioSemanaAtual = startOfWeek(now);
+  const inicioPeriodo =
+    agrupamento === "semanal"
+      ? new Date(inicioSemanaAtual.getTime() - (periodo - 1) * 7 * UM_DIA_MS)
+      : new Date(now.getFullYear(), now.getMonth() - (periodo - 1), 1);
 
   const fimMes = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
@@ -84,20 +102,37 @@ export default async function DashboardPage({
 
   const osAbertasCount = osAbertaCount + osEmAndamentoCount;
 
-  const monthlyData: MonthlyPoint[] = [];
-  for (let i = periodo - 1; i >= 0; i--) {
-    const mesInicio = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const mesFim = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
-    const osDoMes = ordensDoPeriodo.filter(
-      (os) => os.data >= mesInicio && os.data < mesFim
-    );
-    monthlyData.push({
-      mes: mesInicio.toLocaleDateString("pt-BR", { month: "short" }),
-      faturamento: osDoMes.reduce(
-        (sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0),
-        0
-      ),
-    });
+  const chartData: ChartPoint[] = [];
+  if (agrupamento === "semanal") {
+    for (let i = periodo - 1; i >= 0; i--) {
+      const semanaInicio = new Date(inicioSemanaAtual.getTime() - i * 7 * UM_DIA_MS);
+      const semanaFim = new Date(semanaInicio.getTime() + 7 * UM_DIA_MS);
+      const osDaSemana = ordensDoPeriodo.filter(
+        (os) => os.data >= semanaInicio && os.data < semanaFim
+      );
+      chartData.push({
+        rotulo: `${String(semanaInicio.getDate()).padStart(2, "0")}/${String(semanaInicio.getMonth() + 1).padStart(2, "0")}`,
+        faturamento: osDaSemana.reduce(
+          (sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0),
+          0
+        ),
+      });
+    }
+  } else {
+    for (let i = periodo - 1; i >= 0; i--) {
+      const mesInicio = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const mesFim = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+      const osDoMes = ordensDoPeriodo.filter(
+        (os) => os.data >= mesInicio && os.data < mesFim
+      );
+      chartData.push({
+        rotulo: mesInicio.toLocaleDateString("pt-BR", { month: "short" }),
+        faturamento: osDoMes.reduce(
+          (sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0),
+          0
+        ),
+      });
+    }
   }
 
   const movimentacoes = [
@@ -125,9 +160,9 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <PageHeader title="Dashboard" />
-        <PeriodFilter value={String(periodo)} />
+        <PeriodFilter agrupamento={agrupamento} periodo={String(periodo)} />
       </div>
 
       <div>
@@ -187,7 +222,7 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      <DashboardCharts data={monthlyData} periodo={periodo} />
+      <DashboardCharts data={chartData} periodo={periodo} agrupamento={agrupamento} />
 
       <div className="rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
