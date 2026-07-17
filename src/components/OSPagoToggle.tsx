@@ -32,63 +32,58 @@ export default function OSPagoToggle({
       : null;
 
   return (
-    <div
-      className={compact ? "flex items-center gap-1.5" : "flex flex-col items-start gap-1.5"}
-      onClick={(e) => e.stopPropagation()}
-    >
+    <div className="flex flex-wrap items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
       <StatusBadge label={info.label} tone={info.tone} />
-      <div className={compact ? "contents" : "flex items-center gap-1.5"}>
-        {cobrancaUrl && (
-          <a
-            href={cobrancaUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Cobrar no WhatsApp"
-            className={
-              compact
-                ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-green-700 hover:bg-green-50"
-                : "flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-medium text-green-700 hover:bg-green-50 hover:underline"
-            }
-          >
-            <MessageCircle className="h-3.5 w-3.5" />
-            {!compact && "Cobrar"}
-          </a>
-        )}
-        {!pago &&
-          (compact ? (
-            <button
-              type="button"
-              disabled={pending}
-              onClick={() => startTransition(() => toggleOSPago(id, true))}
-              title="Marcar como pago"
-              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
-            >
-              <CheckCircle2 className="h-3.5 w-3.5" />
-            </button>
-          ) : (
-            <button
-              type="button"
-              disabled={pending}
-              onClick={() => startTransition(() => toggleOSPago(id, true))}
-              title="Marcar como pago"
-              className="flex items-center gap-1 rounded-md bg-green-600 px-2 py-1 text-xs font-medium text-white shadow-sm hover:bg-green-700 disabled:opacity-60"
-            >
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              Marcar como pago
-            </button>
-          ))}
-        {pago && (
+      {cobrancaUrl && (
+        <a
+          href={cobrancaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Cobrar no WhatsApp"
+          className={
+            compact
+              ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-green-700 hover:bg-green-50"
+              : "flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-medium text-green-700 hover:bg-green-50 hover:underline"
+          }
+        >
+          <MessageCircle className="h-3.5 w-3.5" />
+          {!compact && "Cobrar"}
+        </a>
+      )}
+      {!pago &&
+        (compact ? (
           <button
             type="button"
             disabled={pending}
-            onClick={() => startTransition(() => toggleOSPago(id, false))}
-            title="Desmarcar pagamento"
-            className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-60"
+            onClick={() => startTransition(() => toggleOSPago(id, true))}
+            title="Marcar como pago"
+            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
           >
-            desfazer
+            <CheckCircle2 className="h-3.5 w-3.5" />
           </button>
-        )}
-      </div>
+        ) : (
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => startTransition(() => toggleOSPago(id, true))}
+            title="Marcar como pago"
+            className="flex items-center gap-1 rounded-md bg-green-600 px-2 py-1 text-xs font-medium text-white shadow-sm hover:bg-green-700 disabled:opacity-60"
+          >
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            Marcar como pago
+          </button>
+        ))}
+      {pago && (
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => startTransition(() => toggleOSPago(id, false))}
+          title="Desmarcar pagamento"
+          className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-60"
+        >
+          desfazer
+        </button>
+      )}
     </div>
   );
 }
