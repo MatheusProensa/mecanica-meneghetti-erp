@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import PasswordInput from "@/components/PasswordInput";
 import { createUsuario } from "./usuarios-actions";
 
 export default function NovoUsuarioForm() {
@@ -44,13 +45,14 @@ export default function NovoUsuarioForm() {
           <label htmlFor="senha" className="block text-sm font-medium text-gray-700">
             Senha inicial
           </label>
-          <input
+          <PasswordInput
             id="senha"
             name="senha"
-            type="password"
             required
             minLength={8}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            autoComplete="new-password"
+            wrapperClassName="mt-1"
+            className="w-full rounded-md border border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -77,11 +79,11 @@ export default function NovoUsuarioForm() {
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input
               type="checkbox"
-              name="podeVerFinanceiro"
+              name="podeEditar"
               defaultChecked
               className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
-            Ver o Financeiro (valores, lucro, despesas)
+            Criar e editar cadastros (Cliente, OS, Nota, Despesa)
           </label>
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input
@@ -91,6 +93,15 @@ export default function NovoUsuarioForm() {
               className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             Excluir cadastros (Cliente, OS, Nota, Despesa)
+          </label>
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              name="podeVerFinanceiro"
+              defaultChecked
+              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            Ver o Financeiro (valores, lucro, despesas)
           </label>
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input

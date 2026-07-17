@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import PasswordInput from "@/components/PasswordInput";
 import { resetPassword } from "./actions";
 
 export default function RedefinirSenhaForm({ token }: { token: string }) {
@@ -32,14 +33,14 @@ export default function RedefinirSenhaForm({ token }: { token: string }) {
         <label htmlFor="novaSenha" className="block text-sm font-medium text-gray-700">
           Nova senha
         </label>
-        <input
+        <PasswordInput
           id="novaSenha"
           name="novaSenha"
-          type="password"
           required
           minLength={8}
           autoComplete="new-password"
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          wrapperClassName="mt-1"
+          className="w-full rounded-lg border border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
@@ -47,14 +48,14 @@ export default function RedefinirSenhaForm({ token }: { token: string }) {
         <label htmlFor="confirmarSenha" className="block text-sm font-medium text-gray-700">
           Confirmar nova senha
         </label>
-        <input
+        <PasswordInput
           id="confirmarSenha"
           name="confirmarSenha"
-          type="password"
           required
           minLength={8}
           autoComplete="new-password"
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          wrapperClassName="mt-1"
+          className="w-full rounded-lg border border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
 

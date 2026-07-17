@@ -43,6 +43,7 @@ export async function createUsuario(
       email,
       passwordHash,
       role,
+      podeEditar: formData.get("podeEditar") === "on",
       podeVerFinanceiro: formData.get("podeVerFinanceiro") === "on",
       podeExcluir: formData.get("podeExcluir") === "on",
       podeAcessarConfiguracoes: formData.get("podeAcessarConfiguracoes") === "on",
@@ -70,6 +71,7 @@ export async function updateUsuarioPermissoes(id: string, formData: FormData) {
     where: { id },
     data: {
       role,
+      podeEditar: formData.get("podeEditar") === "on",
       podeVerFinanceiro: formData.get("podeVerFinanceiro") === "on",
       podeExcluir: formData.get("podeExcluir") === "on",
       podeAcessarConfiguracoes: formData.get("podeAcessarConfiguracoes") === "on",

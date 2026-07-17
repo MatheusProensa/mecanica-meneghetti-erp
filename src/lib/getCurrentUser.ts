@@ -24,6 +24,7 @@ export async function getCurrentUser(): Promise<UsuarioAtual | null> {
       name: true,
       email: true,
       role: true,
+      podeEditar: true,
       podeVerFinanceiro: true,
       podeExcluir: true,
       podeAcessarConfiguracoes: true,

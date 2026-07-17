@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import PasswordInput from "@/components/PasswordInput";
 import { updateUsuarioPermissoes, deleteUsuario, resetSenhaUsuario } from "./usuarios-actions";
 
 const ROLE_LABEL: Record<string, string> = {
@@ -18,6 +19,7 @@ export default function UsuarioRow({
     name: string;
     email: string;
     role: "dono" | "funcionario" | "visualizador";
+    podeEditar: boolean;
     podeVerFinanceiro: boolean;
     podeExcluir: boolean;
     podeAcessarConfiguracoes: boolean;
@@ -65,11 +67,11 @@ export default function UsuarioRow({
             <label className="flex items-center gap-2 text-sm text-gray-700">
               <input
                 type="checkbox"
-                name="podeVerFinanceiro"
-                defaultChecked={user.podeVerFinanceiro}
+                name="podeEditar"
+                defaultChecked={user.podeEditar}
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              Ver o Financeiro
+              Criar e editar cadastros
             </label>
             <label className="flex items-center gap-2 text-sm text-gray-700">
               <input
@@ -79,6 +81,15 @@ export default function UsuarioRow({
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               Excluir cadastros
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                name="podeVerFinanceiro"
+                defaultChecked={user.podeVerFinanceiro}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              Ver o Financeiro
             </label>
             <label className="flex items-center gap-2 text-sm text-gray-700">
               <input
@@ -125,12 +136,13 @@ export default function UsuarioRow({
         >
           <div>
             <label className="block text-xs font-medium text-gray-500">Nova senha</label>
-            <input
-              type="password"
+            <PasswordInput
               name="novaSenha"
               required
               minLength={8}
-              className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+              autoComplete="new-password"
+              wrapperClassName="mt-1"
+              className="rounded-md border border-gray-300 py-2 pl-3 pr-10 text-sm"
             />
           </div>
           <button

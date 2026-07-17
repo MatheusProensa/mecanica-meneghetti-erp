@@ -10,6 +10,7 @@ export default async function UsuariosSection({ meuId }: { meuId: string }) {
       name: true,
       email: true,
       role: true,
+      podeEditar: true,
       podeVerFinanceiro: true,
       podeExcluir: true,
       podeAcessarConfiguracoes: true,

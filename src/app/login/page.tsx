@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useActionState } from "react";
+import PasswordInput from "@/components/PasswordInput";
 import { loginAction } from "./actions";
 
 export default function LoginPage() {
@@ -49,13 +50,13 @@ export default function LoginPage() {
             >
               Senha
             </label>
-            <input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               required
               autoComplete="current-password"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              wrapperClassName="mt-1"
+              className="w-full rounded-lg border border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 

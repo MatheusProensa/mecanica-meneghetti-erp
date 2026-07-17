@@ -17,6 +17,7 @@ export interface Permissoes {
 
 interface FlagsUsuario {
   role: UserRole;
+  podeEditar: boolean;
   podeVerFinanceiro: boolean;
   podeExcluir: boolean;
   podeAcessarConfiguracoes: boolean;
@@ -46,7 +47,7 @@ export function calcularPermissoes(user: FlagsUsuario): Permissoes {
   }
 
   return {
-    editar: true,
+    editar: user.podeEditar,
     excluir: user.podeExcluir,
     verFinanceiro: user.podeVerFinanceiro,
     acessarConfiguracoes: user.podeAcessarConfiguracoes,
