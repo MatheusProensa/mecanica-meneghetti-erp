@@ -196,7 +196,7 @@ export default function CobrancaCliente({
       ) : (
         <p className="mt-3 text-xs text-gray-500">
           Nenhum dado de pagamento cadastrado.{" "}
-          <Link href="/configuracoes" className="text-blue-600 hover:underline">
+          <Link href="/configuracoes?secao=cobranca" className="text-blue-600 hover:underline">
             Cadastrar em Configurações
           </Link>
         </p>
