@@ -17,6 +17,14 @@ export function formatDateTime(value: Date | string | null | undefined): string 
   return date.toLocaleString("pt-BR");
 }
 
+/** Converte "AAAA-MM-DD" (de um <input type="date">) numa data local, sem risco de fuso. */
+export function parseDateInputValue(value: string | undefined | null): Date | null {
+  const match = value ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(value) : null;
+  if (!match) return null;
+  const [, ano, mes, dia] = match;
+  return new Date(Number(ano), Number(mes) - 1, Number(dia));
+}
+
 /**
  * Formata progressivamente um telefone brasileiro:
  * - até 10 dígitos (fixo): (99) 9999-9999
@@ -42,11 +50,12 @@ export function formatPhoneBR(value: string | null | undefined): string {
 }
 
 /** Monta o link do WhatsApp (wa.me) a partir de um telefone brasileiro. Retorna null se não houver dígitos suficientes. */
-export function whatsappUrl(value: string | null | undefined): string | null {
+export function whatsappUrl(value: string | null | undefined, mensagem?: string): string | null {
   const digits = (value ?? "").replace(/\D/g, "");
   if (digits.length < 10) return null;
   const comCodigoPais = digits.length <= 11 ? `55${digits}` : digits;
-  return `https://wa.me/${comCodigoPais}`;
+  const texto = mensagem ? `?text=${encodeURIComponent(mensagem)}` : "";
+  return `https://wa.me/${comCodigoPais}${texto}`;
 }
 
 /**

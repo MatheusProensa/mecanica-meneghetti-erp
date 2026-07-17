@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import DashboardCharts, { type ChartPoint, type Agrupamento } from "@/components/DashboardCharts";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
@@ -29,14 +29,6 @@ function startOfWeek(d: Date) {
 
 function startOfDay(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-}
-
-/** Converte "AAAA-MM-DD" (de um <input type="date">) numa data local, sem risco de fuso. */
-function parseDataInput(valor: string | undefined): Date | null {
-  const match = valor ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(valor) : null;
-  if (!match) return null;
-  const [, ano, mes, dia] = match;
-  return new Date(Number(ano), Number(mes) - 1, Number(dia));
 }
 
 function pad2(n: number) {
@@ -107,8 +99,8 @@ export default async function DashboardPage({
   const inicioMes = startOfMonth(now);
   const inicioSemanaAtual = startOfWeek(now);
 
-  const dePersonalizado = parseDataInput(de);
-  const atePersonalizado = parseDataInput(ate);
+  const dePersonalizado = parseDateInputValue(de);
+  const atePersonalizado = parseDateInputValue(ate);
   const usarPersonalizado = Boolean(
     periodoRaw === "personalizado" &&
       dePersonalizado &&

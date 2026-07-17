@@ -36,6 +36,16 @@ model PasswordResetToken {
   @@index([userId])
 }
 
+model Empresa {
+  id        String   @id @default("default")
+  nome      String
+  endereco  String
+  cidade    String
+  telefone  String
+  cnpj      String
+  updatedAt DateTime @updatedAt
+}
+
 model Cliente {
   id          String   @id @default(cuid())
   nome        String
@@ -92,13 +102,24 @@ model OrdemServico {
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
-  itens ItemServico[]
-  notas Nota[]
+  itens  ItemServico[]
+  notas  Nota[]
+  anexos AnexoOS[]
 
   @@index([clienteId])
   @@index([status])
   @@index([pago])
   @@index([mecanicoId])
+}
+
+model AnexoOS {
+  id             String       @id @default(cuid())
+  ordemServicoId Int
+  ordemServico   OrdemServico @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  path           String
+  createdAt      DateTime     @default(now())
+
+  @@index([ordemServicoId])
 }
 
 model ItemServico {

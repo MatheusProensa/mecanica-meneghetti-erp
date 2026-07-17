@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/format";
+import { getSignedOSFotoUrls } from "@/lib/supabase-storage";
 import OSForm from "@/components/OSForm";
+import OSFotos from "@/components/OSFotos";
 import OSPagoToggle from "@/components/OSPagoToggle";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { updateOS, deleteOS } from "../actions";
@@ -19,13 +21,16 @@ export default async function OSDetalhePage({
   const [os, clientes, mecanicos] = await Promise.all([
     prisma.ordemServico.findUnique({
       where: { id: osId },
-      include: { itens: true, cliente: true },
+      include: { itens: true, cliente: true, anexos: { orderBy: { createdAt: "desc" } } },
     }),
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
     prisma.mecanico.findMany({ orderBy: { nome: "asc" } }),
   ]);
 
   if (!os) notFound();
+
+  const urlsPorPath = await getSignedOSFotoUrls(os.anexos.map((a) => a.path));
+  const fotos = os.anexos.map((a) => ({ id: a.id, url: urlsPorPath[a.path] ?? null }));
 
   const updateOSWithId = updateOS.bind(null, os.id);
   const deleteOSWithId = deleteOS.bind(null, os.id);
@@ -42,7 +47,16 @@ export default async function OSDetalhePage({
           </h1>
           <p className="text-sm text-gray-500">Aberta em {formatDate(os.data)}</p>
           <div className="mt-2">
-            <OSPagoToggle id={os.id} pago={os.pago} previsaoEntrega={os.previsaoEntrega} />
+            <OSPagoToggle
+              id={os.id}
+              pago={os.pago}
+              previsaoEntrega={os.previsaoEntrega}
+              cliente={{
+                nome: os.cliente.nome,
+                telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
+                valor: os.itens.reduce((s, i) => s + i.valor, 0),
+              }}
+            />
           </div>
         </div>
         <ConfirmModal
@@ -55,6 +69,10 @@ export default async function OSDetalhePage({
 
       <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
         <OSForm clientes={clientes} mecanicos={mecanicos} os={os} action={updateOSWithId} />
+      </div>
+
+      <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
+        <OSFotos osId={os.id} fotos={fotos} />
       </div>
     </div>
   );

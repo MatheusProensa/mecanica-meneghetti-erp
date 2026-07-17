@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FileText } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getSignedPdfUrls } from "@/lib/supabase-storage";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma, TipoNota } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
@@ -33,19 +33,31 @@ export default async function NotasPage({
     q?: string;
     mes?: string;
     ano?: string;
+    de?: string;
+    ate?: string;
     pagina?: string;
   }>;
 }) {
-  const { tipo, q, mes, ano, pagina: paginaRaw } = await searchParams;
+  const { tipo, q, mes, ano, de, ate, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
 
   const anoAtual = new Date().getFullYear();
   const anosDisponiveis = Array.from({ length: 5 }, (_, i) => anoAtual - i);
 
+  const dePersonalizado = parseDateInputValue(de);
+  const atePersonalizadoBruto = parseDateInputValue(ate);
+  const atePersonalizado = atePersonalizadoBruto
+    ? new Date(atePersonalizadoBruto.getTime() + 24 * 60 * 60 * 1000)
+    : null;
+  const usarPersonalizado = Boolean(
+    dePersonalizado && atePersonalizado && dePersonalizado < atePersonalizado
+  );
+
   const mesNum = mes ? Number(mes) : null;
   const anoNum = ano ? Number(ano) : null;
-  const periodo =
-    mesNum && anoNum
+  const periodo = usarPersonalizado
+    ? { gte: dePersonalizado!, lt: atePersonalizado! }
+    : mesNum && anoNum
       ? { gte: new Date(anoNum, mesNum - 1, 1), lt: new Date(anoNum, mesNum, 1) }
       : anoNum
         ? { gte: new Date(anoNum, 0, 1), lt: new Date(anoNum + 1, 0, 1) }
@@ -97,6 +109,8 @@ export default async function NotasPage({
     if (q) params.set("q", q);
     if (mes) params.set("mes", mes);
     if (ano) params.set("ano", ano);
+    if (de) params.set("de", de);
+    if (ate) params.set("ate", ate);
     if (nextTipo) params.set("tipo", nextTipo);
     const qs = params.toString();
     return qs ? `/notas?${qs}` : "/notas";
@@ -107,6 +121,8 @@ export default async function NotasPage({
     if (q) params.set("q", q);
     if (mes) params.set("mes", mes);
     if (ano) params.set("ano", ano);
+    if (de) params.set("de", de);
+    if (ate) params.set("ate", ate);
     if (tipo) params.set("tipo", tipo);
     if (p > 1) params.set("pagina", String(p));
     const qs = params.toString();
@@ -192,6 +208,26 @@ export default async function NotasPage({
             </select>
           </div>
         </div>
+        <div className="flex flex-1 gap-3 sm:flex-none">
+          <div className="flex-1 sm:w-40 sm:flex-none">
+            <label className="block text-xs font-medium text-gray-500">De</label>
+            <input
+              type="date"
+              name="de"
+              defaultValue={de ?? ""}
+              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+            />
+          </div>
+          <div className="flex-1 sm:w-40 sm:flex-none">
+            <label className="block text-xs font-medium text-gray-500">Até</label>
+            <input
+              type="date"
+              name="ate"
+              defaultValue={ate ?? ""}
+              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+            />
+          </div>
+        </div>
         <div className="w-full sm:w-auto">
           <label className="block text-xs font-medium text-gray-500">
             Número ou observação
@@ -211,6 +247,12 @@ export default async function NotasPage({
           Filtrar
         </button>
       </form>
+      {usarPersonalizado && (
+        <p className="mt-2 text-xs text-gray-500">
+          Mostrando o intervalo personalizado — o filtro de Mês/Ano fica em segundo plano enquanto
+          &quot;De&quot;/&quot;Até&quot; estiverem preenchidos.
+        </p>
+      )}
 
       <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
         {notas.length === 0 ? (

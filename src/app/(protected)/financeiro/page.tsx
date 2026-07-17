@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
+import ExportarFinanceiroCsv from "@/components/ExportarFinanceiroCsv";
 
 const MESES = [
   "Janeiro",
@@ -29,9 +30,15 @@ function startOfMonth(d: Date) {
 export default async function FinanceiroPage({
   searchParams,
 }: {
-  searchParams: Promise<{ mes?: string; ano?: string; pagina?: string }>;
+  searchParams: Promise<{
+    mes?: string;
+    ano?: string;
+    de?: string;
+    ate?: string;
+    pagina?: string;
+  }>;
 }) {
-  const { mes, ano, pagina: paginaRaw } = await searchParams;
+  const { mes, ano, de, ate, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
 
   const now = new Date();
@@ -41,10 +48,20 @@ export default async function FinanceiroPage({
   const anoAtual = now.getFullYear();
   const anosDisponiveis = Array.from({ length: 5 }, (_, i) => anoAtual - i);
 
+  const dePersonalizado = parseDateInputValue(de);
+  const atePersonalizadoBruto = parseDateInputValue(ate);
+  const atePersonalizado = atePersonalizadoBruto
+    ? new Date(atePersonalizadoBruto.getTime() + 24 * 60 * 60 * 1000)
+    : null;
+  const usarPersonalizado = Boolean(
+    dePersonalizado && atePersonalizado && dePersonalizado < atePersonalizado
+  );
+
   const mesNum = mes ? Number(mes) : null;
   const anoNum = ano ? Number(ano) : null;
-  const periodo =
-    mesNum && anoNum
+  const periodo = usarPersonalizado
+    ? { gte: dePersonalizado!, lt: atePersonalizado! }
+    : mesNum && anoNum
       ? { gte: new Date(anoNum, mesNum - 1, 1), lt: new Date(anoNum, mesNum, 1) }
       : anoNum
         ? { gte: new Date(anoNum, 0, 1), lt: new Date(anoNum + 1, 0, 1) }
@@ -52,8 +69,15 @@ export default async function FinanceiroPage({
 
   const where: Prisma.DespesaWhereInput = periodo ? { data: periodo } : {};
 
-  const [osPagasNoMes, osAReceber, despesasNoMes, funcionariosNoMesAgg, despesas, totalDespesas] =
-    await Promise.all([
+  const [
+    osPagasNoMes,
+    osAReceber,
+    despesasNoMes,
+    funcionariosNoMesAgg,
+    despesas,
+    totalDespesas,
+    despesasParaExport,
+  ] = await Promise.all([
       prisma.ordemServico.findMany({
         where: { pago: true, dataPagamento: { gte: inicioMes, lt: fimMes } },
         include: { itens: true },
@@ -77,6 +101,7 @@ export default async function FinanceiroPage({
         take: PAGE_SIZE,
       }),
       prisma.despesa.count({ where }),
+      prisma.despesa.findMany({ where, orderBy: { data: "desc" } }),
     ]);
 
   const recebidoNoMes = osPagasNoMes.reduce(
@@ -95,6 +120,8 @@ export default async function FinanceiroPage({
     const params = new URLSearchParams();
     if (mes) params.set("mes", mes);
     if (ano) params.set("ano", ano);
+    if (de) params.set("de", de);
+    if (ate) params.set("ate", ate);
     if (p > 1) params.set("pagina", String(p));
     const qs = params.toString();
     return qs ? `/financeiro?${qs}` : "/financeiro";
@@ -145,8 +172,17 @@ export default async function FinanceiroPage({
         />
       </div>
 
-      <div className="mt-8 flex items-center justify-between">
+      <div className="mt-8 flex items-center justify-between gap-3">
         <h2 className="text-sm font-semibold text-gray-900">Despesas</h2>
+        <ExportarFinanceiroCsv
+          resumo={{ recebidoNoMes, aReceber, despesasTotal, funcionariosNoMes, lucroNoMes }}
+          despesas={despesasParaExport}
+          nomeArquivo={
+            usarPersonalizado
+              ? `financeiro-${de}-a-${ate}.csv`
+              : `financeiro-${ano ?? anoAtual}${mes ? `-${mes.padStart(2, "0")}` : ""}.csv`
+          }
+        />
       </div>
 
       <form className="mt-3 flex flex-wrap items-end gap-3">
@@ -182,6 +218,26 @@ export default async function FinanceiroPage({
             </select>
           </div>
         </div>
+        <div className="flex flex-1 gap-3 sm:flex-none">
+          <div className="flex-1 sm:w-40 sm:flex-none">
+            <label className="block text-xs font-medium text-gray-500">De</label>
+            <input
+              type="date"
+              name="de"
+              defaultValue={de ?? ""}
+              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+            />
+          </div>
+          <div className="flex-1 sm:w-40 sm:flex-none">
+            <label className="block text-xs font-medium text-gray-500">Até</label>
+            <input
+              type="date"
+              name="ate"
+              defaultValue={ate ?? ""}
+              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+            />
+          </div>
+        </div>
         <button
           type="submit"
           className="h-[38px] rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -189,6 +245,12 @@ export default async function FinanceiroPage({
           Filtrar
         </button>
       </form>
+      {usarPersonalizado && (
+        <p className="mt-2 text-xs text-gray-500">
+          Mostrando o intervalo personalizado — o filtro de Mês/Ano fica em segundo plano enquanto
+          &quot;De&quot;/&quot;Até&quot; estiverem preenchidos.
+        </p>
+      )}
 
       <div className="mt-4 overflow-hidden rounded-xl border border-gray-200 bg-white">
         {despesas.length === 0 ? (

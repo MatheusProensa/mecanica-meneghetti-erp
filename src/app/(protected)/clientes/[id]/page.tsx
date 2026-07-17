@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
 import ClienteForm from "@/components/ClienteForm";
 import CobrancaCliente from "@/components/CobrancaCliente";
@@ -19,7 +20,7 @@ export default async function ClienteDetalhePage({
 }) {
   const { id } = await params;
 
-  const [cliente, session] = await Promise.all([
+  const [cliente, session, empresa] = await Promise.all([
     prisma.cliente.findUnique({
       where: { id },
       include: {
@@ -33,6 +34,7 @@ export default async function ClienteDetalhePage({
       },
     }),
     auth(),
+    getEmpresa(),
   ]);
 
   if (!cliente) notFound();
@@ -115,6 +117,7 @@ export default async function ClienteDetalhePage({
       {ordensAbertas.length > 0 && (
         <div>
           <CobrancaCliente
+            empresa={empresa}
             cliente={{
               nome: cliente.nome,
               telefone: formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || null,

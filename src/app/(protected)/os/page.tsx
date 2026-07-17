@@ -19,20 +19,30 @@ export default async function OSListPage({
 
   const numeroBuscado = q ? Number(q.replace(/\D/g, "")) : null;
 
-  const where: Prisma.OrdemServicoWhereInput = {
-    ...(status ? { status: status as StatusOS } : {}),
-    ...(pagamento === "pago" ? { pago: true } : {}),
-    ...(pagamento === "a_receber" ? { pago: false } : {}),
-    ...(pagamento === "atrasado" ? { pago: false, previsaoEntrega: { lt: new Date() } } : {}),
-    ...(q
-      ? {
-          OR: [
-            { cliente: { nome: { contains: q, mode: "insensitive" } } },
-            ...(numeroBuscado ? [{ id: numeroBuscado }] : []),
-          ],
-        }
-      : {}),
-  };
+  const condicoes: Prisma.OrdemServicoWhereInput[] = [];
+  if (status) condicoes.push({ status: status as StatusOS });
+  if (pagamento === "pago") condicoes.push({ pago: true });
+  if (pagamento === "a_receber") {
+    // "A receber" mostra só quem ainda está dentro do prazo (ou sem previsão definida) —
+    // quem já venceu entra no filtro "Atrasados", não nos dois ao mesmo tempo.
+    condicoes.push({
+      pago: false,
+      OR: [{ previsaoEntrega: null }, { previsaoEntrega: { gte: new Date() } }],
+    });
+  }
+  if (pagamento === "atrasado") {
+    condicoes.push({ pago: false, previsaoEntrega: { lt: new Date() } });
+  }
+  if (q) {
+    condicoes.push({
+      OR: [
+        { cliente: { nome: { contains: q, mode: "insensitive" } } },
+        ...(numeroBuscado ? [{ id: numeroBuscado }] : []),
+      ],
+    });
+  }
+
+  const where: Prisma.OrdemServicoWhereInput = condicoes.length > 0 ? { AND: condicoes } : {};
 
   // undefined = mantém o filtro atual da URL; null = remove o filtro
   function osHref(overrides: { status?: string | null; pagamento?: string | null }) {
@@ -159,64 +169,80 @@ export default async function OSListPage({
                 </tr>
               </thead>
               <tbody>
-                {ordens.map((os) => (
-                  <tr key={os.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <Link
-                        href={`/os/${os.id}`}
-                        className="font-medium text-gray-900 hover:underline"
-                      >
-                        #{String(os.id).padStart(4, "0")}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-3 text-gray-500">{os.cliente.nome}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
-                    <td className="px-6 py-3">
-                      <OSStatusSelect id={os.id} status={os.status} />
-                    </td>
-                    <td className="px-6 py-3">
-                      <OSPagoToggle
-                        id={os.id}
-                        pago={os.pago}
-                        previsaoEntrega={os.previsaoEntrega}
-                      />
-                    </td>
-                    <td className="px-6 py-3 text-gray-500">
-                      {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
-                    </td>
-                  </tr>
-                ))}
+                {ordens.map((os) => {
+                  const valor = os.itens.reduce((s, i) => s + i.valor, 0);
+                  return (
+                    <tr key={os.id} className="border-t border-gray-100 hover:bg-gray-50">
+                      <td className="px-6 py-3">
+                        <Link
+                          href={`/os/${os.id}`}
+                          className="font-medium text-gray-900 hover:underline"
+                        >
+                          #{String(os.id).padStart(4, "0")}
+                        </Link>
+                      </td>
+                      <td className="px-6 py-3 text-gray-500">{os.cliente.nome}</td>
+                      <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
+                      <td className="px-6 py-3">
+                        <OSStatusSelect id={os.id} status={os.status} />
+                      </td>
+                      <td className="px-6 py-3">
+                        <OSPagoToggle
+                          id={os.id}
+                          pago={os.pago}
+                          previsaoEntrega={os.previsaoEntrega}
+                          cliente={{
+                            nome: os.cliente.nome,
+                            telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
+                            valor,
+                          }}
+                        />
+                      </td>
+                      <td className="px-6 py-3 text-gray-500">{formatCurrency(valor)}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
 
             <div className="divide-y divide-gray-100 md:hidden">
-              {ordens.map((os) => (
-                <div key={os.id} className="px-4 py-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <Link
-                      href={`/os/${os.id}`}
-                      className="min-w-0 flex-1 truncate font-medium text-gray-900 hover:underline"
-                    >
-                      #{String(os.id).padStart(4, "0")} — {os.cliente.nome}
-                    </Link>
-                    <span className="shrink-0 text-sm font-semibold text-gray-900">
-                      {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
-                    </span>
-                  </div>
-                  <div className="mt-1.5 flex items-center justify-between gap-2">
-                    <div className="flex min-w-0 items-center gap-1.5">
-                      <OSStatusSelect id={os.id} status={os.status} compact />
-                      <OSPagoToggle
-                        id={os.id}
-                        pago={os.pago}
-                        previsaoEntrega={os.previsaoEntrega}
-                        compact
-                      />
+              {ordens.map((os) => {
+                const valor = os.itens.reduce((s, i) => s + i.valor, 0);
+                return (
+                  <div key={os.id} className="px-4 py-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <Link
+                        href={`/os/${os.id}`}
+                        className="min-w-0 flex-1 truncate font-medium text-gray-900 hover:underline"
+                      >
+                        #{String(os.id).padStart(4, "0")} — {os.cliente.nome}
+                      </Link>
+                      <span className="shrink-0 text-sm font-semibold text-gray-900">
+                        {formatCurrency(valor)}
+                      </span>
                     </div>
-                    <span className="shrink-0 text-xs text-gray-500">{formatDate(os.data)}</span>
+                    <div className="mt-1.5 flex items-center justify-between gap-2">
+                      <div className="flex min-w-0 items-center gap-1.5">
+                        <OSStatusSelect id={os.id} status={os.status} compact />
+                        <OSPagoToggle
+                          id={os.id}
+                          pago={os.pago}
+                          previsaoEntrega={os.previsaoEntrega}
+                          compact
+                          cliente={{
+                            nome: os.cliente.nome,
+                            telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
+                            valor,
+                          }}
+                        />
+                      </div>
+                      <span className="shrink-0 text-xs text-gray-500">
+                        {formatDate(os.data)}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <Pagination paginaAtual={pagina} totalItens={totalOrdens} hrefForPage={osHrefPagina} />

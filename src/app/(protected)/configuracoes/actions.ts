@@ -71,3 +71,34 @@ export async function updatePixKey(
 
   return "Dados de pagamento atualizados com sucesso.";
 }
+
+export async function updateEmpresa(
+  _prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
+  const session = await auth();
+  if (!session?.user?.email) return "Sessão inválida. Faça login novamente.";
+
+  function campo(nome: string): string {
+    const value = formData.get(nome);
+    return typeof value === "string" ? value.trim() : "";
+  }
+
+  const nome = campo("nome");
+  const endereco = campo("endereco");
+  const cidade = campo("cidade");
+  const telefone = campo("telefone");
+  const cnpj = campo("cnpj");
+
+  if (!nome || !endereco || !cidade || !telefone) {
+    return "Preencha nome, endereço, cidade e telefone.";
+  }
+
+  await prisma.empresa.upsert({
+    where: { id: "default" },
+    create: { id: "default", nome, endereco, cidade, telefone, cnpj },
+    update: { nome, endereco, cidade, telefone, cnpj },
+  });
+
+  return "Dados da empresa atualizados com sucesso.";
+}

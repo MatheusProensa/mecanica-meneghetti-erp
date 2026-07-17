@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import QRCode from "qrcode";
-import { EMPRESA } from "./business";
+import type { DadosEmpresa } from "./business";
 import { formatCurrency, formatDate } from "./format";
 import { gerarPayloadPix } from "./pixPayload";
 
@@ -20,6 +20,7 @@ export interface CobrancaCliente {
 }
 
 export interface GerarCobrancaPdfParams {
+  empresa: DadosEmpresa;
   cliente: CobrancaCliente;
   ordens: CobrancaOS[];
   pixKey?: string | null;
@@ -58,6 +59,7 @@ async function carregarLogoComprimida(): Promise<string | null> {
 }
 
 export async function gerarCobrancaPdf({
+  empresa,
   cliente,
   ordens,
   pixKey,
@@ -77,13 +79,13 @@ export async function gerarCobrancaPdf({
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
   doc.setTextColor(17, 24, 39);
-  doc.text(EMPRESA.nome, infoX, 18);
+  doc.text(empresa.nome, infoX, 18);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(107, 114, 128);
-  doc.text(EMPRESA.endereco, infoX, 24);
-  doc.text(`Tel: ${EMPRESA.telefone}  •  CNPJ: ${EMPRESA.cnpj}`, infoX, 29);
+  doc.text(empresa.endereco, infoX, 24);
+  doc.text(`Tel: ${empresa.telefone}  •  CNPJ: ${empresa.cnpj}`, infoX, 29);
 
   doc.setDrawColor(229, 231, 235);
   doc.line(marginX, 38, pageWidth - marginX, 38);
@@ -165,8 +167,8 @@ export async function gerarCobrancaPdf({
     try {
       const payload = gerarPayloadPix({
         chave: pixKey,
-        nomeRecebedor: EMPRESA.nome,
-        cidade: EMPRESA.cidade,
+        nomeRecebedor: empresa.nome,
+        cidade: empresa.cidade,
         valor: total,
       });
       qrDataUrl = await QRCode.toDataURL(payload, { margin: 1, width: 300 });

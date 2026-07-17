@@ -2,10 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import type { StatusOS } from "@/generated/prisma/client";
 import { parseCurrencyBR } from "@/lib/format";
 import { requireAuth } from "@/lib/requireAuth";
+import { uploadOSFoto, deleteOSFoto } from "@/lib/supabase-storage";
+import { assinaturaCondizComTipo } from "@/lib/fileSignature";
+
+const ALLOWED_FOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 const STATUS_VALIDOS: StatusOS[] = [
   "aberta",
@@ -131,4 +136,32 @@ export async function deleteOS(id: number) {
   revalidatePath("/os");
   revalidatePath("/");
   redirect(`/os?sucesso=${encodeURIComponent("Ordem de serviço excluída")}`);
+}
+
+export async function addAnexoOS(id: number, formData: FormData) {
+  await requireAuth();
+  const file = formData.get("foto");
+  if (!(file instanceof File) || file.size === 0) throw new Error("Selecione uma foto");
+  if (!ALLOWED_FOTO_TYPES.has(file.type)) {
+    throw new Error("A foto precisa ser uma imagem (JPG, PNG, WEBP ou GIF)");
+  }
+
+  const bytes = Buffer.from(await file.arrayBuffer());
+  if (!assinaturaCondizComTipo(bytes, file.type)) {
+    throw new Error("O arquivo enviado não corresponde a uma imagem válida");
+  }
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const fileName = `os-${id}-${randomUUID()}-${safeName}`;
+  const path = await uploadOSFoto(fileName, bytes, file.type);
+
+  await prisma.anexoOS.create({ data: { ordemServicoId: id, path } });
+  revalidatePath(`/os/${id}`);
+}
+
+export async function deleteAnexoOS(id: string, osId: number) {
+  await requireAuth();
+  const anexo = await prisma.anexoOS.findUniqueOrThrow({ where: { id } });
+  await prisma.anexoOS.delete({ where: { id } });
+  await deleteOSFoto(anexo.path).catch(() => {});
+  revalidatePath(`/os/${osId}`);
 }

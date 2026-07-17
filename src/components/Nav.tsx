@@ -13,7 +13,6 @@ import {
   Settings,
   HelpCircle,
   LogOut,
-  UserCog,
   X,
 } from "lucide-react";
 import { logoutAction } from "@/app/(protected)/actions";
@@ -24,7 +23,6 @@ const links = [
   { href: "/os", label: "Ordens de Serviço", icon: Wrench },
   { href: "/financeiro", label: "Financeiro", icon: Wallet },
   { href: "/notas", label: "Notas", icon: FileText },
-  { href: "/mecanicos", label: "Mecânicos", icon: UserCog },
 ];
 
 const secondaryLinks = [

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Download, Share2 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { gerarCobrancaPdf, type CobrancaOS } from "@/lib/gerarCobrancaPdf";
+import type { DadosEmpresa } from "@/lib/business";
 
 type NavigatorComShare = Navigator & {
   canShare?: (data: { files: File[] }) => boolean;
@@ -25,11 +26,13 @@ function nomeArquivo(nomeCliente: string) {
 }
 
 export default function CobrancaCliente({
+  empresa,
   cliente,
   ordensAbertas,
   pixKeyPadrao,
   dadosBancariosPadrao,
 }: {
+  empresa: DadosEmpresa;
   cliente: {
     nome: string;
     telefone?: string | null;
@@ -67,6 +70,7 @@ export default function CobrancaCliente({
 
   async function montarPdf() {
     return gerarCobrancaPdf({
+      empresa,
       cliente,
       ordens: ordensSelecionadas,
       pixKey: incluirPix ? pixKeyPadrao : null,
