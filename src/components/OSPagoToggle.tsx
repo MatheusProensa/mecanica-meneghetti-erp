@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { CheckCircle2, MessageCircle } from "lucide-react";
+import { CheckCircle2, MessageCircle, Undo2 } from "lucide-react";
 import { toggleOSPago } from "@/app/(protected)/os/actions";
 import { StatusBadge, pagamentoInfo } from "@/components/ui/StatusBadge";
 import { formatCurrency, whatsappUrl } from "@/lib/format";
@@ -61,17 +61,29 @@ export default function OSPagoToggle({
               Marcar como pago
             </button>
           ))}
-        {!readOnly && pago && (
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => startTransition(() => toggleOSPago(id, false))}
-            title="Desmarcar pagamento"
-            className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-60"
-          >
-            desfazer
-          </button>
-        )}
+        {!readOnly &&
+          pago &&
+          (compact ? (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => startTransition(() => toggleOSPago(id, false))}
+              title="Desmarcar pagamento"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-60"
+            >
+              <Undo2 className="h-3.5 w-3.5" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => startTransition(() => toggleOSPago(id, false))}
+              title="Desmarcar pagamento"
+              className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-60"
+            >
+              desfazer
+            </button>
+          ))}
       </div>
       {cobrancaUrl && (
         <a
