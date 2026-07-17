@@ -32,58 +32,63 @@ export default function OSPagoToggle({
       : null;
 
   return (
-    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+    <div
+      className={compact ? "flex items-center gap-1.5" : "flex flex-col items-start gap-1.5"}
+      onClick={(e) => e.stopPropagation()}
+    >
       <StatusBadge label={info.label} tone={info.tone} />
-      {cobrancaUrl && (
-        <a
-          href={cobrancaUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Cobrar no WhatsApp"
-          className={
-            compact
-              ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-green-200 text-green-700 hover:bg-green-50"
-              : "flex items-center gap-1 rounded-md border border-green-200 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-50"
-          }
-        >
-          <MessageCircle className="h-3.5 w-3.5" />
-          {!compact && "Cobrar"}
-        </a>
-      )}
-      {!pago &&
-        (compact ? (
+      <div className={compact ? "contents" : "flex items-center gap-1.5"}>
+        {cobrancaUrl && (
+          <a
+            href={cobrancaUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Cobrar no WhatsApp"
+            className={
+              compact
+                ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-green-200 text-green-700 hover:bg-green-50"
+                : "flex items-center gap-1 rounded-md border border-green-200 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-50"
+            }
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            {!compact && "Cobrar"}
+          </a>
+        )}
+        {!pago &&
+          (compact ? (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => startTransition(() => toggleOSPago(id, true))}
+              title="Marcar como pago"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-green-200 text-green-700 hover:bg-green-50 disabled:opacity-60"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => startTransition(() => toggleOSPago(id, true))}
+              title="Marcar como pago"
+              className="flex items-center gap-1 rounded-md border border-green-200 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-50 disabled:opacity-60"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Marcar como pago
+            </button>
+          ))}
+        {pago && (
           <button
             type="button"
             disabled={pending}
-            onClick={() => startTransition(() => toggleOSPago(id, true))}
-            title="Marcar como pago"
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-green-200 text-green-700 hover:bg-green-50 disabled:opacity-60"
+            onClick={() => startTransition(() => toggleOSPago(id, false))}
+            title="Desmarcar pagamento"
+            className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-60"
           >
-            <CheckCircle2 className="h-3.5 w-3.5" />
+            desfazer
           </button>
-        ) : (
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => startTransition(() => toggleOSPago(id, true))}
-            title="Marcar como pago"
-            className="flex items-center gap-1 rounded-md border border-green-200 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-50 disabled:opacity-60"
-          >
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            Marcar como pago
-          </button>
-        ))}
-      {pago && (
-        <button
-          type="button"
-          disabled={pending}
-          onClick={() => startTransition(() => toggleOSPago(id, false))}
-          title="Desmarcar pagamento"
-          className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-60"
-        >
-          desfazer
-        </button>
-      )}
+        )}
+      </div>
     </div>
   );
 }
