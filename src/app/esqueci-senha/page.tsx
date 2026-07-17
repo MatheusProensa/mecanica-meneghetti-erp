@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { useActionState } from "react";
-import { loginAction } from "./actions";
+import { requestPasswordReset } from "./actions";
 
-export default function LoginPage() {
-  const [error, formAction, pending] = useActionState(loginAction, undefined);
+export default function EsqueciSenhaPage() {
+  const [message, formAction, pending] = useActionState(requestPasswordReset, undefined);
 
   return (
     <div className="flex flex-1 items-center justify-center bg-sidebar px-4">
@@ -21,15 +21,12 @@ export default function LoginPage() {
           priority
         />
         <p className="mt-3 text-center text-sm text-gray-500">
-          Entre com seu e-mail e senha para acessar o sistema.
+          Informe seu e-mail para receber um link de redefinição de senha.
         </p>
 
         <form action={formAction} className="mt-6 space-y-4">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               E-mail
             </label>
             <input
@@ -42,27 +39,8 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Senha
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autoComplete="current-password"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
-
-          {error && (
-            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-              {error}
-            </p>
+          {message && (
+            <p className="rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-700">{message}</p>
           )}
 
           <button
@@ -70,15 +48,15 @@ export default function LoginPage() {
             disabled={pending}
             className="w-full rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-60"
           >
-            {pending ? "Entrando..." : "Entrar"}
+            {pending ? "Enviando..." : "Enviar link de redefinição"}
           </button>
         </form>
 
         <Link
-          href="/esqueci-senha"
+          href="/login"
           className="mt-4 block text-center text-sm text-gray-500 hover:underline"
         >
-          Esqueci minha senha
+          ← Voltar para o login
         </Link>
       </div>
     </div>

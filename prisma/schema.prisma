@@ -20,24 +20,48 @@ model User {
   failedLoginAttempts Int       @default(0)
   lockedUntil         DateTime?
   createdAt           DateTime  @default(now())
+
+  resetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 model Cliente {
-  id           String   @id @default(cuid())
-  nome         String
-  cpfCnpj      String?
-  telefone     String?
-  whatsapp     String?
-  cidade       String?
-  endereco     String?
-  email        String?
-  observacoes  String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  nome        String
+  cpfCnpj     String?
+  telefone    String?
+  whatsapp    String?
+  cidade      String?
+  endereco    String?
+  email       String?
+  observacoes String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   ordensServico OrdemServico[]
+  notas         Nota[]
 
   @@index([nome])
+}
+
+model Mecanico {
+  id        String   @id @default(cuid())
+  nome      String
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  ordensServico OrdemServico[]
 }
 
 enum StatusOS {
@@ -51,26 +75,30 @@ enum StatusOS {
 }
 
 model OrdemServico {
-  id                  Int      @id @default(autoincrement())
-  data                DateTime @default(now())
+  id                  Int       @id @default(autoincrement())
+  data                DateTime  @default(now())
   clienteId           String
-  cliente             Cliente  @relation(fields: [clienteId], references: [id])
-  telefone             String?
-  status              StatusOS @default(aberta)
+  cliente             Cliente   @relation(fields: [clienteId], references: [id])
+  telefone            String?
+  status              StatusOS  @default(aberta)
   mecanicoResponsavel String?
+  mecanicoId          String?
+  mecanico            Mecanico? @relation(fields: [mecanicoId], references: [id], onDelete: SetNull)
   previsaoEntrega     DateTime?
   formaPagamento      String?
   observacoes         String?
-  pago                Boolean  @default(false)
+  pago                Boolean   @default(false)
   dataPagamento       DateTime?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   itens ItemServico[]
+  notas Nota[]
 
   @@index([clienteId])
   @@index([status])
   @@index([pago])
+  @@index([mecanicoId])
 }
 
 model ItemServico {
@@ -89,17 +117,23 @@ enum TipoNota {
 }
 
 model Nota {
-  id             String   @id @default(cuid())
+  id             String        @id @default(cuid())
   numero         String
   dataEmissao    DateTime
   tipo           TipoNota
   valor          Float?
   observacoes    String?
   arquivoPdfPath String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  clienteId      String?
+  cliente        Cliente?      @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  ordemServicoId Int?
+  ordemServico   OrdemServico? @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@index([tipo])
+  @@index([clienteId])
+  @@index([ordemServicoId])
 }
 
 model Despesa {

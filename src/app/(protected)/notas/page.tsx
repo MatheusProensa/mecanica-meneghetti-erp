@@ -67,6 +67,7 @@ export default async function NotasPage({
   const [notas, totalNotas, todasParaAgregados] = await Promise.all([
     prisma.nota.findMany({
       where,
+      include: { cliente: true },
       orderBy: { dataEmissao: "desc" },
       skip: (pagina - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
@@ -231,6 +232,9 @@ export default async function NotasPage({
                     Emissão
                   </th>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                    Cliente
+                  </th>
+                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
                     Observações
                   </th>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
@@ -254,6 +258,15 @@ export default async function NotasPage({
                       <StatusBadge {...notaTipoMap[nota.tipo]} />
                     </td>
                     <td className="px-6 py-3 text-gray-500">{formatDate(nota.dataEmissao)}</td>
+                    <td className="px-6 py-3 text-gray-500">
+                      {nota.cliente ? (
+                        <Link href={`/clientes/${nota.cliente.id}`} className="hover:underline">
+                          {nota.cliente.nome}
+                        </Link>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
                     <td className="max-w-xs truncate px-6 py-3 text-gray-500">
                       {nota.observacoes ?? "-"}
                     </td>
@@ -291,7 +304,10 @@ export default async function NotasPage({
                     </Link>
                     <StatusBadge {...notaTipoMap[nota.tipo]} />
                   </div>
-                  <p className="mt-1 text-sm text-gray-500">{formatDate(nota.dataEmissao)}</p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {formatDate(nota.dataEmissao)}
+                    {nota.cliente ? ` · ${nota.cliente.nome}` : ""}
+                  </p>
                   {nota.observacoes && (
                     <p className="mt-1 text-sm text-gray-500">{nota.observacoes}</p>
                   )}

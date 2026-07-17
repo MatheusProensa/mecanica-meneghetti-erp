@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
+import { formatCurrency, formatDate } from "@/lib/format";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
+import WhatsAppLink from "@/components/ui/WhatsAppLink";
 
 export default async function ClientesPage({
   searchParams,
@@ -125,7 +126,9 @@ export default async function ClientesPage({
                         {cliente.cpfCnpj ?? <span className="text-gray-300">não informado</span>}
                       </td>
                       <td className="px-6 py-3 text-gray-500">
-                        {formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || (
+                        {cliente.telefone || cliente.whatsapp ? (
+                          <WhatsAppLink phone={cliente.telefone ?? cliente.whatsapp} />
+                        ) : (
                           <span className="text-gray-300">não informado</span>
                         )}
                       </td>
@@ -158,12 +161,13 @@ export default async function ClientesPage({
                 );
 
                 return (
-                  <Link
-                    key={cliente.id}
-                    href={`/clientes/${cliente.id}`}
-                    className="block px-4 py-3 active:bg-gray-50"
-                  >
-                    <div className="flex items-center justify-between gap-2">
+                  <div key={cliente.id} className="relative px-4 py-3 active:bg-gray-50">
+                    <Link
+                      href={`/clientes/${cliente.id}`}
+                      className="absolute inset-0 active:bg-gray-50"
+                      aria-label={cliente.nome}
+                    />
+                    <div className="pointer-events-none flex items-center justify-between gap-2">
                       <p className="font-medium text-gray-900">{cliente.nome}</p>
                       {cliente.cidade && (
                         <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
@@ -171,11 +175,18 @@ export default async function ClientesPage({
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 truncate text-sm text-gray-500">
-                      {formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || "Telefone não informado"}
+                    <p className="relative mt-1 truncate text-sm text-gray-500">
+                      {cliente.telefone || cliente.whatsapp ? (
+                        <WhatsAppLink
+                          phone={cliente.telefone ?? cliente.whatsapp}
+                          className="pointer-events-auto relative z-10"
+                        />
+                      ) : (
+                        "Telefone não informado"
+                      )}
                       {cliente.cpfCnpj ? ` · ${cliente.cpfCnpj}` : ""}
                     </p>
-                    <div className="mt-1.5 flex items-center justify-between text-sm">
+                    <div className="pointer-events-none mt-1.5 flex items-center justify-between text-sm">
                       <span className="font-medium text-gray-900">
                         {formatCurrency(totalGasto)}
                       </span>
@@ -183,7 +194,7 @@ export default async function ClientesPage({
                         {ultimaVisita ? formatDate(ultimaVisita) : "nunca"}
                       </span>
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>

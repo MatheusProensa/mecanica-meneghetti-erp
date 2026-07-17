@@ -23,6 +23,7 @@ export default async function OSListPage({
     ...(status ? { status: status as StatusOS } : {}),
     ...(pagamento === "pago" ? { pago: true } : {}),
     ...(pagamento === "a_receber" ? { pago: false } : {}),
+    ...(pagamento === "atrasado" ? { pago: false, previsaoEntrega: { lt: new Date() } } : {}),
     ...(q
       ? {
           OR: [
@@ -122,6 +123,11 @@ export default async function OSListPage({
             label="Pagos"
             href={osHref({ pagamento: "pago" })}
             active={pagamento === "pago"}
+          />
+          <FilterLink
+            label="Atrasados"
+            href={osHref({ pagamento: "atrasado" })}
+            active={pagamento === "atrasado"}
           />
         </div>
       </div>

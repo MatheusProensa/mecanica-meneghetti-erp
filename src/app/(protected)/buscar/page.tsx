@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
+import { formatCurrency, formatDate } from "@/lib/format";
 import EmptyState from "@/components/ui/EmptyState";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
+import WhatsAppLink from "@/components/ui/WhatsAppLink";
 
 export default async function BuscarPage({
   searchParams,
@@ -32,6 +33,7 @@ export default async function BuscarPage({
             OR: [
               { cliente: { nome: { contains: query, mode: "insensitive" } } },
               { mecanicoResponsavel: { contains: query, mode: "insensitive" } },
+              { mecanico: { nome: { contains: query, mode: "insensitive" } } },
               { observacoes: { contains: query, mode: "insensitive" } },
               ...(numeroBuscado ? [{ id: numeroBuscado }] : []),
             ],
@@ -91,7 +93,11 @@ export default async function BuscarPage({
                       </Link>
                     </td>
                     <td className="px-6 py-3 text-gray-500">
-                      {formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || "-"}
+                      {cliente.telefone || cliente.whatsapp ? (
+                        <WhatsAppLink phone={cliente.telefone ?? cliente.whatsapp} />
+                      ) : (
+                        "-"
+                      )}
                     </td>
                     <td className="px-6 py-3 text-gray-500">{cliente.cpfCnpj ?? "-"}</td>
                   </tr>
@@ -101,17 +107,25 @@ export default async function BuscarPage({
 
             <div className="divide-y divide-gray-100 md:hidden">
               {clientes.map((cliente) => (
-                <Link
-                  key={cliente.id}
-                  href={`/clientes/${cliente.id}`}
-                  className="block px-4 py-3 active:bg-gray-50"
-                >
-                  <p className="font-medium text-gray-900">{cliente.nome}</p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {formatPhoneBR(cliente.telefone ?? cliente.whatsapp) || "Telefone não informado"}
+                <div key={cliente.id} className="relative px-4 py-3 active:bg-gray-50">
+                  <Link
+                    href={`/clientes/${cliente.id}`}
+                    className="absolute inset-0 active:bg-gray-50"
+                    aria-label={cliente.nome}
+                  />
+                  <p className="pointer-events-none font-medium text-gray-900">{cliente.nome}</p>
+                  <p className="relative mt-1 text-sm text-gray-500">
+                    {cliente.telefone || cliente.whatsapp ? (
+                      <WhatsAppLink
+                        phone={cliente.telefone ?? cliente.whatsapp}
+                        className="pointer-events-auto relative z-10"
+                      />
+                    ) : (
+                      "Telefone não informado"
+                    )}
                     {cliente.cpfCnpj ? ` · ${cliente.cpfCnpj}` : ""}
                   </p>
-                </Link>
+                </div>
               ))}
             </div>
           </div>

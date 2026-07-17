@@ -8,7 +8,8 @@ import CobrancaCliente from "@/components/CobrancaCliente";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
-import { StatusBadge, osStatusMap } from "@/components/ui/StatusBadge";
+import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
+import WhatsAppLink from "@/components/ui/WhatsAppLink";
 import { updateCliente, deleteCliente } from "../actions";
 
 export default async function ClienteDetalhePage({
@@ -25,6 +26,9 @@ export default async function ClienteDetalhePage({
         ordensServico: {
           include: { itens: true },
           orderBy: { data: "desc" },
+        },
+        notas: {
+          orderBy: { dataEmissao: "desc" },
         },
       },
     }),
@@ -67,6 +71,9 @@ export default async function ClienteDetalhePage({
             ← Clientes
           </Link>
           <h1 className="mt-1 text-xl font-semibold text-gray-900">{cliente.nome}</h1>
+          {(cliente.telefone || cliente.whatsapp) && (
+            <WhatsAppLink phone={cliente.telefone ?? cliente.whatsapp} className="mt-1" />
+          )}
         </div>
         <ConfirmModal
           triggerLabel="Excluir cliente"
@@ -204,6 +211,49 @@ export default async function ClienteDetalhePage({
                 ))}
               </div>
             </>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-gray-900">Notas vinculadas</h2>
+          <Link
+            href={`/notas/nova`}
+            className="text-sm font-medium text-blue-600 hover:text-blue-700"
+          >
+            + Nova nota
+          </Link>
+        </div>
+
+        <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+          {cliente.notas.length === 0 ? (
+            <EmptyState
+              icon="file-text"
+              title="Nenhuma nota vinculada"
+              description="Notas emitidas ou recebidas para este cliente aparecem aqui."
+            />
+          ) : (
+            <div className="divide-y divide-gray-100">
+              {cliente.notas.map((nota) => (
+                <Link
+                  key={nota.id}
+                  href={`/notas/${nota.id}`}
+                  className="flex items-center justify-between gap-2 px-4 py-3 hover:bg-gray-50 sm:px-6"
+                >
+                  <div>
+                    <p className="font-medium text-gray-900">{nota.numero}</p>
+                    <p className="text-sm text-gray-500">{formatDate(nota.dataEmissao)}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <StatusBadge {...notaTipoMap[nota.tipo]} />
+                    <span className="text-sm text-gray-600">
+                      {nota.valor !== null ? formatCurrency(nota.valor) : "-"}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           )}
         </div>
       </div>

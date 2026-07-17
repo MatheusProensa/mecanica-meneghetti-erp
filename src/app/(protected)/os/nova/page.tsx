@@ -8,7 +8,10 @@ export default async function NovaOSPage({
   searchParams: Promise<{ clienteId?: string }>;
 }) {
   const { clienteId } = await searchParams;
-  const clientes = await prisma.cliente.findMany({ orderBy: { nome: "asc" } });
+  const [clientes, mecanicos] = await Promise.all([
+    prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
+    prisma.mecanico.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
+  ]);
 
   return (
     <div className="max-w-2xl">
@@ -16,7 +19,12 @@ export default async function NovaOSPage({
         Nova ordem de serviço
       </h1>
       <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
-        <OSForm clientes={clientes} defaultClienteId={clienteId} action={createOS} />
+        <OSForm
+          clientes={clientes}
+          mecanicos={mecanicos}
+          defaultClienteId={clienteId}
+          action={createOS}
+        />
       </div>
     </div>
   );

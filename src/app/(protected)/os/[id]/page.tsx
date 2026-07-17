@@ -16,12 +16,13 @@ export default async function OSDetalhePage({
   const osId = Number(id);
   if (!Number.isInteger(osId)) notFound();
 
-  const [os, clientes] = await Promise.all([
+  const [os, clientes, mecanicos] = await Promise.all([
     prisma.ordemServico.findUnique({
       where: { id: osId },
       include: { itens: true, cliente: true },
     }),
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
+    prisma.mecanico.findMany({ orderBy: { nome: "asc" } }),
   ]);
 
   if (!os) notFound();
@@ -53,7 +54,7 @@ export default async function OSDetalhePage({
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-        <OSForm clientes={clientes} os={os} action={updateOSWithId} />
+        <OSForm clientes={clientes} mecanicos={mecanicos} os={os} action={updateOSWithId} />
       </div>
     </div>
   );

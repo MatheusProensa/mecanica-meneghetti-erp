@@ -1,4 +1,4 @@
-import type { Nota } from "@/generated/prisma/client";
+import type { Cliente, Nota } from "@/generated/prisma/client";
 import CurrencyInput from "./CurrencyInput";
 
 function toDateInputValue(date: Date | null | undefined): string {
@@ -9,10 +9,14 @@ function toDateInputValue(date: Date | null | undefined): string {
 export default function NotaForm({
   nota,
   pdfUrl,
+  clientes,
+  ordens,
   action,
 }: {
   nota?: Nota;
   pdfUrl?: string | null;
+  clientes: Cliente[];
+  ordens: { id: number; clienteNome: string }[];
   action: (formData: FormData) => void;
 }) {
   return (
@@ -71,6 +75,44 @@ export default function NotaForm({
             placeholder="Deixe em branco se não souber"
             className="mt-1 w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+        </div>
+
+        <div>
+          <label htmlFor="clienteId" className="block text-sm font-medium text-gray-700">
+            Cliente
+          </label>
+          <select
+            id="clienteId"
+            name="clienteId"
+            defaultValue={nota?.clienteId ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="">Não vinculada</option>
+            {clientes.map((cliente) => (
+              <option key={cliente.id} value={cliente.id}>
+                {cliente.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="ordemServicoId" className="block text-sm font-medium text-gray-700">
+            Ordem de Serviço
+          </label>
+          <select
+            id="ordemServicoId"
+            name="ordemServicoId"
+            defaultValue={nota?.ordemServicoId ?? ""}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="">Não vinculada</option>
+            {ordens.map((os) => (
+              <option key={os.id} value={os.id}>
+                #{String(os.id).padStart(4, "0")} — {os.clienteNome}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 

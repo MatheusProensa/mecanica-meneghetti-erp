@@ -41,6 +41,14 @@ export function formatPhoneBR(value: string | null | undefined): string {
   return out.trimEnd();
 }
 
+/** Monta o link do WhatsApp (wa.me) a partir de um telefone brasileiro. Retorna null se não houver dígitos suficientes. */
+export function whatsappUrl(value: string | null | undefined): string | null {
+  const digits = (value ?? "").replace(/\D/g, "");
+  if (digits.length < 10) return null;
+  const comCodigoPais = digits.length <= 11 ? `55${digits}` : digits;
+  return `https://wa.me/${comCodigoPais}`;
+}
+
 /**
  * Formata progressivamente um valor em reais enquanto o usuário digita:
  * separador de milhar "." e decimal ",". Ex: "1520" -> "1.520", "1520,5" -> "1.520,5".

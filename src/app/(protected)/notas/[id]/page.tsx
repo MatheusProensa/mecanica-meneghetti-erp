@@ -17,7 +17,26 @@ export default async function NotaDetalhePage({
 
   if (!nota) notFound();
 
-  const pdfUrl = nota.arquivoPdfPath ? await getSignedPdfUrl(nota.arquivoPdfPath) : null;
+  const [pdfUrl, clientes, ordensRecentes, ordemVinculada] = await Promise.all([
+    nota.arquivoPdfPath ? getSignedPdfUrl(nota.arquivoPdfPath) : Promise.resolve(null),
+    prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
+    prisma.ordemServico.findMany({
+      include: { cliente: true },
+      orderBy: { id: "desc" },
+      take: 100,
+    }),
+    nota.ordemServicoId
+      ? prisma.ordemServico.findUnique({
+          where: { id: nota.ordemServicoId },
+          include: { cliente: true },
+        })
+      : Promise.resolve(null),
+  ]);
+
+  const ordens =
+    ordemVinculada && !ordensRecentes.some((os) => os.id === ordemVinculada.id)
+      ? [ordemVinculada, ...ordensRecentes]
+      : ordensRecentes;
 
   const updateNotaWithId = updateNota.bind(null, nota.id);
   const deleteNotaWithId = deleteNota.bind(null, nota.id);
@@ -42,7 +61,13 @@ export default async function NotaDetalhePage({
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
-        <NotaForm nota={nota} pdfUrl={pdfUrl} action={updateNotaWithId} />
+        <NotaForm
+          nota={nota}
+          pdfUrl={pdfUrl}
+          clientes={clientes}
+          ordens={ordens.map((os) => ({ id: os.id, clienteNome: os.cliente.nome }))}
+          action={updateNotaWithId}
+        />
       </div>
     </div>
   );

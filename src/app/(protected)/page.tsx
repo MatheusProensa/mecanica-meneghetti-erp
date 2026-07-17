@@ -146,6 +146,7 @@ export default async function DashboardPage({
     osPagasNoMes,
     osAReceber,
     despesasNoMesAgg,
+    osAtrasadasCount,
   ] = await Promise.all([
     prisma.ordemServico.findMany({
       where: { data: { gte: inicioPeriodo, lt: fimConsultaPeriodo } },
@@ -174,6 +175,9 @@ export default async function DashboardPage({
     prisma.despesa.aggregate({
       where: { data: { gte: inicioMes, lt: fimMes } },
       _sum: { valor: true },
+    }),
+    prisma.ordemServico.count({
+      where: { pago: false, status: { not: "cancelada" }, previsaoEntrega: { lt: now } },
     }),
   ]);
 
@@ -254,7 +258,7 @@ export default async function DashboardPage({
             Ver detalhes →
           </Link>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <MetricCard
             icon="trending-up"
             iconColor="text-green-600"
@@ -273,8 +277,17 @@ export default async function DashboardPage({
             iconColor="text-red-600"
             label="Despesas no mês"
             value={formatCurrency(despesasNoMes)}
-            className="col-span-2 lg:col-span-1"
           />
+          <Link href="/os?pagamento=atrasado" className="block">
+            <MetricCard
+              icon="alert-triangle"
+              iconColor="text-red-600"
+              label="OS atrasadas"
+              value={osAtrasadasCount}
+              context={osAtrasadasCount > 0 ? "cobrança vencida" : "tudo em dia"}
+              highlight={osAtrasadasCount > 0 ? "danger" : undefined}
+            />
+          </Link>
         </div>
       </div>
 

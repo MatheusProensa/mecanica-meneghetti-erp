@@ -51,12 +51,17 @@ function buildData(formData: FormData) {
     throw new Error("Valor precisa ser maior que zero");
   }
 
+  const ordemServicoIdRaw = str(formData, "ordemServicoId");
+  const ordemServicoId = ordemServicoIdRaw ? Number(ordemServicoIdRaw) : null;
+
   return {
     numero: str(formData, "numero") ?? "",
     dataEmissao: dataEmissaoRaw ? new Date(dataEmissaoRaw) : new Date(),
     tipo: tipoNota(formData),
     valor,
     observacoes: str(formData, "observacoes"),
+    clienteId: str(formData, "clienteId"),
+    ordemServicoId: ordemServicoId && Number.isInteger(ordemServicoId) ? ordemServicoId : null,
   };
 }
 

@@ -1,6 +1,6 @@
 import OSItemsEditor from "./OSItemsEditor";
 import PhoneInput from "@/components/PhoneInput";
-import type { Cliente, OrdemServico, ItemServico } from "@/generated/prisma/client";
+import type { Cliente, Mecanico, OrdemServico, ItemServico } from "@/generated/prisma/client";
 
 const statusOptions = [
   { value: "aberta", label: "Aberta" },
@@ -19,11 +19,13 @@ function toDateInputValue(date: Date | null | undefined): string {
 
 export default function OSForm({
   clientes,
+  mecanicos,
   os,
   defaultClienteId,
   action,
 }: {
   clientes: Cliente[];
+  mecanicos: Mecanico[];
   os?: OrdemServico & { itens: ItemServico[] };
   defaultClienteId?: string;
   action: (formData: FormData) => void;
@@ -80,17 +82,29 @@ export default function OSForm({
 
         <div>
           <label
-            htmlFor="mecanicoResponsavel"
+            htmlFor="mecanicoId"
             className="block text-sm font-medium text-gray-700"
           >
             Mecânico responsável
           </label>
-          <input
-            id="mecanicoResponsavel"
-            name="mecanicoResponsavel"
-            defaultValue={os?.mecanicoResponsavel ?? ""}
+          <select
+            id="mecanicoId"
+            name="mecanicoId"
+            defaultValue={os?.mecanicoId ?? ""}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
-          />
+          >
+            <option value="">Não definido</option>
+            {mecanicos.map((mecanico) => (
+              <option key={mecanico.id} value={mecanico.id}>
+                {mecanico.nome}
+              </option>
+            ))}
+          </select>
+          {!os?.mecanicoId && os?.mecanicoResponsavel && (
+            <p className="mt-1 text-xs text-gray-400">
+              Registro anterior: {os.mecanicoResponsavel}
+            </p>
+          )}
         </div>
 
         <div>
