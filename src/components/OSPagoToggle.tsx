@@ -46,8 +46,8 @@ export default function OSPagoToggle({
             title="Cobrar no WhatsApp"
             className={
               compact
-                ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-green-200 text-green-700 hover:bg-green-50"
-                : "flex items-center gap-1 rounded-md border border-green-200 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-50"
+                ? "flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-green-700 hover:bg-green-50"
+                : "flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-medium text-green-700 hover:bg-green-50 hover:underline"
             }
           >
             <MessageCircle className="h-3.5 w-3.5" />
@@ -61,7 +61,7 @@ export default function OSPagoToggle({
               disabled={pending}
               onClick={() => startTransition(() => toggleOSPago(id, true))}
               title="Marcar como pago"
-              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-green-200 text-green-700 hover:bg-green-50 disabled:opacity-60"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
             </button>
@@ -71,7 +71,7 @@ export default function OSPagoToggle({
               disabled={pending}
               onClick={() => startTransition(() => toggleOSPago(id, true))}
               title="Marcar como pago"
-              className="flex items-center gap-1 rounded-md border border-green-200 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-50 disabled:opacity-60"
+              className="flex items-center gap-1 rounded-md bg-green-600 px-2 py-1 text-xs font-medium text-white shadow-sm hover:bg-green-700 disabled:opacity-60"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               Marcar como pago
