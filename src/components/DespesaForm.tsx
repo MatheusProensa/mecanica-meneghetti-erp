@@ -26,11 +26,13 @@ export default function DespesaForm({
   itens,
   anexoUrl,
   action,
+  readOnly = false,
 }: {
   despesa?: Despesa;
   itens?: DespesaItem[];
   anexoUrl?: string | null;
   action: (formData: FormData) => void;
+  readOnly?: boolean;
 }) {
   const [categoria, setCategoria] = useState(despesa?.categoria ?? "");
   const [valor, setValor] = useState(() => formatNumberToCurrencyInput(despesa?.valor));
@@ -39,6 +41,7 @@ export default function DespesaForm({
 
   return (
     <form action={action} className="space-y-4">
+      <fieldset disabled={readOnly} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="categoria" className="block text-sm font-medium text-gray-700">
@@ -171,13 +174,16 @@ export default function DespesaForm({
           </div>
         )}
       </div>
+      </fieldset>
 
-      <button
-        type="submit"
-        className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
-      >
-        {despesa ? "Salvar alterações" : "Cadastrar despesa"}
-      </button>
+      {!readOnly && (
+        <button
+          type="submit"
+          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
+        >
+          {despesa ? "Salvar alterações" : "Cadastrar despesa"}
+        </button>
+      )}
     </form>
   );
 }

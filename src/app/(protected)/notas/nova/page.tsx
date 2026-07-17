@@ -1,8 +1,14 @@
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import NotaForm from "@/components/NotaForm";
 import { createNota } from "../actions";
 
 export default async function NovaNotaPage() {
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
+  if (!usuario.permissoes.editar) redirect("/notas");
+
   const [clientes, ordens] = await Promise.all([
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
     prisma.ordemServico.findMany({

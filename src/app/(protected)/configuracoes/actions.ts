@@ -3,6 +3,7 @@
 import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requirePermission } from "@/lib/requireAuth";
 
 export async function updatePassword(
   _prevState: string | undefined,
@@ -51,6 +52,11 @@ export async function updatePixKey(
 ): Promise<string | undefined> {
   const session = await auth();
   if (!session?.user?.email) return "Sessão inválida. Faça login novamente.";
+  try {
+    await requirePermission("acessarConfiguracoes");
+  } catch {
+    return "Você não tem permissão para alterar dados de pagamento.";
+  }
 
   const pixKeyRaw = formData.get("pixKey");
   const pixKey = typeof pixKeyRaw === "string" && pixKeyRaw.trim() ? pixKeyRaw.trim() : null;
@@ -78,6 +84,11 @@ export async function updateEmpresa(
 ): Promise<string | undefined> {
   const session = await auth();
   if (!session?.user?.email) return "Sessão inválida. Faça login novamente.";
+  try {
+    await requirePermission("acessarConfiguracoes");
+  } catch {
+    return "Você não tem permissão para alterar os dados da empresa.";
+  }
 
   function campo(nome: string): string {
     const value = formData.get(nome);

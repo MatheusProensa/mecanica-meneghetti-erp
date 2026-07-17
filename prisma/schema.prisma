@@ -10,16 +10,26 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  dono
+  funcionario
+  visualizador
+}
+
 model User {
-  id                  String    @id @default(cuid())
-  name                String
-  email               String    @unique
-  passwordHash        String
-  pixKey              String?
-  dadosBancarios      String?
-  failedLoginAttempts Int       @default(0)
-  lockedUntil         DateTime?
-  createdAt           DateTime  @default(now())
+  id                       String    @id @default(cuid())
+  name                     String
+  email                    String    @unique
+  passwordHash             String
+  pixKey                   String?
+  dadosBancarios           String?
+  failedLoginAttempts      Int       @default(0)
+  lockedUntil              DateTime?
+  role                     UserRole  @default(funcionario)
+  podeVerFinanceiro        Boolean   @default(true)
+  podeExcluir              Boolean   @default(true)
+  podeAcessarConfiguracoes Boolean   @default(false)
+  createdAt                DateTime  @default(now())
 
   resetTokens PasswordResetToken[]
 }

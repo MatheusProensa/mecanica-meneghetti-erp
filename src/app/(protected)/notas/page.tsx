@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { FileText } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getSignedPdfUrls } from "@/lib/supabase-storage";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma, TipoNota } from "@/generated/prisma/client";
@@ -40,6 +42,9 @@ export default async function NotasPage({
 }) {
   const { tipo, q, mes, ano, de, ate, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
+
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
 
   const anoAtual = new Date().getFullYear();
   const anosDisponiveis = Array.from({ length: 5 }, (_, i) => anoAtual - i);
@@ -134,7 +139,7 @@ export default async function NotasPage({
       <PageHeader
         title="Notas"
         description="Arquivo de notas emitidas e recebidas — anexe o PDF para consulta futura."
-        action={{ label: "+ Nova nota", href: "/notas/nova" }}
+        action={usuario.permissoes.editar ? { label: "+ Nova nota", href: "/notas/nova" } : undefined}
       />
 
       <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-3">

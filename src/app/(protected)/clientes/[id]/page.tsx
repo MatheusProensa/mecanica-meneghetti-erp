@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
 import ClienteForm from "@/components/ClienteForm";
@@ -19,6 +20,9 @@ export default async function ClienteDetalhePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  const usuarioAtual = await getCurrentUser();
+  if (!usuarioAtual) redirect("/login");
 
   const [cliente, session, empresa] = await Promise.all([
     prisma.cliente.findUnique({
@@ -77,12 +81,14 @@ export default async function ClienteDetalhePage({
             <WhatsAppLink phone={cliente.telefone ?? cliente.whatsapp} className="mt-1" />
           )}
         </div>
-        <ConfirmModal
-          triggerLabel="Excluir cliente"
-          title="Excluir este cliente?"
-          description={`Tem certeza que deseja excluir "${cliente.nome}"? Essa ação não pode ser desfeita.`}
-          action={deleteClienteWithId}
-        />
+        {usuarioAtual.permissoes.excluir && (
+          <ConfirmModal
+            triggerLabel="Excluir cliente"
+            title="Excluir este cliente?"
+            description={`Tem certeza que deseja excluir "${cliente.nome}"? Essa ação não pode ser desfeita.`}
+            action={deleteClienteWithId}
+          />
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
@@ -110,7 +116,11 @@ export default async function ClienteDetalhePage({
       <div>
         <h2 className="text-sm font-semibold text-gray-900">Dados cadastrais</h2>
         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
-          <ClienteForm cliente={cliente} action={updateClienteWithId} />
+          <ClienteForm
+            cliente={cliente}
+            action={updateClienteWithId}
+            readOnly={!usuarioAtual.permissoes.editar}
+          />
         </div>
       </div>
 
@@ -136,12 +146,14 @@ export default async function ClienteDetalhePage({
           <h2 className="text-sm font-semibold text-gray-900">
             Histórico de ordens de serviço
           </h2>
-          <Link
-            href={`/os/nova?clienteId=${cliente.id}`}
-            className="text-sm font-medium text-blue-600 hover:text-blue-700"
-          >
-            + Nova OS
-          </Link>
+          {usuarioAtual.permissoes.editar && (
+            <Link
+              href={`/os/nova?clienteId=${cliente.id}`}
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              + Nova OS
+            </Link>
+          )}
         </div>
 
         <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
@@ -221,12 +233,14 @@ export default async function ClienteDetalhePage({
       <div>
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-900">Notas vinculadas</h2>
-          <Link
-            href={`/notas/nova`}
-            className="text-sm font-medium text-blue-600 hover:text-blue-700"
-          >
-            + Nova nota
-          </Link>
+          {usuarioAtual.permissoes.editar && (
+            <Link
+              href={`/notas/nova`}
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              + Nova nota
+            </Link>
+          )}
         </div>
 
         <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">

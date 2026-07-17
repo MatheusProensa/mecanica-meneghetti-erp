@@ -12,15 +12,18 @@ export default function NotaForm({
   clientes,
   ordens,
   action,
+  readOnly = false,
 }: {
   nota?: Nota;
   pdfUrl?: string | null;
   clientes: Cliente[];
   ordens: { id: number; clienteNome: string }[];
   action: (formData: FormData) => void;
+  readOnly?: boolean;
 }) {
   return (
     <form action={action} className="space-y-4">
+      <fieldset disabled={readOnly} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="numero" className="block text-sm font-medium text-gray-700">
@@ -158,13 +161,16 @@ export default function NotaForm({
           </div>
         )}
       </div>
+      </fieldset>
 
-      <button
-        type="submit"
-        className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
-      >
-        {nota ? "Salvar alterações" : "Cadastrar nota"}
-      </button>
+      {!readOnly && (
+        <button
+          type="submit"
+          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
+        >
+          {nota ? "Salvar alterações" : "Cadastrar nota"}
+        </button>
+      )}
     </form>
   );
 }

@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { uploadDespesaAnexo, deleteDespesaAnexo } from "@/lib/supabase-storage";
 import { parseCurrencyBR } from "@/lib/format";
 import { assinaturaCondizComTipo } from "@/lib/fileSignature";
-import { requireAuth } from "@/lib/requireAuth";
+import { requirePermission } from "@/lib/requireAuth";
 
 const ALLOWED_ANEXO_TYPES = new Set([
   "application/pdf",
@@ -68,7 +68,8 @@ function buildData(formData: FormData) {
 }
 
 export async function createDespesa(formData: FormData) {
-  await requireAuth();
+  await requirePermission("verFinanceiro");
+  await requirePermission("editar");
   const data = buildData(formData);
   if (!data.descricao) throw new Error("Descrição é obrigatória");
   if (data.valor <= 0) throw new Error("Valor precisa ser maior que zero");
@@ -90,7 +91,8 @@ export async function createDespesa(formData: FormData) {
 }
 
 export async function updateDespesa(id: string, formData: FormData) {
-  await requireAuth();
+  await requirePermission("verFinanceiro");
+  await requirePermission("editar");
   const data = buildData(formData);
   if (!data.descricao) throw new Error("Descrição é obrigatória");
   if (data.valor <= 0) throw new Error("Valor precisa ser maior que zero");
@@ -122,7 +124,8 @@ export async function updateDespesa(id: string, formData: FormData) {
 }
 
 export async function deleteDespesa(id: string) {
-  await requireAuth();
+  await requirePermission("verFinanceiro");
+  await requirePermission("excluir");
   const existing = await prisma.despesa.findUniqueOrThrow({ where: { id } });
   await prisma.despesa.delete({ where: { id } });
   if (existing.anexoPath) {

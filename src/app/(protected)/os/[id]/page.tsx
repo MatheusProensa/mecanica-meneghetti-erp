@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { formatDate } from "@/lib/format";
 import { getSignedOSFotoUrls } from "@/lib/supabase-storage";
 import OSForm from "@/components/OSForm";
@@ -17,6 +18,9 @@ export default async function OSDetalhePage({
   const { id } = await params;
   const osId = Number(id);
   if (!Number.isInteger(osId)) notFound();
+
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
 
   const [os, clientes, mecanicos] = await Promise.all([
     prisma.ordemServico.findUnique({
@@ -56,23 +60,32 @@ export default async function OSDetalhePage({
                 telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
                 valor: os.itens.reduce((s, i) => s + i.valor, 0),
               }}
+              readOnly={!usuario.permissoes.editar}
             />
           </div>
         </div>
-        <ConfirmModal
-          triggerLabel="Excluir OS"
-          title="Excluir esta OS?"
-          description={`Tem certeza que deseja excluir a OS #${String(os.id).padStart(4, "0")}? Essa ação não pode ser desfeita.`}
-          action={deleteOSWithId}
+        {usuario.permissoes.excluir && (
+          <ConfirmModal
+            triggerLabel="Excluir OS"
+            title="Excluir esta OS?"
+            description={`Tem certeza que deseja excluir a OS #${String(os.id).padStart(4, "0")}? Essa ação não pode ser desfeita.`}
+            action={deleteOSWithId}
+          />
+        )}
+      </div>
+
+      <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
+        <OSForm
+          clientes={clientes}
+          mecanicos={mecanicos}
+          os={os}
+          action={updateOSWithId}
+          readOnly={!usuario.permissoes.editar}
         />
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-        <OSForm clientes={clientes} mecanicos={mecanicos} os={os} action={updateOSWithId} />
-      </div>
-
-      <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-        <OSFotos osId={os.id} fotos={fotos} />
+        <OSFotos osId={os.id} fotos={fotos} readOnly={!usuario.permissoes.editar} />
       </div>
     </div>
   );

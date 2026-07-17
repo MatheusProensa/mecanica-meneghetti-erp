@@ -23,15 +23,18 @@ export default function OSForm({
   os,
   defaultClienteId,
   action,
+  readOnly = false,
 }: {
   clientes: Cliente[];
   mecanicos: Mecanico[];
   os?: OrdemServico & { itens: ItemServico[] };
   defaultClienteId?: string;
   action: (formData: FormData) => void;
+  readOnly?: boolean;
 }) {
   return (
     <form action={action} className="space-y-4">
+      <fieldset disabled={readOnly} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="clienteId" className="block text-sm font-medium text-gray-700">
@@ -154,13 +157,16 @@ export default function OSForm({
           className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
         />
       </div>
+      </fieldset>
 
-      <button
-        type="submit"
-        className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
-      >
-        {os ? "Salvar alterações" : "Criar ordem de serviço"}
-      </button>
+      {!readOnly && (
+        <button
+          type="submit"
+          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
+        >
+          {os ? "Salvar alterações" : "Criar ordem de serviço"}
+        </button>
+      )}
     </form>
   );
 }

@@ -34,12 +34,15 @@ function Field({
 export default function ClienteForm({
   cliente,
   action,
+  readOnly = false,
 }: {
   cliente?: Cliente;
   action: (formData: FormData) => void;
+  readOnly?: boolean;
 }) {
   return (
     <form action={action} className="space-y-4">
+      <fieldset disabled={readOnly} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Nome *" name="nome" defaultValue={cliente?.nome} required />
         <Field label="CPF/CNPJ" name="cpfCnpj" defaultValue={cliente?.cpfCnpj} />
@@ -76,13 +79,16 @@ export default function ClienteForm({
           className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
+      </fieldset>
 
-      <button
-        type="submit"
-        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 sm:w-auto"
-      >
-        {cliente ? "Salvar alterações" : "Cadastrar cliente"}
-      </button>
+      {!readOnly && (
+        <button
+          type="submit"
+          className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 sm:w-auto"
+        >
+          {cliente ? "Salvar alterações" : "Cadastrar cliente"}
+        </button>
+      )}
     </form>
   );
 }

@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { uploadPdf, deletePdf } from "@/lib/supabase-storage";
 import { parseCurrencyBR } from "@/lib/format";
 import { assinaturaCondizComTipo } from "@/lib/fileSignature";
-import { requireAuth } from "@/lib/requireAuth";
+import { requirePermission } from "@/lib/requireAuth";
 import type { TipoNota } from "@/generated/prisma/client";
 
 const TIPOS_VALIDOS: TipoNota[] = ["emitida", "recebida"];
@@ -66,7 +66,7 @@ function buildData(formData: FormData) {
 }
 
 export async function createNota(formData: FormData) {
-  await requireAuth();
+  await requirePermission("editar");
   const data = buildData(formData);
   if (!data.numero) throw new Error("Número da nota é obrigatório");
 
@@ -81,7 +81,7 @@ export async function createNota(formData: FormData) {
 }
 
 export async function updateNota(id: string, formData: FormData) {
-  await requireAuth();
+  await requirePermission("editar");
   const data = buildData(formData);
   if (!data.numero) throw new Error("Número da nota é obrigatório");
 
@@ -107,7 +107,7 @@ export async function updateNota(id: string, formData: FormData) {
 }
 
 export async function deleteNota(id: string) {
-  await requireAuth();
+  await requirePermission("excluir");
   const existing = await prisma.nota.findUniqueOrThrow({ where: { id } });
   await prisma.nota.delete({ where: { id } });
   if (existing.arquivoPdfPath) {

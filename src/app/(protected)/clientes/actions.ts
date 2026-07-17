@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
-import { requireAuth } from "@/lib/requireAuth";
+import { requirePermission } from "@/lib/requireAuth";
 
 function str(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -13,7 +13,7 @@ function str(formData: FormData, key: string): string | null {
 }
 
 export async function createCliente(formData: FormData) {
-  await requireAuth();
+  await requirePermission("editar");
   const nome = str(formData, "nome");
   if (!nome) throw new Error("Nome é obrigatório");
 
@@ -35,7 +35,7 @@ export async function createCliente(formData: FormData) {
 }
 
 export async function updateCliente(id: string, formData: FormData) {
-  await requireAuth();
+  await requirePermission("editar");
   const nome = str(formData, "nome");
   if (!nome) throw new Error("Nome é obrigatório");
 
@@ -59,7 +59,7 @@ export async function updateCliente(id: string, formData: FormData) {
 }
 
 export async function deleteCliente(id: string) {
-  await requireAuth();
+  await requirePermission("excluir");
   try {
     await prisma.cliente.delete({ where: { id } });
   } catch (e) {

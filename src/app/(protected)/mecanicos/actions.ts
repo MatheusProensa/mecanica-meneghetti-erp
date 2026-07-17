@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/requireAuth";
+import { requirePermission } from "@/lib/requireAuth";
 
 function str(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -11,7 +11,7 @@ function str(formData: FormData, key: string): string | null {
 }
 
 export async function createMecanico(formData: FormData) {
-  await requireAuth();
+  await requirePermission("acessarConfiguracoes");
   const nome = str(formData, "nome");
   if (!nome) throw new Error("Nome é obrigatório");
 
@@ -20,13 +20,13 @@ export async function createMecanico(formData: FormData) {
 }
 
 export async function toggleMecanicoAtivo(id: string, ativo: boolean) {
-  await requireAuth();
+  await requirePermission("acessarConfiguracoes");
   await prisma.mecanico.update({ where: { id }, data: { ativo } });
   revalidatePath("/configuracoes");
 }
 
 export async function deleteMecanico(id: string) {
-  await requireAuth();
+  await requirePermission("acessarConfiguracoes");
   await prisma.ordemServico.updateMany({ where: { mecanicoId: id }, data: { mecanicoId: null } });
   await prisma.mecanico.delete({ where: { id } });
   revalidatePath("/configuracoes");

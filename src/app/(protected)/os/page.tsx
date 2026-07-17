@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { formatCurrency, formatDate } from "@/lib/format";
 import type { Prisma, StatusOS } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
@@ -16,6 +18,9 @@ export default async function OSListPage({
 }) {
   const { status, q, pagamento, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
+
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
 
   const numeroBuscado = q ? Number(q.replace(/\D/g, "")) : null;
 
@@ -80,7 +85,10 @@ export default async function OSListPage({
 
   return (
     <div>
-      <PageHeader title="Ordens de Serviço" action={{ label: "+ Nova OS", href: "/os/nova" }} />
+      <PageHeader
+        title="Ordens de Serviço"
+        action={usuario.permissoes.editar ? { label: "+ Nova OS", href: "/os/nova" } : undefined}
+      />
 
       <form className="mt-4 flex flex-wrap items-center gap-3">
         {status && <input type="hidden" name="status" value={status} />}
@@ -184,7 +192,11 @@ export default async function OSListPage({
                       <td className="px-6 py-3 text-gray-500">{os.cliente.nome}</td>
                       <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
                       <td className="px-6 py-3">
-                        <OSStatusSelect id={os.id} status={os.status} />
+                        <OSStatusSelect
+                          id={os.id}
+                          status={os.status}
+                          readOnly={!usuario.permissoes.editar}
+                        />
                       </td>
                       <td className="px-6 py-3">
                         <OSPagoToggle
@@ -196,6 +208,7 @@ export default async function OSListPage({
                             telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
                             valor,
                           }}
+                          readOnly={!usuario.permissoes.editar}
                         />
                       </td>
                       <td className="px-6 py-3 text-gray-500">{formatCurrency(valor)}</td>
@@ -223,7 +236,12 @@ export default async function OSListPage({
                     </div>
                     <div className="mt-1.5 flex items-center justify-between gap-2">
                       <div className="flex min-w-0 items-center gap-1.5">
-                        <OSStatusSelect id={os.id} status={os.status} compact />
+                        <OSStatusSelect
+                          id={os.id}
+                          status={os.status}
+                          compact
+                          readOnly={!usuario.permissoes.editar}
+                        />
                         <OSPagoToggle
                           id={os.id}
                           pago={os.pago}
@@ -234,6 +252,7 @@ export default async function OSListPage({
                             telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
                             valor,
                           }}
+                          readOnly={!usuario.permissoes.editar}
                         />
                       </div>
                       <span className="shrink-0 text-xs text-gray-500">

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
@@ -38,6 +40,10 @@ export default async function FinanceiroPage({
     pagina?: string;
   }>;
 }) {
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verFinanceiro) redirect("/");
+
   const { mes, ano, de, ate, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
 
@@ -132,7 +138,11 @@ export default async function FinanceiroPage({
       <PageHeader
         title="Financeiro"
         description="Visão geral do que entrou, do que ainda falta receber e das despesas da oficina."
-        action={{ label: "+ Nova despesa", href: "/financeiro/nova" }}
+        action={
+          usuario.permissoes.editar
+            ? { label: "+ Nova despesa", href: "/financeiro/nova" }
+            : undefined
+        }
       />
 
       <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-5">

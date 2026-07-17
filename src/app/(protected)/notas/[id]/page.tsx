@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getSignedPdfUrl } from "@/lib/supabase-storage";
 import NotaForm from "@/components/NotaForm";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -12,6 +13,9 @@ export default async function NotaDetalhePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
 
   const nota = await prisma.nota.findUnique({ where: { id } });
 
@@ -52,12 +56,14 @@ export default async function NotaDetalhePage({
             Nota {nota.numero}
           </h1>
         </div>
-        <ConfirmModal
-          triggerLabel="Excluir nota"
-          title="Excluir esta nota?"
-          description={`Tem certeza que deseja excluir a nota "${nota.numero}"? O PDF anexado (se houver) também será removido. Essa ação não pode ser desfeita.`}
-          action={deleteNotaWithId}
-        />
+        {usuario.permissoes.excluir && (
+          <ConfirmModal
+            triggerLabel="Excluir nota"
+            title="Excluir esta nota?"
+            description={`Tem certeza que deseja excluir a nota "${nota.numero}"? O PDF anexado (se houver) também será removido. Essa ação não pode ser desfeita.`}
+            action={deleteNotaWithId}
+          />
+        )}
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
@@ -67,6 +73,7 @@ export default async function NotaDetalhePage({
           clientes={clientes}
           ordens={ordens.map((os) => ({ id: os.id, clienteNome: os.cliente.nome }))}
           action={updateNotaWithId}
+          readOnly={!usuario.permissoes.editar}
         />
       </div>
     </div>

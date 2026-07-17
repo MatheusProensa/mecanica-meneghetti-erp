@@ -6,7 +6,7 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import type { StatusOS } from "@/generated/prisma/client";
 import { parseCurrencyBR } from "@/lib/format";
-import { requireAuth } from "@/lib/requireAuth";
+import { requirePermission } from "@/lib/requireAuth";
 import { uploadOSFoto, deleteOSFoto } from "@/lib/supabase-storage";
 import { assinaturaCondizComTipo } from "@/lib/fileSignature";
 
@@ -49,7 +49,7 @@ function parseItens(formData: FormData) {
 }
 
 export async function createOS(formData: FormData) {
-  await requireAuth();
+  await requirePermission("editar");
   const clienteId = str(formData, "clienteId");
   if (!clienteId) throw new Error("Cliente é obrigatório");
 
@@ -77,7 +77,7 @@ export async function createOS(formData: FormData) {
 }
 
 export async function updateOS(id: number, formData: FormData) {
-  await requireAuth();
+  await requirePermission("editar");
   const clienteId = str(formData, "clienteId");
   if (!clienteId) throw new Error("Cliente é obrigatório");
 
@@ -110,7 +110,7 @@ export async function updateOS(id: number, formData: FormData) {
 }
 
 export async function updateOSStatus(id: number, status: StatusOS) {
-  await requireAuth();
+  await requirePermission("editar");
   if (!STATUS_VALIDOS.includes(status)) throw new Error("Status inválido");
   await prisma.ordemServico.update({ where: { id }, data: { status } });
   revalidatePath("/os");
@@ -119,7 +119,7 @@ export async function updateOSStatus(id: number, status: StatusOS) {
 }
 
 export async function toggleOSPago(id: number, pago: boolean) {
-  await requireAuth();
+  await requirePermission("editar");
   await prisma.ordemServico.update({
     where: { id },
     data: { pago, dataPagamento: pago ? new Date() : null },
@@ -131,7 +131,7 @@ export async function toggleOSPago(id: number, pago: boolean) {
 }
 
 export async function deleteOS(id: number) {
-  await requireAuth();
+  await requirePermission("excluir");
   await prisma.ordemServico.delete({ where: { id } });
   revalidatePath("/os");
   revalidatePath("/");
@@ -139,7 +139,7 @@ export async function deleteOS(id: number) {
 }
 
 export async function addAnexoOS(id: number, formData: FormData) {
-  await requireAuth();
+  await requirePermission("editar");
   const file = formData.get("foto");
   if (!(file instanceof File) || file.size === 0) throw new Error("Selecione uma foto");
   if (!ALLOWED_FOTO_TYPES.has(file.type)) {
@@ -159,7 +159,7 @@ export async function addAnexoOS(id: number, formData: FormData) {
 }
 
 export async function deleteAnexoOS(id: string, osId: number) {
-  await requireAuth();
+  await requirePermission("excluir");
   const anexo = await prisma.anexoOS.findUniqueOrThrow({ where: { id } });
   await prisma.anexoOS.delete({ where: { id } });
   await deleteOSFoto(anexo.path).catch(() => {});

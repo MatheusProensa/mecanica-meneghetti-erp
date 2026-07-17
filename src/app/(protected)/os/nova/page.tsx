@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import OSForm from "@/components/OSForm";
 import { createOS } from "../actions";
 
@@ -7,6 +9,10 @@ export default async function NovaOSPage({
 }: {
   searchParams: Promise<{ clienteId?: string }>;
 }) {
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
+  if (!usuario.permissoes.editar) redirect("/os");
+
   const { clienteId } = await searchParams;
   const [clientes, mecanicos] = await Promise.all([
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),

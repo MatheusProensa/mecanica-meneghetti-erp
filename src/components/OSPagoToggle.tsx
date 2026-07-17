@@ -12,12 +12,14 @@ export default function OSPagoToggle({
   previsaoEntrega,
   compact = false,
   cliente,
+  readOnly = false,
 }: {
   id: number;
   pago: boolean;
   previsaoEntrega: Date | null;
   compact?: boolean;
   cliente?: { nome: string; telefone: string | null; valor: number };
+  readOnly?: boolean;
 }) {
   const [pending, startTransition] = useTransition();
   const info = pagamentoInfo({ pago, previsaoEntrega });
@@ -35,7 +37,8 @@ export default function OSPagoToggle({
     <div onClick={(e) => e.stopPropagation()}>
       <div className="flex items-center gap-1.5">
         <StatusBadge label={info.label} tone={info.tone} />
-        {!pago &&
+        {!readOnly &&
+          !pago &&
           (compact ? (
             <button
               type="button"
@@ -58,7 +61,7 @@ export default function OSPagoToggle({
               Marcar como pago
             </button>
           ))}
-        {pago && (
+        {!readOnly && pago && (
           <button
             type="button"
             disabled={pending}

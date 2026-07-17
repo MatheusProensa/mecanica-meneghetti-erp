@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import DashboardCharts, { type ChartPoint, type Agrupamento } from "@/components/DashboardCharts";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
@@ -85,6 +86,9 @@ export default async function DashboardPage({
     de,
     ate,
   } = await searchParams;
+
+  const usuario = await getCurrentUser();
+  const verFinanceiro = usuario?.permissoes.verFinanceiro ?? false;
 
   const agrupamento: Agrupamento =
     agrupamentoRaw === "diario" ? "diario" : agrupamentoRaw === "semanal" ? "semanal" : "mensal";
@@ -243,45 +247,47 @@ export default async function DashboardPage({
         />
       </div>
 
-      <div>
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-900">Financeiro</h2>
-          <Link href="/financeiro" className="text-sm font-medium text-blue-600 hover:text-blue-700">
-            Ver detalhes →
-          </Link>
-        </div>
-        <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          <MetricCard
-            icon="trending-up"
-            iconColor="text-green-600"
-            label="Recebido no mês"
-            value={formatCurrency(recebidoNoMes)}
-          />
-          <MetricCard
-            icon="clock"
-            iconColor="text-amber-600"
-            label="A receber"
-            value={formatCurrency(aReceber)}
-            context={`${osAReceber.length} OS em aberto`}
-          />
-          <MetricCard
-            icon="trending-down"
-            iconColor="text-red-600"
-            label="Despesas no mês"
-            value={formatCurrency(despesasNoMes)}
-          />
-          <Link href="/os?pagamento=atrasado" className="block">
+      {verFinanceiro && (
+        <div>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-gray-900">Financeiro</h2>
+            <Link href="/financeiro" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+              Ver detalhes →
+            </Link>
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             <MetricCard
-              icon="alert-triangle"
-              iconColor="text-red-600"
-              label="OS atrasadas"
-              value={osAtrasadasCount}
-              context={osAtrasadasCount > 0 ? "cobrança vencida" : "tudo em dia"}
-              highlight={osAtrasadasCount > 0 ? "danger" : undefined}
+              icon="trending-up"
+              iconColor="text-green-600"
+              label="Recebido no mês"
+              value={formatCurrency(recebidoNoMes)}
             />
-          </Link>
+            <MetricCard
+              icon="clock"
+              iconColor="text-amber-600"
+              label="A receber"
+              value={formatCurrency(aReceber)}
+              context={`${osAReceber.length} OS em aberto`}
+            />
+            <MetricCard
+              icon="trending-down"
+              iconColor="text-red-600"
+              label="Despesas no mês"
+              value={formatCurrency(despesasNoMes)}
+            />
+            <Link href="/os?pagamento=atrasado" className="block">
+              <MetricCard
+                icon="alert-triangle"
+                iconColor="text-red-600"
+                label="OS atrasadas"
+                value={osAtrasadasCount}
+                context={osAtrasadasCount > 0 ? "cobrança vencida" : "tudo em dia"}
+                highlight={osAtrasadasCount > 0 ? "danger" : undefined}
+              />
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
 
       <div>
         <h2 className="text-sm font-semibold text-gray-900">Operacional</h2>
@@ -309,7 +315,7 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      <DashboardCharts data={chartData} periodoLabel={periodoLabel} />
+      {verFinanceiro && <DashboardCharts data={chartData} periodoLabel={periodoLabel} />}
 
       <div className="rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">

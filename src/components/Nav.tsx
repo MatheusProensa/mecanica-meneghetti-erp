@@ -16,13 +16,14 @@ import {
   X,
 } from "lucide-react";
 import { logoutAction } from "@/app/(protected)/actions";
+import type { Permissoes } from "@/lib/permissions";
 
 const links = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/clientes", label: "Clientes", icon: Users },
-  { href: "/os", label: "Ordens de Serviço", icon: Wrench },
-  { href: "/financeiro", label: "Financeiro", icon: Wallet },
-  { href: "/notas", label: "Notas", icon: FileText },
+  { href: "/", label: "Dashboard", icon: LayoutDashboard, requer: null as keyof Permissoes | null },
+  { href: "/clientes", label: "Clientes", icon: Users, requer: null },
+  { href: "/os", label: "Ordens de Serviço", icon: Wrench, requer: null },
+  { href: "/financeiro", label: "Financeiro", icon: Wallet, requer: "verFinanceiro" as const },
+  { href: "/notas", label: "Notas", icon: FileText, requer: null },
 ];
 
 const secondaryLinks = [
@@ -67,14 +68,17 @@ function NavLink({
 
 export default function Nav({
   userName,
+  permissoes,
   open,
   onClose,
 }: {
   userName: string;
+  permissoes: Permissoes;
   open: boolean;
   onClose: () => void;
 }) {
   const pathname = usePathname();
+  const linksVisiveis = links.filter((link) => !link.requer || permissoes[link.requer]);
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -122,7 +126,7 @@ export default function Nav({
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {links.map((link) => (
+        {linksVisiveis.map((link) => (
           <NavLink
             key={link.href}
             href={link.href}

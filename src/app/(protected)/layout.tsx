@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import AppShell from "@/components/AppShell";
 import Toast from "@/components/ui/Toast";
 
@@ -8,14 +8,16 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  if (!session?.user) {
+  const usuario = await getCurrentUser();
+  if (!usuario) {
     redirect("/login");
   }
 
   return (
     <>
-      <AppShell userName={session.user.name ?? session.user.email ?? ""}>{children}</AppShell>
+      <AppShell userName={usuario.name} permissoes={usuario.permissoes}>
+        {children}
+      </AppShell>
       <Toast />
     </>
   );

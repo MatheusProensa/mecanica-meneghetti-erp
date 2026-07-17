@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getSignedDespesaAnexoUrl } from "@/lib/supabase-storage";
 import DespesaForm from "@/components/DespesaForm";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -12,6 +13,10 @@ export default async function DespesaDetalhePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verFinanceiro) redirect("/");
 
   const despesa = await prisma.despesa.findUnique({
     where: { id },
@@ -34,12 +39,14 @@ export default async function DespesaDetalhePage({
           </Link>
           <h1 className="mt-1 text-xl font-semibold text-gray-900">{despesa.descricao}</h1>
         </div>
-        <ConfirmModal
-          triggerLabel="Excluir despesa"
-          title="Excluir esta despesa?"
-          description={`Tem certeza que deseja excluir "${despesa.descricao}"? Essa ação não pode ser desfeita.`}
-          action={deleteDespesaWithId}
-        />
+        {usuario.permissoes.excluir && (
+          <ConfirmModal
+            triggerLabel="Excluir despesa"
+            title="Excluir esta despesa?"
+            description={`Tem certeza que deseja excluir "${despesa.descricao}"? Essa ação não pode ser desfeita.`}
+            action={deleteDespesaWithId}
+          />
+        )}
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
@@ -48,6 +55,7 @@ export default async function DespesaDetalhePage({
           itens={despesa.itens}
           anexoUrl={anexoUrl}
           action={updateDespesaWithId}
+          readOnly={!usuario.permissoes.editar}
         />
       </div>
     </div>

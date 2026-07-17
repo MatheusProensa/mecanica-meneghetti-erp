@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { updateOSStatus } from "@/app/(protected)/os/actions";
 import type { StatusOS } from "@/generated/prisma/client";
-import { osStatusMap, type BadgeTone } from "@/components/ui/StatusBadge";
+import { StatusBadge, osStatusMap, type BadgeTone } from "@/components/ui/StatusBadge";
 
 const selectToneClasses: Record<BadgeTone, string> = {
   blue: "bg-blue-50 border-blue-200 text-blue-700",
@@ -19,13 +19,19 @@ export default function OSStatusSelect({
   id,
   status,
   compact = false,
+  readOnly = false,
 }: {
   id: number;
   status: StatusOS;
   compact?: boolean;
+  readOnly?: boolean;
 }) {
   const [pending, startTransition] = useTransition();
   const tone = osStatusMap[status].tone;
+
+  if (readOnly) {
+    return <StatusBadge label={osStatusMap[status].label} tone={tone} />;
+  }
 
   return (
     <select

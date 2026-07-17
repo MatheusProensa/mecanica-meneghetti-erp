@@ -1,30 +1,41 @@
 import Link from "next/link";
-import { Building2, User, Wallet, UserCog } from "lucide-react";
+import { redirect } from "next/navigation";
+import { Building2, User, Wallet, UserCog, Users } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getEmpresa } from "@/lib/getEmpresa";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import PageHeader from "@/components/ui/PageHeader";
 import PasswordForm from "./PasswordForm";
 import PixKeyForm from "./PixKeyForm";
 import MecanicosSection from "./MecanicosSection";
 import EmpresaForm from "./EmpresaForm";
+import UsuariosSection from "./UsuariosSection";
 
-const SECOES = [
-  { key: "conta", label: "Conta", icon: User },
-  { key: "empresa", label: "Dados da empresa", icon: Building2 },
-  { key: "cobranca", label: "Cobrança", icon: Wallet },
-  { key: "mecanicos", label: "Mecânicos", icon: UserCog },
+const TODAS_SECOES = [
+  { key: "conta", label: "Conta", icon: User, requer: null },
+  { key: "empresa", label: "Dados da empresa", icon: Building2, requer: "acessarConfiguracoes" },
+  { key: "cobranca", label: "Cobrança", icon: Wallet, requer: "acessarConfiguracoes" },
+  { key: "mecanicos", label: "Mecânicos", icon: UserCog, requer: "acessarConfiguracoes" },
+  { key: "usuarios", label: "Usuários", icon: Users, requer: "gerenciarUsuarios" },
 ] as const;
 
-type SecaoKey = (typeof SECOES)[number]["key"];
+type SecaoKey = (typeof TODAS_SECOES)[number]["key"];
 
 export default async function ConfiguracoesPage({
   searchParams,
 }: {
   searchParams: Promise<{ secao?: string }>;
 }) {
+  const usuarioAtual = await getCurrentUser();
+  if (!usuarioAtual) redirect("/login");
+
+  const secoes = TODAS_SECOES.filter(
+    (s) => s.requer === null || usuarioAtual.permissoes[s.requer]
+  );
+
   const { secao: secaoRaw } = await searchParams;
-  const secao: SecaoKey = SECOES.some((s) => s.key === secaoRaw)
+  const secao: SecaoKey = secoes.some((s) => s.key === secaoRaw)
     ? (secaoRaw as SecaoKey)
     : "conta";
 
@@ -42,7 +53,7 @@ export default async function ConfiguracoesPage({
 
       <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
         <nav className="flex gap-1.5 overflow-x-auto pb-1 lg:w-56 lg:shrink-0 lg:flex-col lg:overflow-visible lg:pb-0">
-          {SECOES.map(({ key, label, icon: Icon }) => (
+          {secoes.map(({ key, label, icon: Icon }) => (
             <Link
               key={key}
               href={`/configuracoes?secao=${key}`}
@@ -109,6 +120,18 @@ export default async function ConfiguracoesPage({
               </p>
               <div className="mt-4">
                 <MecanicosSection />
+              </div>
+            </div>
+          )}
+
+          {secao === "usuarios" && (
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Usuários</h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Crie logins pra outras pessoas e controle o que cada uma pode fazer no sistema.
+              </p>
+              <div className="mt-4">
+                <UsuariosSection meuId={usuarioAtual.id} />
               </div>
             </div>
           )}

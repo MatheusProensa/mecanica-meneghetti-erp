@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { formatCurrency, formatDate } from "@/lib/format";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
@@ -13,6 +15,9 @@ export default async function ClientesPage({
 }) {
   const { q, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
+
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
 
   const where = q
     ? {
@@ -57,7 +62,7 @@ export default async function ClientesPage({
       <PageHeader
         title="Clientes"
         description={contadorDescricao}
-        action={{ label: "+ Novo cliente", href: "/clientes/novo" }}
+        action={usuario.permissoes.editar ? { label: "+ Novo cliente", href: "/clientes/novo" } : undefined}
       />
 
       <form className="mt-4">

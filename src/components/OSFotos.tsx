@@ -4,9 +4,11 @@ import { addAnexoOS, deleteAnexoOS } from "@/app/(protected)/os/actions";
 export default function OSFotos({
   osId,
   fotos,
+  readOnly = false,
 }: {
   osId: number;
   fotos: { id: string; url: string | null }[];
+  readOnly?: boolean;
 }) {
   const addAnexoWithId = addAnexoOS.bind(null, osId);
 
@@ -28,36 +30,40 @@ export default function OSFotos({
                     Indisponível
                   </div>
                 )}
-                <form action={deleteWithId} className="absolute right-1 top-1">
-                  <button
-                    type="submit"
-                    title="Excluir foto"
-                    className="flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                </form>
+                {!readOnly && (
+                  <form action={deleteWithId} className="absolute right-1 top-1">
+                    <button
+                      type="submit"
+                      title="Excluir foto"
+                      className="flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </form>
+                )}
               </div>
             );
           })}
         </div>
       )}
 
-      <form action={addAnexoWithId} className="mt-3 flex flex-wrap items-center gap-3">
-        <input
-          type="file"
-          name="foto"
-          accept="image/*"
-          required
-          className="text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
-        />
-        <button
-          type="submit"
-          className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          + Adicionar foto
-        </button>
-      </form>
+      {!readOnly && (
+        <form action={addAnexoWithId} className="mt-3 flex flex-wrap items-center gap-3">
+          <input
+            type="file"
+            name="foto"
+            accept="image/*"
+            required
+            className="text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
+          />
+          <button
+            type="submit"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            + Adicionar foto
+          </button>
+        </form>
+      )}
     </div>
   );
 }
