@@ -110,13 +110,15 @@ export default function UsuarioRow({
           >
             Salvar
           </button>
-          <button
-            type="button"
-            onClick={() => setShowReset((v) => !v)}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Redefinir senha
-          </button>
+          {!isSelf && (
+            <button
+              type="button"
+              onClick={() => setShowReset((v) => !v)}
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Redefinir senha
+            </button>
+          )}
           {!isSelf && (
             <button
               type="submit"
@@ -129,7 +131,7 @@ export default function UsuarioRow({
         </div>
       </form>
 
-      {showReset && (
+      {!isSelf && showReset && (
         <form
           action={resetWithId}
           className="mt-3 flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3"
