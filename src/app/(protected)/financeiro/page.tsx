@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
+import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
@@ -9,6 +10,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import ExportarFinanceiroCsv from "@/components/ExportarFinanceiroCsv";
+import ExportarFinanceiroPdf from "@/components/ExportarFinanceiroPdf";
 
 const MESES = [
   "Janeiro",
@@ -75,7 +77,16 @@ export default async function FinanceiroPage({
 
   const where: Prisma.DespesaWhereInput = periodo ? { data: periodo } : {};
 
+  const periodoLabel = usarPersonalizado
+    ? `${formatDate(dePersonalizado!)} a ${formatDate(atePersonalizadoBruto!)}`
+    : mesNum && anoNum
+      ? `${MESES[mesNum - 1]} de ${anoNum}`
+      : anoNum
+        ? `Ano de ${anoNum}`
+        : "Todos os períodos";
+
   const [
+    empresa,
     osPagasNoMes,
     osAReceber,
     despesasNoMes,
@@ -84,6 +95,7 @@ export default async function FinanceiroPage({
     totalDespesas,
     despesasParaExport,
   ] = await Promise.all([
+      getEmpresa(),
       prisma.ordemServico.findMany({
         where: { pago: true, dataPagamento: { gte: inicioMes, lt: fimMes } },
         include: { itens: true },
@@ -184,15 +196,28 @@ export default async function FinanceiroPage({
 
       <div className="mt-8 flex items-center justify-between gap-3">
         <h2 className="text-sm font-semibold text-gray-900">Despesas</h2>
-        <ExportarFinanceiroCsv
-          resumo={{ recebidoNoMes, aReceber, despesasTotal, funcionariosNoMes, lucroNoMes }}
-          despesas={despesasParaExport}
-          nomeArquivo={
-            usarPersonalizado
-              ? `financeiro-${de}-a-${ate}.csv`
-              : `financeiro-${ano ?? anoAtual}${mes ? `-${mes.padStart(2, "0")}` : ""}.csv`
-          }
-        />
+        <div className="flex items-center gap-2">
+          <ExportarFinanceiroCsv
+            resumo={{ recebidoNoMes, aReceber, despesasTotal, funcionariosNoMes, lucroNoMes }}
+            despesas={despesasParaExport}
+            nomeArquivo={
+              usarPersonalizado
+                ? `financeiro-${de}-a-${ate}.csv`
+                : `financeiro-${ano ?? anoAtual}${mes ? `-${mes.padStart(2, "0")}` : ""}.csv`
+            }
+          />
+          <ExportarFinanceiroPdf
+            empresa={empresa}
+            periodoLabel={periodoLabel}
+            resumo={{ recebidoNoMes, aReceber, despesasTotal, funcionariosNoMes, lucroNoMes }}
+            despesas={despesasParaExport}
+            nomeArquivo={
+              usarPersonalizado
+                ? `financeiro-${de}-a-${ate}.pdf`
+                : `financeiro-${ano ?? anoAtual}${mes ? `-${mes.padStart(2, "0")}` : ""}.pdf`
+            }
+          />
+        </div>
       </div>
 
       <form className="mt-3 flex flex-wrap items-end gap-3">
