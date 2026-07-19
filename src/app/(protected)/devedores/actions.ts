@@ -65,7 +65,9 @@ export async function updateDivida(id: string, formData: FormData) {
 export async function deleteDivida(id: string) {
   await requirePermission("verFinanceiro");
   await requirePermission("excluir");
+  const anexos = await prisma.anexoDivida.findMany({ where: { dividaId: id } });
   await prisma.divida.delete({ where: { id } });
+  await Promise.all(anexos.map((a) => deleteDividaFoto(a.path).catch(() => {})));
 
   revalidatePath("/devedores");
   redirect(`/devedores?sucesso=${encodeURIComponent("Dívida excluída")}`);

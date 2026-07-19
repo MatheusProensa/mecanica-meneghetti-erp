@@ -132,7 +132,9 @@ export async function toggleOSPago(id: number, pago: boolean) {
 
 export async function deleteOS(id: number) {
   await requirePermission("excluir");
+  const anexos = await prisma.anexoOS.findMany({ where: { ordemServicoId: id } });
   await prisma.ordemServico.delete({ where: { id } });
+  await Promise.all(anexos.map((a) => deleteOSFoto(a.path).catch(() => {})));
   revalidatePath("/os");
   revalidatePath("/");
   redirect(`/os?sucesso=${encodeURIComponent("Ordem de serviço excluída")}`);

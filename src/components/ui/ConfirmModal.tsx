@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 function ConfirmSubmitButton({ label }: { label: string }) {
@@ -30,10 +30,30 @@ export default function ConfirmModal({
   confirmLabel?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const titleId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  function close() {
+    setOpen(false);
+    triggerRef.current?.focus();
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    cancelRef.current?.focus();
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") close();
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
         className="rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
@@ -44,18 +64,24 @@ export default function ConfirmModal({
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-          onClick={() => setOpen(false)}
+          onClick={close}
         >
           <div
             className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
           >
-            <h2 className="text-base font-semibold text-gray-900">{title}</h2>
+            <h2 id={titleId} className="text-base font-semibold text-gray-900">
+              {title}
+            </h2>
             <p className="mt-2 text-sm text-gray-600">{description}</p>
             <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
               <button
+                ref={cancelRef}
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={close}
                 className="w-full min-h-11 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 sm:w-auto"
               >
                 Cancelar
