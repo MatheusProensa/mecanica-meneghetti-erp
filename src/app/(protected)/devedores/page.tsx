@@ -7,11 +7,9 @@ import { calcularSituacaoDivida, type SituacaoDivida } from "@/lib/dividas";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
-import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
-import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
-import { StatusBadge, situacaoDividaMap } from "@/components/ui/StatusBadge";
-import ExportarDevedoresPdf from "@/components/ExportarDevedoresPdf";
+import { PAGE_SIZE } from "@/components/ui/Pagination";
+import DevedoresResultados from "./DevedoresResultados";
 
 const SITUACOES: { value: SituacaoDivida; label: string }[] = [
   { value: "em_aberto", label: "Em aberto" },
@@ -77,7 +75,6 @@ export default async function DevedoresPage({
   const totalRecebido = filtradas.reduce((s, d) => s + d.totalPago, 0);
   const saldoAReceber = filtradas.reduce((s, d) => s + d.saldo, 0);
 
-  const totalFiltradas = filtradas.length;
   const pagAtual = filtradas.slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
 
   const periodoLabelPartes: string[] = [];
@@ -93,17 +90,6 @@ export default async function DevedoresPage({
     if (de) params.set("de", de);
     if (ate) params.set("ate", ate);
     if (nextSituacao) params.set("situacao", nextSituacao);
-    const qs = params.toString();
-    return qs ? `/devedores?${qs}` : "/devedores";
-  }
-
-  function devedorHrefPagina(p: number) {
-    const params = new URLSearchParams();
-    if (q) params.set("q", q);
-    if (de) params.set("de", de);
-    if (ate) params.set("ate", ate);
-    if (situacao) params.set("situacao", situacao);
-    if (p > 1) params.set("pagina", String(p));
     const qs = params.toString();
     return qs ? `/devedores?${qs}` : "/devedores";
   }
@@ -191,103 +177,33 @@ export default async function DevedoresPage({
         ))}
       </div>
 
-      <div className="mt-4 flex justify-end">
-        <ExportarDevedoresPdf
-          empresa={empresa}
-          periodoLabel={periodoLabel}
-          resumo={{ totalDividas, totalRecebido, saldoAReceber }}
-          dividas={filtradas.map((d) => ({
-            clienteNome: d.cliente.nome,
-            dataServico: d.dataServico,
-            valorOriginal: d.valorOriginal,
-            totalPago: d.totalPago,
-            saldo: d.saldo,
-            situacao: d.situacao,
-          }))}
-          nomeArquivo={`devedores-${new Date().toISOString().slice(0, 10)}.pdf`}
-        />
-      </div>
-
-      <div className="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white">
-        {pagAtual.length === 0 ? (
-          <EmptyState
-            icon="user-x"
-            title="Nenhuma dívida encontrada"
-            description="Cadastre a primeira dívida antiga pra começar a acompanhar o pagamento parcelado."
-          />
-        ) : (
-          <>
-            <table className="hidden w-full text-left text-sm md:table">
-              <thead className="text-gray-500">
-                <tr>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Cliente</th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Data do serviço
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Valor original
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Pago</th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Saldo restante
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Situação
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {pagAtual.map((d) => (
-                  <tr key={d.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <Link
-                        href={`/devedores/${d.id}`}
-                        className="font-medium text-gray-900 hover:underline"
-                      >
-                        {d.cliente.nome}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(d.dataServico)}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatCurrency(d.valorOriginal)}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatCurrency(d.totalPago)}</td>
-                    <td className="px-6 py-3 font-medium text-gray-900">
-                      {formatCurrency(d.saldo)}
-                    </td>
-                    <td className="px-6 py-3">
-                      <StatusBadge {...situacaoDividaMap[d.situacao]} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="divide-y divide-gray-100 md:hidden">
-              {pagAtual.map((d) => (
-                <Link
-                  key={d.id}
-                  href={`/devedores/${d.id}`}
-                  className="block px-4 py-3 active:bg-gray-50"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="min-w-0 flex-1 truncate font-medium text-gray-900">
-                      {d.cliente.nome}
-                    </span>
-                    <StatusBadge {...situacaoDividaMap[d.situacao]} />
-                  </div>
-                  <div className="mt-1.5 flex items-center justify-between gap-2">
-                    <span className="text-xs text-gray-500">{formatDate(d.dataServico)}</span>
-                    <span className="text-sm font-semibold text-gray-900">
-                      Saldo: {formatCurrency(d.saldo)}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            <Pagination paginaAtual={pagina} totalItens={totalFiltradas} hrefForPage={devedorHrefPagina} />
-          </>
-        )}
-      </div>
+      <DevedoresResultados
+        pagAtual={pagAtual.map((d) => ({
+          id: d.id,
+          clienteNome: d.cliente.nome,
+          dataServico: d.dataServico,
+          valorOriginal: d.valorOriginal,
+          totalPago: d.totalPago,
+          saldo: d.saldo,
+          situacao: d.situacao,
+        }))}
+        filtradas={filtradas.map((d) => ({
+          id: d.id,
+          clienteNome: d.cliente.nome,
+          dataServico: d.dataServico,
+          valorOriginal: d.valorOriginal,
+          totalPago: d.totalPago,
+          saldo: d.saldo,
+          situacao: d.situacao,
+        }))}
+        empresa={empresa}
+        periodoLabel={periodoLabel}
+        pagina={pagina}
+        q={q}
+        de={de}
+        ate={ate}
+        situacao={situacao}
+      />
     </div>
   );
 }
