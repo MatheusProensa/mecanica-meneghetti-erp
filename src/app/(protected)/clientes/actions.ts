@@ -64,10 +64,16 @@ export async function deleteCliente(id: string) {
     await prisma.cliente.delete({ where: { id } });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2003") {
-      const qtdOS = await prisma.ordemServico.count({ where: { clienteId: id } });
+      const [qtdOS, qtdDividas] = await Promise.all([
+        prisma.ordemServico.count({ where: { clienteId: id } }),
+        prisma.divida.count({ where: { clienteId: id } }),
+      ]);
+      const pendencias: string[] = [];
+      if (qtdOS > 0) pendencias.push(`${qtdOS} ordem(ns) de serviço`);
+      if (qtdDividas > 0) pendencias.push(`${qtdDividas} dívida(s)`);
       const mensagem =
-        qtdOS > 0
-          ? `Não é possível excluir: este cliente tem ${qtdOS} ordem(ns) de serviço vinculada(s). Exclua-as primeiro.`
+        pendencias.length > 0
+          ? `Não é possível excluir: este cliente tem ${pendencias.join(" e ")} vinculada(s). Exclua-as primeiro.`
           : "Não é possível excluir: este cliente possui registros vinculados.";
       redirect(`/clientes/${id}?erro=${encodeURIComponent(mensagem)}`);
     }

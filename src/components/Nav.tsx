@@ -10,6 +10,7 @@ import {
   Wrench,
   Wallet,
   FileText,
+  UserX,
   Settings,
   HelpCircle,
   LogOut,
@@ -23,6 +24,7 @@ const links = [
   { href: "/clientes", label: "Clientes", icon: Users, requer: null },
   { href: "/os", label: "Ordens de Serviço", icon: Wrench, requer: null },
   { href: "/financeiro", label: "Financeiro", icon: Wallet, requer: "verFinanceiro" as const },
+  { href: "/devedores", label: "Devedores", icon: UserX, requer: "verFinanceiro" as const },
   { href: "/notas", label: "Notas", icon: FileText, requer: null },
 ];
 

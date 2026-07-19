@@ -72,6 +72,7 @@ model Cliente {
 
   ordensServico OrdemServico[]
   notas         Nota[]
+  dividas       Divida[]
 
   @@index([nome])
 }
@@ -195,4 +196,36 @@ model DespesaItem {
   valor     Float
 
   @@index([despesaId])
+}
+
+/// Dívidas antigas de clientes (serviços prestados antes do sistema acompanhar
+/// pagamento parcelado). Os pagamentos aqui registrados são recuperação de
+/// dívida — não entram no faturamento/lucro do mês em Financeiro.
+model Divida {
+  id            String   @id @default(cuid())
+  clienteId     String
+  cliente       Cliente  @relation(fields: [clienteId], references: [id])
+  dataServico   DateTime
+  valorOriginal Float
+  observacoes   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  pagamentos PagamentoDivida[]
+
+  @@index([clienteId])
+  @@index([dataServico])
+}
+
+model PagamentoDivida {
+  id             String   @id @default(cuid())
+  dividaId       String
+  divida         Divida   @relation(fields: [dividaId], references: [id], onDelete: Cascade)
+  data           DateTime
+  valor          Float
+  formaPagamento String?
+  observacao     String?
+  createdAt      DateTime @default(now())
+
+  @@index([dividaId])
 }

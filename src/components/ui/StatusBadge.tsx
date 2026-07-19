@@ -59,3 +59,9 @@ export const notaTipoMap: Record<string, { label: string; tone: BadgeTone }> = {
   emitida: { label: "Emitida", tone: "blue" },
   recebida: { label: "Recebida", tone: "gray" },
 };
+
+export const situacaoDividaMap: Record<string, { label: string; tone: BadgeTone }> = {
+  em_aberto: { label: "Em aberto", tone: "red" },
+  pagando: { label: "Pagando", tone: "amber" },
+  quitado: { label: "Quitado", tone: "green" },
+};

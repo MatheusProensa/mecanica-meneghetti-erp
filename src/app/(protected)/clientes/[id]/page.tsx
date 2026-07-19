@@ -5,12 +5,13 @@ import { auth } from "@/lib/auth";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
+import { calcularSituacaoDivida } from "@/lib/dividas";
 import ClienteForm from "@/components/ClienteForm";
 import CobrancaCliente from "@/components/CobrancaCliente";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
-import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
+import { StatusBadge, osStatusMap, notaTipoMap, situacaoDividaMap } from "@/components/ui/StatusBadge";
 import WhatsAppLink from "@/components/ui/WhatsAppLink";
 import { updateCliente, deleteCliente } from "../actions";
 
@@ -34,6 +35,10 @@ export default async function ClienteDetalhePage({
         },
         notas: {
           orderBy: { dataEmissao: "desc" },
+        },
+        dividas: {
+          include: { pagamentos: true },
+          orderBy: { dataServico: "desc" },
         },
       },
     }),
@@ -229,6 +234,61 @@ export default async function ClienteDetalhePage({
           )}
         </div>
       </div>
+
+      {usuarioAtual.permissoes.verFinanceiro && (
+        <div>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-gray-900">Dívidas antigas</h2>
+            {usuarioAtual.permissoes.editar && (
+              <Link
+                href={`/devedores/novo?clienteId=${cliente.id}`}
+                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                + Nova dívida
+              </Link>
+            )}
+          </div>
+
+          <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+            {cliente.dividas.length === 0 ? (
+              <EmptyState
+                icon="user-x"
+                title="Nenhuma dívida registrada"
+                description="Serviços antigos em aberto deste cliente aparecem aqui."
+              />
+            ) : (
+              <div className="divide-y divide-gray-100">
+                {cliente.dividas.map((divida) => {
+                  const { saldo, situacao } = calcularSituacaoDivida(
+                    divida.valorOriginal,
+                    divida.pagamentos
+                  );
+                  return (
+                    <Link
+                      key={divida.id}
+                      href={`/devedores/${divida.id}`}
+                      className="flex items-center justify-between gap-2 px-4 py-3 hover:bg-gray-50 sm:px-6"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {formatCurrency(divida.valorOriginal)}
+                        </p>
+                        <p className="text-sm text-gray-500">{formatDate(divida.dataServico)}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <StatusBadge {...situacaoDividaMap[situacao]} />
+                        <span className="text-sm text-gray-600">
+                          Saldo: {formatCurrency(saldo)}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div>
         <div className="flex items-center justify-between">
