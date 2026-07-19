@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
+import { getEmpresa } from "@/lib/getEmpresa";
 import { calcularStatusExtra, type StatusExtra } from "@/lib/extras";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
@@ -10,6 +11,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, statusExtraMap } from "@/components/ui/StatusBadge";
+import ExportarExtrasPdf from "@/components/ExportarExtrasPdf";
 
 const STATUS_OPCOES: { value: StatusExtra; label: string }[] = [
   { value: "pendente", label: "Pendente" },
@@ -63,7 +65,8 @@ export default async function ExtrasPage({
       : {}),
   };
 
-  const [mecanicos, extrasNoMes, extras] = await Promise.all([
+  const [empresa, mecanicos, extrasNoMes, extras] = await Promise.all([
+    getEmpresa(),
     prisma.mecanico.findMany({ orderBy: { nome: "asc" } }),
     prisma.extraFuncionario.findMany({
       where: { data: { gte: inicioMes, lt: fimMes } },
@@ -92,6 +95,18 @@ export default async function ExtrasPage({
   const filtrados = situacao ? comStatus.filter((e) => e.status === situacao) : comStatus;
   const totalFiltrados = filtrados.length;
   const pagAtual = filtrados.slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
+
+  const totalExtrasFiltrado = filtrados.reduce((s, e) => s + e.valorExtra, 0);
+  const pagoFiltrado = filtrados.reduce((s, e) => s + e.totalPago, 0);
+  const faltaPagarFiltrado = totalExtrasFiltrado - pagoFiltrado;
+  const lucroEmpresaFiltrado = filtrados.reduce((s, e) => s + e.lucroEmpresa, 0);
+
+  const periodoLabelPartes: string[] = [];
+  if (de || ate) periodoLabelPartes.push(`${de ? formatDate(dePersonalizado) : "..."} a ${ate ? formatDate(atePersonalizadoBruto) : "..."}`);
+  if (funcionarioId) periodoLabelPartes.push(`funcionário: ${mecanicos.find((m) => m.id === funcionarioId)?.nome ?? ""}`);
+  if (q) periodoLabelPartes.push(`cliente: "${q}"`);
+  if (situacao) periodoLabelPartes.push(STATUS_OPCOES.find((s) => s.value === situacao)?.label ?? situacao);
+  const periodoLabel = periodoLabelPartes.length > 0 ? periodoLabelPartes.join(" · ") : "Todos os extras";
 
   function extraHref(overrides: { situacao?: string | null }) {
     const nextSituacao = "situacao" in overrides ? overrides.situacao : situacao;
@@ -223,7 +238,31 @@ export default async function ExtrasPage({
         ))}
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="mt-4 flex justify-end">
+        <ExportarExtrasPdf
+          empresa={empresa}
+          periodoLabel={periodoLabel}
+          resumo={{
+            totalExtras: totalExtrasFiltrado,
+            totalPago: pagoFiltrado,
+            faltaPagar: faltaPagarFiltrado,
+            lucroEmpresa: lucroEmpresaFiltrado,
+          }}
+          extras={filtrados.map((e) => ({
+            data: e.data,
+            mecanicoNome: e.mecanico.nome,
+            clienteOuOs:
+              e.cliente?.nome ?? (e.ordemServico ? `OS #${String(e.ordemServico.id).padStart(4, "0")}` : "-"),
+            valorExtra: e.valorExtra,
+            saldo: e.saldo,
+            lucroEmpresa: e.lucroEmpresa,
+            status: e.status,
+          }))}
+          nomeArquivo={`extras-${new Date().toISOString().slice(0, 10)}.pdf`}
+        />
+      </div>
+
+      <div className="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white">
         {pagAtual.length === 0 ? (
           <EmptyState
             icon="hand-coins"

@@ -2,9 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { parseCurrencyBR } from "@/lib/format";
 import { requirePermission } from "@/lib/requireAuth";
+import { uploadDividaFoto, deleteDividaFoto } from "@/lib/supabase-storage";
+import { assinaturaCondizComTipo } from "@/lib/fileSignature";
+
+const ALLOWED_FOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 function str(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -95,4 +100,34 @@ export async function deletePagamento(id: string, dividaId: string) {
 
   revalidatePath(`/devedores/${dividaId}`);
   revalidatePath("/devedores");
+}
+
+export async function addAnexoDivida(id: string, formData: FormData) {
+  await requirePermission("verFinanceiro");
+  await requirePermission("editar");
+  const file = formData.get("foto");
+  if (!(file instanceof File) || file.size === 0) throw new Error("Selecione uma foto");
+  if (!ALLOWED_FOTO_TYPES.has(file.type)) {
+    throw new Error("A foto precisa ser uma imagem (JPG, PNG, WEBP ou GIF)");
+  }
+
+  const bytes = Buffer.from(await file.arrayBuffer());
+  if (!assinaturaCondizComTipo(bytes, file.type)) {
+    throw new Error("O arquivo enviado não corresponde a uma imagem válida");
+  }
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const fileName = `divida-${id}-${randomUUID()}-${safeName}`;
+  const path = await uploadDividaFoto(fileName, bytes, file.type);
+
+  await prisma.anexoDivida.create({ data: { dividaId: id, path } });
+  revalidatePath(`/devedores/${id}`);
+}
+
+export async function deleteAnexoDivida(id: string, dividaId: string) {
+  await requirePermission("verFinanceiro");
+  await requirePermission("excluir");
+  const anexo = await prisma.anexoDivida.findUniqueOrThrow({ where: { id } });
+  await prisma.anexoDivida.delete({ where: { id } });
+  await deleteDividaFoto(anexo.path).catch(() => {});
+  revalidatePath(`/devedores/${dividaId}`);
 }

@@ -4,7 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { calcularSituacaoDivida } from "@/lib/dividas";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { getSignedDividaFotoUrls } from "@/lib/supabase-storage";
 import DividaForm from "@/components/DividaForm";
+import DividaFotos from "@/components/DividaFotos";
 import CurrencyInput from "@/components/CurrencyInput";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
@@ -26,12 +28,19 @@ export default async function DividaDetalhePage({
   const [divida, clientes] = await Promise.all([
     prisma.divida.findUnique({
       where: { id },
-      include: { cliente: true, pagamentos: { orderBy: { data: "desc" } } },
+      include: {
+        cliente: true,
+        pagamentos: { orderBy: { data: "desc" } },
+        anexos: { orderBy: { createdAt: "desc" } },
+      },
     }),
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
   ]);
 
   if (!divida) notFound();
+
+  const urlsPorPath = await getSignedDividaFotoUrls(divida.anexos.map((a) => a.path));
+  const fotos = divida.anexos.map((a) => ({ id: a.id, url: urlsPorPath[a.path] ?? null }));
 
   const { totalPago, saldo, situacao } = calcularSituacaoDivida(divida.valorOriginal, divida.pagamentos);
 
@@ -96,6 +105,10 @@ export default async function DividaDetalhePage({
             readOnly={!usuario.permissoes.editar}
           />
         </div>
+      </div>
+
+      <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
+        <DividaFotos dividaId={divida.id} fotos={fotos} readOnly={!usuario.permissoes.editar} />
       </div>
 
       <div>

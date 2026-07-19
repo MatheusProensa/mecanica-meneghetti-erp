@@ -215,9 +215,20 @@ model Divida {
   updatedAt     DateTime @updatedAt
 
   pagamentos PagamentoDivida[]
+  anexos     AnexoDivida[]
 
   @@index([clienteId])
   @@index([dataServico])
+}
+
+model AnexoDivida {
+  id        String   @id @default(cuid())
+  dividaId  String
+  divida    Divida   @relation(fields: [dividaId], references: [id], onDelete: Cascade)
+  path      String
+  createdAt DateTime @default(now())
+
+  @@index([dividaId])
 }
 
 model PagamentoDivida {

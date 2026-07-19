@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
+import { getEmpresa } from "@/lib/getEmpresa";
 import { calcularSituacaoDivida, type SituacaoDivida } from "@/lib/dividas";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
@@ -10,6 +11,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, situacaoDividaMap } from "@/components/ui/StatusBadge";
+import ExportarDevedoresPdf from "@/components/ExportarDevedoresPdf";
 
 const SITUACOES: { value: SituacaoDivida; label: string }[] = [
   { value: "em_aberto", label: "Em aberto" },
@@ -53,11 +55,14 @@ export default async function DevedoresPage({
       : {}),
   };
 
-  const dividas = await prisma.divida.findMany({
-    where,
-    include: { cliente: true, pagamentos: true },
-    orderBy: { dataServico: "desc" },
-  });
+  const [empresa, dividas] = await Promise.all([
+    getEmpresa(),
+    prisma.divida.findMany({
+      where,
+      include: { cliente: true, pagamentos: true },
+      orderBy: { dataServico: "desc" },
+    }),
+  ]);
 
   const comSituacao = dividas.map((d) => ({
     ...d,
@@ -74,6 +79,12 @@ export default async function DevedoresPage({
 
   const totalFiltradas = filtradas.length;
   const pagAtual = filtradas.slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
+
+  const periodoLabelPartes: string[] = [];
+  if (de || ate) periodoLabelPartes.push(`${de ? formatDate(dePersonalizado) : "..."} a ${ate ? formatDate(atePersonalizadoBruto) : "..."}`);
+  if (q) periodoLabelPartes.push(`cliente: "${q}"`);
+  if (situacao) periodoLabelPartes.push(SITUACOES.find((s) => s.value === situacao)?.label ?? situacao);
+  const periodoLabel = periodoLabelPartes.length > 0 ? periodoLabelPartes.join(" · ") : "Todas as dívidas";
 
   function devedorHref(overrides: { situacao?: string | null }) {
     const nextSituacao = "situacao" in overrides ? overrides.situacao : situacao;
@@ -180,7 +191,24 @@ export default async function DevedoresPage({
         ))}
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="mt-4 flex justify-end">
+        <ExportarDevedoresPdf
+          empresa={empresa}
+          periodoLabel={periodoLabel}
+          resumo={{ totalDividas, totalRecebido, saldoAReceber }}
+          dividas={filtradas.map((d) => ({
+            clienteNome: d.cliente.nome,
+            dataServico: d.dataServico,
+            valorOriginal: d.valorOriginal,
+            totalPago: d.totalPago,
+            saldo: d.saldo,
+            situacao: d.situacao,
+          }))}
+          nomeArquivo={`devedores-${new Date().toISOString().slice(0, 10)}.pdf`}
+        />
+      </div>
+
+      <div className="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white">
         {pagAtual.length === 0 ? (
           <EmptyState
             icon="user-x"
