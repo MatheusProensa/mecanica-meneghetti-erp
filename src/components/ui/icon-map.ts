@@ -12,6 +12,7 @@ import {
   FileText,
   Inbox,
   UserX,
+  HandCoins,
   type LucideIcon,
 } from "lucide-react";
 
@@ -29,6 +30,7 @@ export const iconMap = {
   "file-text": FileText,
   inbox: Inbox,
   "user-x": UserX,
+  "hand-coins": HandCoins,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof iconMap;

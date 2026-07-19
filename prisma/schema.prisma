@@ -73,6 +73,7 @@ model Cliente {
   ordensServico OrdemServico[]
   notas         Nota[]
   dividas       Divida[]
+  extras        ExtraFuncionario[]
 
   @@index([nome])
 }
@@ -84,6 +85,7 @@ model Mecanico {
   createdAt DateTime @default(now())
 
   ordensServico OrdemServico[]
+  extras        ExtraFuncionario[]
 }
 
 enum StatusOS {
@@ -117,6 +119,7 @@ model OrdemServico {
   itens  ItemServico[]
   notas  Nota[]
   anexos AnexoOS[]
+  extras ExtraFuncionario[]
 
   @@index([clienteId])
   @@index([status])
@@ -228,4 +231,43 @@ model PagamentoDivida {
   createdAt      DateTime @default(now())
 
   @@index([dividaId])
+}
+
+/// Pagamentos extras a funcionários vinculados a serviços específicos (fora do
+/// salário/pró-labore fixo). O lucro da empresa em cada lançamento é sempre
+/// derivado (valorServico − valorExtra − outrosCustos), nunca guardado direto.
+model ExtraFuncionario {
+  id             String        @id @default(cuid())
+  data           DateTime
+  mecanicoId     String
+  mecanico       Mecanico      @relation(fields: [mecanicoId], references: [id])
+  clienteId      String?
+  cliente        Cliente?      @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  ordemServicoId Int?
+  ordemServico   OrdemServico? @relation(fields: [ordemServicoId], references: [id], onDelete: SetNull)
+  descricao      String
+  valorServico   Float
+  valorExtra     Float
+  outrosCustos   Float         @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  pagamentos PagamentoExtra[]
+
+  @@index([mecanicoId])
+  @@index([clienteId])
+  @@index([ordemServicoId])
+  @@index([data])
+}
+
+model PagamentoExtra {
+  id             String           @id @default(cuid())
+  extraId        String
+  extra          ExtraFuncionario @relation(fields: [extraId], references: [id], onDelete: Cascade)
+  data           DateTime
+  valor          Float
+  formaPagamento String?
+  createdAt      DateTime         @default(now())
+
+  @@index([extraId])
 }

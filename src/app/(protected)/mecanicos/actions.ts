@@ -27,6 +27,12 @@ export async function toggleMecanicoAtivo(id: string, ativo: boolean) {
 
 export async function deleteMecanico(id: string) {
   await requirePermission("acessarConfiguracoes");
+  const qtdExtras = await prisma.extraFuncionario.count({ where: { mecanicoId: id } });
+  if (qtdExtras > 0) {
+    throw new Error(
+      "Não é possível excluir: este mecânico tem extras vinculados. Exclua-os primeiro."
+    );
+  }
   await prisma.ordemServico.updateMany({ where: { mecanicoId: id }, data: { mecanicoId: null } });
   await prisma.mecanico.delete({ where: { id } });
   revalidatePath("/configuracoes");

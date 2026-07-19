@@ -65,3 +65,9 @@ export const situacaoDividaMap: Record<string, { label: string; tone: BadgeTone 
   pagando: { label: "Pagando", tone: "amber" },
   quitado: { label: "Quitado", tone: "green" },
 };
+
+export const statusExtraMap: Record<string, { label: string; tone: BadgeTone }> = {
+  pendente: { label: "Pendente", tone: "red" },
+  parcialmente_pago: { label: "Parcialmente pago", tone: "amber" },
+  pago: { label: "Pago", tone: "green" },
+};
