@@ -104,7 +104,7 @@ export default async function DevedoresPage({
   return (
     <div>
       <PageHeader
-        title="Saldo em aberto"
+        title="Devedores"
         description="Clientes com serviços antigos em aberto — registre pagamentos parciais e acompanhe o saldo."
         action={usuario.permissoes.editar ? { label: "+ Nova dívida", href: "/devedores/novo" } : undefined}
       />
