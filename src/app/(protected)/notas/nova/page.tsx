@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import NotaForm from "@/components/NotaForm";
+import FormPageHeader from "@/components/ui/FormPageHeader";
 import { createNota } from "../actions";
 
 export default async function NovaNotaPage() {
@@ -21,7 +22,7 @@ export default async function NovaNotaPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-xl font-semibold text-gray-900">Nova nota</h1>
+      <FormPageHeader backHref="/notas" backLabel="Notas" title="Nova nota" />
       <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
         <NotaForm
           clientes={clientes}

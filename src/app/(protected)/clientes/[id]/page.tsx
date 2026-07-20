@@ -9,6 +9,7 @@ import { calcularSituacaoDivida, dataMaisAntigaItem } from "@/lib/dividas";
 import ClienteForm from "@/components/ClienteForm";
 import CobrancaCliente from "@/components/CobrancaCliente";
 import MetricCard from "@/components/ui/MetricCard";
+import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { StatusBadge, osStatusMap, notaTipoMap, situacaoDividaMap } from "@/components/ui/StatusBadge";
@@ -120,7 +121,7 @@ export default async function ClienteDetalhePage({
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Dados cadastrais</h2>
+        <SectionHeader icon="users" iconColor="text-blue-600" title="Dados cadastrais" />
         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
           <ClienteForm
             cliente={cliente}
@@ -148,19 +149,16 @@ export default async function ClienteDetalhePage({
       )}
 
       <div>
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-900">
-            Histórico de ordens de serviço
-          </h2>
-          {usuarioAtual.permissoes.editarClientes && (
-            <Link
-              href={`/os/nova?clienteId=${cliente.id}`}
-              className="text-sm font-medium text-blue-600 hover:text-blue-700"
-            >
-              + Nova OS
-            </Link>
-          )}
-        </div>
+        <SectionHeader
+          icon="tools"
+          iconColor="text-blue-600"
+          title="Histórico de ordens de serviço"
+          action={
+            usuarioAtual.permissoes.editarClientes
+              ? { label: "+ Nova OS", href: `/os/nova?clienteId=${cliente.id}` }
+              : undefined
+          }
+        />
 
         <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
           {cliente.ordensServico.length === 0 ? (
@@ -238,17 +236,16 @@ export default async function ClienteDetalhePage({
 
       {usuarioAtual.permissoes.verDevedores && (
         <div>
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-900">Dívidas antigas</h2>
-            {usuarioAtual.permissoes.editarDevedores && (
-              <Link
-                href={`/devedores/novo?clienteId=${cliente.id}`}
-                className="text-sm font-medium text-blue-600 hover:text-blue-700"
-              >
-                + Nova dívida
-              </Link>
-            )}
-          </div>
+          <SectionHeader
+            icon="user-x"
+            iconColor="text-red-600"
+            title="Dívidas antigas"
+            action={
+              usuarioAtual.permissoes.editarDevedores
+                ? { label: "+ Nova dívida", href: `/devedores/novo?clienteId=${cliente.id}` }
+                : undefined
+            }
+          />
 
           <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
             {cliente.dividas.length === 0 ? (
@@ -295,17 +292,16 @@ export default async function ClienteDetalhePage({
       )}
 
       <div>
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-900">Notas vinculadas</h2>
-          {usuarioAtual.permissoes.editarClientes && (
-            <Link
-              href={`/notas/nova`}
-              className="text-sm font-medium text-blue-600 hover:text-blue-700"
-            >
-              + Nova nota
-            </Link>
-          )}
-        </div>
+        <SectionHeader
+          icon="file-text"
+          iconColor="text-gray-600"
+          title="Notas vinculadas"
+          action={
+            usuarioAtual.permissoes.editarClientes
+              ? { label: "+ Nova nota", href: "/notas/nova" }
+              : undefined
+          }
+        />
 
         <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
           {cliente.notas.length === 0 ? (

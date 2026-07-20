@@ -304,7 +304,7 @@ export default async function DashboardPage({
             icon="wallet"
             iconColor="text-green-600"
             title="Financeiro"
-            action={{ label: "Ver detalhes", href: "/financeiro" }}
+            action={{ label: "Ver detalhes →", href: "/financeiro" }}
           />
           <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             <MetricCard
@@ -392,7 +392,7 @@ export default async function DashboardPage({
             icon="inbox"
             iconColor="text-gray-600"
             title="Últimas movimentações"
-            action={{ label: "Ver todas", href: "/os" }}
+            action={{ label: "Ver todas →", href: "/os" }}
           />
         </div>
 

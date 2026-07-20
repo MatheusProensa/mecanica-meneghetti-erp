@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import ExtraForm from "@/components/ExtraForm";
+import FormPageHeader from "@/components/ui/FormPageHeader";
 import { createExtra } from "../actions";
 
 export default async function NovoExtraPage({
@@ -26,7 +27,7 @@ export default async function NovoExtraPage({
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-semibold text-gray-900">Novo extra</h1>
+      <FormPageHeader backHref="/extras" backLabel="Extras" title="Novo extra" />
       <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
         <ExtraForm
           mecanicos={mecanicos}

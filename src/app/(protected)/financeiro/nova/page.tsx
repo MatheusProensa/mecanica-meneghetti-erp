@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import DespesaForm from "@/components/DespesaForm";
+import FormPageHeader from "@/components/ui/FormPageHeader";
 import { createDespesa } from "../actions";
 
 export default async function NovaDespesaPage() {
@@ -10,7 +11,7 @@ export default async function NovaDespesaPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-xl font-semibold text-gray-900">Nova despesa</h1>
+      <FormPageHeader backHref="/financeiro" backLabel="Financeiro" title="Nova despesa" />
       <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
         <DespesaForm action={createDespesa} />
       </div>
