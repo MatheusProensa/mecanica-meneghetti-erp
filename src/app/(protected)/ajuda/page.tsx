@@ -48,7 +48,7 @@ const secoes: { titulo: string; texto: string; requer: Permission | null }[] = [
   {
     titulo: "Configurações",
     texto:
-      "Trocar sua senha, editar os dados da oficina (usados no PDF de cobrança), cadastrar sua chave Pix, gerenciar os mecânicos da oficina e, se você for Dono, criar logins novos e controlar o que cada Funcionário pode ver ou fazer no sistema.",
+      "Trocar sua senha, editar os dados da oficina (usados no PDF de cobrança), cadastrar sua chave Pix, gerenciar os mecânicos da oficina e, se você for Administrador, criar logins novos e controlar o que cada Funcionário pode ver ou fazer no sistema.",
     requer: null,
   },
 ];

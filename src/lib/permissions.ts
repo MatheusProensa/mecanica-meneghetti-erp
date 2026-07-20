@@ -72,7 +72,7 @@ interface FlagsUsuario {
 }
 
 /** Calcula as permissões efetivas a partir do perfil e, pro funcionário e
- * visualizador, das flags configuradas pelo Dono — ver, editar e excluir são
+ * visualizador, das flags configuradas pelo Administrador — ver, editar e excluir são
  * controlados por página (Dashboard só tem "ver"; Clientes, OS, Financeiro,
  * Devedores, Extras e Notas têm ver/editar/excluir independentes).
  * Visualizador nunca edita, exclui, ou acessa Configurações, independente

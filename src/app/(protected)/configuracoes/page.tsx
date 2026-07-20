@@ -54,7 +54,7 @@ const TODAS_SECOES = [
 type SecaoKey = (typeof TODAS_SECOES)[number]["key"];
 
 const ROLE_INFO: Record<string, { label: string; tone: BadgeTone }> = {
-  dono: { label: "Dono", tone: "purple" },
+  dono: { label: "Administrador", tone: "purple" },
   funcionario: { label: "Funcionário", tone: "blue" },
   visualizador: { label: "Visualizador", tone: "gray" },
 };

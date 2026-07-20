@@ -7,7 +7,7 @@ import PermissoesFields from "./PermissoesFields";
 import { updateUsuarioPermissoes, deleteUsuario, resetSenhaUsuario } from "./usuarios-actions";
 
 const ROLE_LABEL: Record<string, string> = {
-  dono: "Dono",
+  dono: "Administrador",
   funcionario: "Funcionário",
   visualizador: "Visualizador",
 };
@@ -83,7 +83,7 @@ export default function UsuarioRow({
                 onChange={(e) => setRole(e.target.value as typeof role)}
                 className="mt-1 w-full max-w-xs rounded-md border border-gray-300 px-3 py-2 text-sm"
               >
-                <option value="dono">Dono (acesso total)</option>
+                <option value="dono">Administrador (acesso total)</option>
                 <option value="funcionario">Funcionário</option>
                 <option value="visualizador">Visualizador (só olha)</option>
               </select>

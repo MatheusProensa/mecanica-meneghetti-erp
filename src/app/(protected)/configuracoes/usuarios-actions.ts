@@ -111,7 +111,7 @@ export async function updateUsuarioPermissoes(id: string, formData: FormData) {
   if (atual?.id === id && role !== "dono") {
     const donos = await prisma.user.count({ where: { role: "dono" } });
     if (donos <= 1) {
-      throw new Error("Você é o único Dono — não dá pra tirar seu próprio acesso de admin.");
+      throw new Error("Você é o único Administrador — não dá pra tirar seu próprio acesso de admin.");
     }
   }
 
@@ -135,14 +135,14 @@ export async function deleteUsuario(id: string) {
   const alvo = await prisma.user.findUniqueOrThrow({ where: { id } });
   if (alvo.role === "dono") {
     const donos = await prisma.user.count({ where: { role: "dono" } });
-    if (donos <= 1) throw new Error("Não dá pra excluir o único Dono do sistema.");
+    if (donos <= 1) throw new Error("Não dá pra excluir o único Administrador do sistema.");
   }
 
   await prisma.user.delete({ where: { id } });
   revalidatePath("/configuracoes");
 }
 
-/** Dono redefine a senha de outro usuário (ex: funcionário esqueceu e não tem e-mail configurado). */
+/** Administrador redefine a senha de outro usuário (ex: funcionário esqueceu e não tem e-mail configurado). */
 export async function resetSenhaUsuario(id: string, formData: FormData) {
   await requirePermission("gerenciarUsuarios");
 
