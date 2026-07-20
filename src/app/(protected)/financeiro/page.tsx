@@ -82,6 +82,13 @@ export default async function FinanceiroPage({
         ? `Ano de ${anoNum}`
         : "Todos os períodos";
 
+  /** Os cards de resumo seguem o filtro de Mês/Ano/De-Até quando ele está
+   * ativo; sem nenhum filtro escolhido, continuam mostrando o mês atual
+   * (comportamento padrão de sempre). */
+  const periodoResumo = periodo ?? { gte: inicioMes, lt: fimMes };
+  const rotuloResumo = periodo ? "no período" : "no mês";
+  const contextoResumo = periodo ? periodoLabel : undefined;
+
   const [
     empresa,
     osPagasNoMes,
@@ -94,7 +101,7 @@ export default async function FinanceiroPage({
   ] = await Promise.all([
       getEmpresa(),
       prisma.ordemServico.findMany({
-        where: { pago: true, dataPagamento: { gte: inicioMes, lt: fimMes } },
+        where: { pago: true, dataPagamento: periodoResumo },
         include: { itens: true },
       }),
       prisma.ordemServico.findMany({
@@ -102,11 +109,11 @@ export default async function FinanceiroPage({
         include: { itens: true },
       }),
       prisma.despesa.aggregate({
-        where: { data: { gte: inicioMes, lt: fimMes } },
+        where: { data: periodoResumo },
         _sum: { valor: true },
       }),
       prisma.despesa.aggregate({
-        where: { data: { gte: inicioMes, lt: fimMes }, categoria: "Funcionários" },
+        where: { data: periodoResumo, categoria: "Funcionários" },
         _sum: { valor: true },
       }),
       prisma.despesa.findMany({
@@ -154,8 +161,9 @@ export default async function FinanceiroPage({
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
-          label="Recebido no mês"
+          label={`Recebido ${rotuloResumo}`}
           value={formatCurrency(recebidoNoMes)}
+          context={contextoResumo}
         />
         <MetricCard
           icon="clock"
@@ -167,21 +175,23 @@ export default async function FinanceiroPage({
         <MetricCard
           icon="trending-down"
           iconColor="text-red-600"
-          label="Despesas no mês"
+          label={`Despesas ${rotuloResumo}`}
           value={formatCurrency(despesasTotal)}
+          context={contextoResumo}
         />
         <MetricCard
           icon="users"
           iconColor="text-gray-500"
-          label="Funcionários no mês"
+          label={`Funcionários ${rotuloResumo}`}
           value={formatCurrency(funcionariosNoMes)}
+          context={contextoResumo}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroNoMes >= 0 ? "text-green-600" : "text-red-600"}
-          label="Lucro no mês"
+          label={`Lucro ${rotuloResumo}`}
           value={formatCurrency(lucroNoMes)}
-          context="Recebido − Despesas"
+          context={contextoResumo ?? "Recebido − Despesas"}
           highlight={lucroNoMes >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"
         />

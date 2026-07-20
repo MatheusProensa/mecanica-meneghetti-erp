@@ -35,7 +35,7 @@ export default function OSPagoToggle({
 
   return (
     <div onClick={(e) => e.stopPropagation()}>
-      <div className="flex items-center gap-1.5">
+      <div className="flex min-h-[26px] items-center gap-1.5">
         <StatusBadge label={info.label} tone={info.tone} />
         {!readOnly &&
           !pago &&
