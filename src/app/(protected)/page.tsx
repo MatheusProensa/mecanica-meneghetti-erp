@@ -10,9 +10,9 @@ import PeriodFilter from "@/components/PeriodFilter";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
 
 const PERIODOS_DIARIO = [1];
-const PERIODOS_SEMANAL = [4, 8, 12, 26];
+const PERIODOS_SEMANAL = [1, 4, 8, 12, 26];
 const PERIODOS_MENSAL = [1, 3, 6, 12];
-const PERIODO_PADRAO: Record<Agrupamento, number> = { diario: 1, semanal: 8, mensal: 6 };
+const PERIODO_PADRAO: Record<Agrupamento, number> = { diario: 1, semanal: 1, mensal: 1 };
 const UM_DIA_MS = 24 * 60 * 60 * 1000;
 
 function startOfMonth(d: Date) {
@@ -214,10 +214,10 @@ export default async function DashboardPage({
         : `últimos ${periodo} dias`
       : agrupamento === "semanal"
         ? periodo === 1
-          ? "última semana"
+          ? "esta semana"
           : `últimas ${periodo} semanas`
         : periodo === 1
-          ? "último mês"
+          ? "este mês"
           : `últimos ${periodo} meses`;
 
   const movimentacoes = [

@@ -6,6 +6,7 @@ import type { Agrupamento } from "./DashboardCharts";
 
 const OPCOES: Partial<Record<Agrupamento, { value: string; label: string }[]>> = {
   semanal: [
+    { value: "1", label: "Esta semana" },
     { value: "4", label: "Últimas 4 semanas" },
     { value: "8", label: "Últimas 8 semanas" },
     { value: "12", label: "Últimas 12 semanas" },
@@ -21,8 +22,8 @@ const OPCOES: Partial<Record<Agrupamento, { value: string; label: string }[]>> =
 
 const PERIODO_PADRAO: Record<Agrupamento, string> = {
   diario: "1",
-  semanal: "8",
-  mensal: "6",
+  semanal: "1",
+  mensal: "1",
 };
 
 const AGRUPAMENTOS: { value: Agrupamento; label: string }[] = [

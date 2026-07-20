@@ -97,40 +97,18 @@ export async function gerarOSPdf({
   autoTable(doc, {
     startY: y + 6,
     margin: { left: marginX, right: marginX },
-    head: [
-      [
-        "OS",
-        "Cliente",
-        "Data",
-        "Status",
-        "Pagamento",
-        { content: "Valor", styles: { halign: "right" } },
-      ],
-    ],
+    head: [["OS", "Cliente", "Data", "Status", "Pagamento"]],
     body: ordens.map((os) => [
       `#${String(os.id).padStart(4, "0")}`,
       os.clienteNome,
       formatDate(os.data),
       os.statusLabel,
       os.pagamentoLabel,
-      formatCurrency(os.valor),
     ]),
-    foot: [
-      [
-        "",
-        "",
-        "",
-        "",
-        "Total",
-        { content: formatCurrency(resumo.valorTotal), styles: { halign: "right" } },
-      ],
-    ],
     headStyles: { fillColor: [17, 24, 39], textColor: 255, fontStyle: "bold" },
-    footStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold" },
     columnStyles: {
       0: { cellWidth: 18 },
       2: { cellWidth: 22 },
-      5: { cellWidth: 26, halign: "right" },
     },
     styles: { fontSize: 9, textColor: [55, 65, 81], cellPadding: 3 },
     theme: "striped",
