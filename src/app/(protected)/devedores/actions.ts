@@ -17,28 +17,38 @@ function str(formData: FormData, key: string): string | null {
   return value.trim();
 }
 
-function buildDividaData(formData: FormData) {
-  const clienteId = str(formData, "clienteId");
-  const dataServicoRaw = str(formData, "dataServico");
-  const valorOriginal = parseCurrencyBR(str(formData, "valorOriginal"));
+function parseItensDivida(formData: FormData) {
+  const datas = formData.getAll("data") as string[];
+  const descricoes = formData.getAll("descricao") as string[];
+  const valores = formData.getAll("valor") as string[];
 
-  return {
-    clienteId,
-    dataServico: dataServicoRaw ? new Date(dataServicoRaw) : new Date(),
-    valorOriginal,
-    observacoes: str(formData, "observacoes"),
-  };
+  return datas
+    .map((dataRaw, i) => ({
+      data: dataRaw ? new Date(dataRaw) : null,
+      descricao: (descricoes[i] ?? "").trim(),
+      valor: parseCurrencyBR(valores[i]),
+    }))
+    .filter(
+      (item): item is { data: Date; descricao: string; valor: number } =>
+        item.data !== null && item.descricao !== "" && item.valor > 0
+    );
 }
 
 export async function createDivida(formData: FormData) {
   await requirePermission("verFinanceiro");
   await requirePermission("editar");
-  const data = buildDividaData(formData);
-  if (!data.clienteId) throw new Error("Cliente é obrigatório");
-  if (data.valorOriginal <= 0) throw new Error("Valor original precisa ser maior que zero");
+  const clienteId = str(formData, "clienteId");
+  if (!clienteId) throw new Error("Cliente é obrigatório");
+
+  const itens = parseItensDivida(formData);
+  if (itens.length === 0) throw new Error("Adicione ao menos um item com data, descrição e valor");
 
   const divida = await prisma.divida.create({
-    data: { ...data, clienteId: data.clienteId },
+    data: {
+      clienteId,
+      observacoes: str(formData, "observacoes"),
+      itens: { create: itens },
+    },
   });
 
   revalidatePath("/devedores");
@@ -48,14 +58,23 @@ export async function createDivida(formData: FormData) {
 export async function updateDivida(id: string, formData: FormData) {
   await requirePermission("verFinanceiro");
   await requirePermission("editar");
-  const data = buildDividaData(formData);
-  if (!data.clienteId) throw new Error("Cliente é obrigatório");
-  if (data.valorOriginal <= 0) throw new Error("Valor original precisa ser maior que zero");
+  const clienteId = str(formData, "clienteId");
+  if (!clienteId) throw new Error("Cliente é obrigatório");
 
-  await prisma.divida.update({
-    where: { id },
-    data: { ...data, clienteId: data.clienteId },
-  });
+  const itens = parseItensDivida(formData);
+  if (itens.length === 0) throw new Error("Adicione ao menos um item com data, descrição e valor");
+
+  await prisma.$transaction([
+    prisma.itemDivida.deleteMany({ where: { dividaId: id } }),
+    prisma.divida.update({
+      where: { id },
+      data: {
+        clienteId,
+        observacoes: str(formData, "observacoes"),
+        itens: { create: itens },
+      },
+    }),
+  ]);
 
   revalidatePath("/devedores");
   revalidatePath(`/devedores/${id}`);

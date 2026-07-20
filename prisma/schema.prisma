@@ -141,6 +141,7 @@ model ItemServico {
   id             String       @id @default(cuid())
   ordemServicoId Int
   ordemServico   OrdemServico @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  data           DateTime
   descricao      String
   valor          Float
 
@@ -205,20 +206,32 @@ model DespesaItem {
 /// pagamento parcelado). Os pagamentos aqui registrados são recuperação de
 /// dívida — não entram no faturamento/lucro do mês em Financeiro.
 model Divida {
-  id            String   @id @default(cuid())
-  clienteId     String
-  cliente       Cliente  @relation(fields: [clienteId], references: [id])
-  dataServico   DateTime
-  valorOriginal Float
-  observacoes   String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          String   @id @default(cuid())
+  clienteId   String
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+  observacoes String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
+  itens      ItemDivida[]
   pagamentos PagamentoDivida[]
   anexos     AnexoDivida[]
 
   @@index([clienteId])
-  @@index([dataServico])
+}
+
+/// Serviços individuais que compõem a dívida (data, descrição e valor de cada
+/// um), pra dar pra enviar um extrato detalhado pro cliente em vez de só um
+/// valor total genérico.
+model ItemDivida {
+  id        String   @id @default(cuid())
+  dividaId  String
+  divida    Divida   @relation(fields: [dividaId], references: [id], onDelete: Cascade)
+  data      DateTime
+  descricao String
+  valor     Float
+
+  @@index([dividaId])
 }
 
 model AnexoDivida {

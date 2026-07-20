@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
-import { calcularSituacaoDivida, type SituacaoDivida } from "@/lib/dividas";
+import { calcularSituacaoDivida, dataMaisAntigaItem, type SituacaoDivida } from "@/lib/dividas";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
@@ -45,9 +45,13 @@ export default async function DevedoresPage({
     ...(q ? { cliente: { nome: { contains: q, mode: "insensitive" } } } : {}),
     ...(dePersonalizado || atePersonalizado
       ? {
-          dataServico: {
-            ...(dePersonalizado ? { gte: dePersonalizado } : {}),
-            ...(atePersonalizado ? { lt: atePersonalizado } : {}),
+          itens: {
+            some: {
+              data: {
+                ...(dePersonalizado ? { gte: dePersonalizado } : {}),
+                ...(atePersonalizado ? { lt: atePersonalizado } : {}),
+              },
+            },
           },
         }
       : {}),
@@ -57,15 +61,18 @@ export default async function DevedoresPage({
     getEmpresa(),
     prisma.divida.findMany({
       where,
-      include: { cliente: true, pagamentos: true },
-      orderBy: { dataServico: "desc" },
+      include: { cliente: true, pagamentos: true, itens: true },
+      orderBy: { createdAt: "desc" },
     }),
   ]);
 
-  const comSituacao = dividas.map((d) => ({
-    ...d,
-    ...calcularSituacaoDivida(d.valorOriginal, d.pagamentos),
-  }));
+  const comSituacao = dividas
+    .map((d) => ({
+      ...d,
+      ...calcularSituacaoDivida(d.itens, d.pagamentos),
+      dataServico: dataMaisAntigaItem(d.itens) ?? d.createdAt,
+    }))
+    .sort((a, b) => b.dataServico.getTime() - a.dataServico.getTime());
 
   const filtradas = situacao
     ? comSituacao.filter((d) => d.situacao === situacao)
@@ -97,7 +104,7 @@ export default async function DevedoresPage({
   return (
     <div>
       <PageHeader
-        title="Devedores"
+        title="Saldo em aberto"
         description="Clientes com serviços antigos em aberto — registre pagamentos parciais e acompanhe o saldo."
         action={usuario.permissoes.editar ? { label: "+ Nova dívida", href: "/devedores/novo" } : undefined}
       />

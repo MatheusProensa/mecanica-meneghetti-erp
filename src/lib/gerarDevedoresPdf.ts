@@ -66,7 +66,7 @@ export async function gerarDevedoresPdf({
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
   doc.setTextColor(17, 24, 39);
-  doc.text("Relatório de Devedores", marginX, 47);
+  doc.text("Relatório de Saldo em Aberto", marginX, 47);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);

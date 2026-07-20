@@ -30,6 +30,7 @@ export default async function DividaDetalhePage({
       where: { id },
       include: {
         cliente: true,
+        itens: { orderBy: { data: "desc" } },
         pagamentos: { orderBy: { data: "desc" } },
         anexos: { orderBy: { createdAt: "desc" } },
       },
@@ -42,7 +43,10 @@ export default async function DividaDetalhePage({
   const urlsPorPath = await getSignedDividaFotoUrls(divida.anexos.map((a) => a.path));
   const fotos = divida.anexos.map((a) => ({ id: a.id, url: urlsPorPath[a.path] ?? null }));
 
-  const { totalPago, saldo, situacao } = calcularSituacaoDivida(divida.valorOriginal, divida.pagamentos);
+  const { valorOriginal, totalPago, saldo, situacao } = calcularSituacaoDivida(
+    divida.itens,
+    divida.pagamentos
+  );
 
   const updateDividaWithId = updateDivida.bind(null, divida.id);
   const deleteDividaWithId = deleteDivida.bind(null, divida.id);
@@ -53,7 +57,7 @@ export default async function DividaDetalhePage({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/devedores" className="text-sm text-gray-500 hover:underline">
-            ← Devedores
+            ← Saldo em aberto
           </Link>
           <h1 className="mt-1 text-xl font-semibold text-gray-900">
             <Link href={`/clientes/${divida.clienteId}`} className="hover:underline">
@@ -79,7 +83,7 @@ export default async function DividaDetalhePage({
           icon="alert-triangle"
           iconColor="text-red-600"
           label="Valor original"
-          value={formatCurrency(divida.valorOriginal)}
+          value={formatCurrency(valorOriginal)}
         />
         <MetricCard
           icon="trending-up"

@@ -28,9 +28,9 @@ const secoes: { titulo: string; texto: string; requer: Permission | null }[] = [
     requer: "verFinanceiro",
   },
   {
-    titulo: "Devedores",
+    titulo: "Saldo em aberto",
     texto:
-      "Pra clientes com serviços antigos em aberto. Mostra valor original da dívida, quanto já foi pago e o saldo restante. Dá pra registrar pagamentos parciais (o saldo é abatido automaticamente), anexar fotos e filtrar por cliente, período ou situação (em aberto, pagando, quitado). Esses pagamentos não entram no faturamento do mês do Financeiro — são tratados à parte, como recuperação de dívida.",
+      "Pra clientes com serviços antigos em aberto. Cada dívida é montada por itens (data, descrição e valor de cada serviço) em vez de um valor único, e o total é somado automaticamente — fica fácil conferir e enviar o detalhamento pro cliente. Mostra também quanto já foi pago e o saldo restante. Dá pra registrar pagamentos parciais (o saldo é abatido automaticamente), anexar fotos e filtrar por cliente, período ou situação (em aberto, pagando, quitado). Esses pagamentos não entram no faturamento do mês do Financeiro — são tratados à parte, como recuperação de dívida.",
     requer: "verFinanceiro",
   },
   {

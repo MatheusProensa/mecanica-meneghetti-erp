@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
-import { calcularSituacaoDivida } from "@/lib/dividas";
+import { calcularSituacaoDivida, dataMaisAntigaItem } from "@/lib/dividas";
 import ClienteForm from "@/components/ClienteForm";
 import CobrancaCliente from "@/components/CobrancaCliente";
 import MetricCard from "@/components/ui/MetricCard";
@@ -37,8 +37,8 @@ export default async function ClienteDetalhePage({
           orderBy: { dataEmissao: "desc" },
         },
         dividas: {
-          include: { pagamentos: true },
-          orderBy: { dataServico: "desc" },
+          include: { pagamentos: true, itens: true },
+          orderBy: { createdAt: "desc" },
         },
       },
     }),
@@ -259,10 +259,11 @@ export default async function ClienteDetalhePage({
             ) : (
               <div className="divide-y divide-gray-100">
                 {cliente.dividas.map((divida) => {
-                  const { saldo, situacao } = calcularSituacaoDivida(
-                    divida.valorOriginal,
+                  const { valorOriginal, saldo, situacao } = calcularSituacaoDivida(
+                    divida.itens,
                     divida.pagamentos
                   );
+                  const dataServico = dataMaisAntigaItem(divida.itens);
                   return (
                     <Link
                       key={divida.id}
@@ -271,9 +272,11 @@ export default async function ClienteDetalhePage({
                     >
                       <div>
                         <p className="font-medium text-gray-900">
-                          {formatCurrency(divida.valorOriginal)}
+                          {formatCurrency(valorOriginal)}
                         </p>
-                        <p className="text-sm text-gray-500">{formatDate(divida.dataServico)}</p>
+                        {dataServico && (
+                          <p className="text-sm text-gray-500">{formatDate(dataServico)}</p>
+                        )}
                       </div>
                       <div className="flex items-center gap-2">
                         <StatusBadge {...situacaoDividaMap[situacao]} />
