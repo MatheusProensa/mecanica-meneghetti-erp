@@ -58,7 +58,7 @@ export default function OSPagoToggle({
               className="flex items-center gap-1 rounded-md bg-green-600 px-2 py-1 text-xs font-medium text-white shadow-sm hover:bg-green-700 disabled:opacity-60"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
-              Marcar como pago
+              Pagar
             </button>
           ))}
         {!readOnly &&
