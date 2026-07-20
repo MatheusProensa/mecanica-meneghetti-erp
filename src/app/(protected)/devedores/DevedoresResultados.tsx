@@ -99,7 +99,13 @@ export default function DevedoresResultados({
         </p>
         <ExportarDevedoresPdf
           empresa={empresa}
-          periodoLabel={usandoSelecao ? `${periodoLabel} · seleção manual` : periodoLabel}
+          periodoLabel={
+            usandoSelecao
+              ? periodoLabel === "Todas as dívidas"
+                ? "Seleção manual"
+                : `${periodoLabel} · seleção manual`
+              : periodoLabel
+          }
           resumo={resumoParaExportar}
           dividas={dividasParaExportar.map((d) => ({
             clienteNome: d.clienteNome,
