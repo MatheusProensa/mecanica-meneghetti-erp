@@ -6,8 +6,8 @@ import { getCurrentUser } from "@/lib/getCurrentUser";
 import DashboardCharts, { type ChartPoint, type Agrupamento } from "@/components/DashboardCharts";
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
-import PageHeader from "@/components/ui/PageHeader";
 import SectionHeader from "@/components/ui/SectionHeader";
+import DashboardHero from "@/components/DashboardHero";
 import AgrupamentoToggle from "@/components/AgrupamentoToggle";
 import PeriodoSelector from "@/components/PeriodoSelector";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
@@ -291,12 +291,13 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageHeader title="Dashboard" />
-        {verFinanceiro && (
+      <DashboardHero nome={usuario.name} agora={now} osAtrasadasCount={osAtrasadasCount} />
+
+      {verFinanceiro && (
+        <div className="flex justify-end">
           <AgrupamentoToggle agrupamento={agrupamento} personalizado={usarPersonalizado} />
-        )}
-      </div>
+        </div>
+      )}
 
       {verFinanceiro && (
         <div>

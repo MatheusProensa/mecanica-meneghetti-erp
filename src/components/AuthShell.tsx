@@ -1,4 +1,5 @@
 import Image from "next/image";
+import DarkPatternBg from "@/components/ui/DarkPatternBg";
 
 export default function AuthShell({
   subtitle,
@@ -9,23 +10,7 @@ export default function AuthShell({
 }) {
   return (
     <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-sidebar px-4 py-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 50% 0%, rgba(37,99,235,0.28), transparent 55%), radial-gradient(circle at 100% 100%, rgba(37,99,235,0.14), transparent 45%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-          backgroundSize: "34px 34px",
-        }}
-      />
+      <DarkPatternBg glowPosition="50% 0%" />
 
       <div className="relative w-full max-w-sm">
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white shadow-[0_24px_70px_-20px_rgba(0,0,0,0.55)]">

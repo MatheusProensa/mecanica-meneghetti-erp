@@ -7,6 +7,7 @@ import { getEmpresa } from "@/lib/getEmpresa";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { StatusBadge, type BadgeTone } from "@/components/ui/StatusBadge";
 import PageHeader from "@/components/ui/PageHeader";
+import DarkPatternBg from "@/components/ui/DarkPatternBg";
 import PasswordForm from "./PasswordForm";
 import PixKeyForm from "./PixKeyForm";
 import MecanicosSection from "./MecanicosSection";
@@ -103,8 +104,9 @@ export default async function ConfiguracoesPage({
         description="Sua conta, os dados da oficina e o acesso da equipe."
       />
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-900 to-gray-800 shadow-sm">
-        <div className="flex flex-wrap items-center gap-4 px-5 py-5 sm:px-6">
+      <div className="relative mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-900 to-gray-800 shadow-sm">
+        <DarkPatternBg />
+        <div className="relative flex flex-wrap items-center gap-4 px-5 py-5 sm:px-6">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/10 text-lg font-semibold text-white ring-1 ring-inset ring-white/20">
             {initials(usuarioAtual.name || "?")}
           </div>
