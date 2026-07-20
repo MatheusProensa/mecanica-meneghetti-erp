@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import PasswordInput from "@/components/PasswordInput";
 import PermissoesFields from "./PermissoesFields";
@@ -47,9 +47,15 @@ export default function UsuarioRow({
   const [aberto, setAberto] = useState(false);
   const [role, setRole] = useState(user.role);
   const [showReset, setShowReset] = useState(false);
-  const updateWithId = updateUsuarioPermissoes.bind(null, user.id);
+  const [updateMessage, updateAction, updatePending] = useActionState(
+    updateUsuarioPermissoes.bind(null, user.id),
+    undefined
+  );
+  const [resetMessage, resetAction, resetPending] = useActionState(
+    resetSenhaUsuario.bind(null, user.id),
+    undefined
+  );
   const deleteWithId = deleteUsuario.bind(null, user.id);
-  const resetWithId = resetSenhaUsuario.bind(null, user.id);
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -74,7 +80,7 @@ export default function UsuarioRow({
 
       {aberto && (
         <div className="border-t border-gray-100 p-4 sm:p-6">
-          <form action={updateWithId} className="space-y-3">
+          <form action={updateAction} className="space-y-3">
             <div>
               <label className="block text-xs font-medium text-gray-500">Perfil</label>
               <select
@@ -93,12 +99,19 @@ export default function UsuarioRow({
               <PermissoesFields role={role} defaults={user} />
             )}
 
+            {updateMessage && (
+              <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+                {updateMessage}
+              </p>
+            )}
+
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="submit"
-                className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
+                disabled={updatePending}
+                className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
               >
-                Salvar
+                {updatePending ? "Salvando..." : "Salvar"}
               </button>
               {!isSelf && (
                 <button
@@ -123,7 +136,7 @@ export default function UsuarioRow({
 
           {!isSelf && showReset && (
             <form
-              action={resetWithId}
+              action={resetAction}
               className="mt-3 flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3"
             >
               <div>
@@ -139,10 +152,16 @@ export default function UsuarioRow({
               </div>
               <button
                 type="submit"
-                className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                disabled={resetPending}
+                className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
               >
-                Redefinir
+                {resetPending ? "Redefinindo..." : "Redefinir"}
               </button>
+              {resetMessage && (
+                <p className="w-full rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+                  {resetMessage}
+                </p>
+              )}
             </form>
           )}
         </div>

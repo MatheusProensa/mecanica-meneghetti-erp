@@ -102,7 +102,11 @@ export async function createUsuario(
   return "Usuário criado com sucesso.";
 }
 
-export async function updateUsuarioPermissoes(id: string, formData: FormData) {
+export async function updateUsuarioPermissoes(
+  id: string,
+  _prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
   await requirePermission("gerenciarUsuarios");
 
   const role = roleValido(str(formData, "role"));
@@ -124,6 +128,7 @@ export async function updateUsuarioPermissoes(id: string, formData: FormData) {
   });
 
   revalidatePath("/configuracoes");
+  return "Permissões salvas com sucesso.";
 }
 
 export async function deleteUsuario(id: string) {
@@ -143,7 +148,11 @@ export async function deleteUsuario(id: string) {
 }
 
 /** Administrador redefine a senha de outro usuário (ex: funcionário esqueceu e não tem e-mail configurado). */
-export async function resetSenhaUsuario(id: string, formData: FormData) {
+export async function resetSenhaUsuario(
+  id: string,
+  _prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
   await requirePermission("gerenciarUsuarios");
 
   const novaSenha = str(formData, "novaSenha");
@@ -156,4 +165,5 @@ export async function resetSenhaUsuario(id: string, formData: FormData) {
   });
 
   revalidatePath("/configuracoes");
+  return "Senha redefinida com sucesso.";
 }

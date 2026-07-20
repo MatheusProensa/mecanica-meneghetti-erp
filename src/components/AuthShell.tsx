@@ -31,22 +31,17 @@ export default function AuthShell({
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white shadow-[0_24px_70px_-20px_rgba(0,0,0,0.55)]">
           <div className="h-1 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700" />
           <div className="p-6 sm:p-8">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-50 ring-1 ring-inset ring-gray-100">
-              <Image
-                src="/logo.png"
-                alt="Mecânica Meneghetti"
-                width={64}
-                height={64}
-                unoptimized
-                className="h-14 w-14 object-contain"
-                priority
-              />
-            </div>
-            <h1 className="mt-4 text-center text-lg font-semibold tracking-tight text-gray-900">
-              Mecânica Meneghetti
-            </h1>
+            <Image
+              src="/logo.png"
+              alt="Mecânica Meneghetti"
+              width={160}
+              height={160}
+              unoptimized
+              className="mx-auto h-[140px] w-[140px] object-contain"
+              priority
+            />
             {subtitle && (
-              <p className="mt-1 text-center text-sm text-gray-500">{subtitle}</p>
+              <p className="mt-2 text-center text-sm text-gray-500">{subtitle}</p>
             )}
 
             <div className="mt-6">{children}</div>
