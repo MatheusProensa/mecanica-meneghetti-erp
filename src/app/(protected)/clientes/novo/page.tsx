@@ -6,6 +6,7 @@ import { createCliente } from "../actions";
 export default async function NovoClientePage() {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verClientes) redirect("/");
   if (!usuario.permissoes.editar) redirect("/clientes");
 
   return (

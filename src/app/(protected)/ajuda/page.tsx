@@ -13,13 +13,13 @@ const secoes: { titulo: string; texto: string; requer: Permission | null }[] = [
     titulo: "Clientes",
     texto:
       "Cadastre os clientes da oficina. Na página de cada cliente você vê o histórico de ordens de serviço, o total já gasto, as notas vinculadas e as dívidas antigas em aberto.",
-    requer: null,
+    requer: "verClientes",
   },
   {
     titulo: "Ordens de Serviço",
     texto:
       "Cada OS é vinculada a um cliente e tem uma lista de serviços/peças, cada um com sua própria data e valor. O total é calculado automaticamente somando os itens. Dá pra marcar status, marcar como paga, anexar fotos, cobrar no WhatsApp quando estiver em atraso, ordenar a lista por cliente (A-Z) e exportar um PDF — de tudo que está filtrado na tela ou só das OS marcadas com a caixinha de seleção.",
-    requer: null,
+    requer: "verOS",
   },
   {
     titulo: "Financeiro",
@@ -43,7 +43,7 @@ const secoes: { titulo: string; texto: string; requer: Permission | null }[] = [
     titulo: "Notas",
     texto:
       "Registre notas emitidas (valores a receber de clientes) e recebidas (valores a pagar a fornecedores). É possível anexar o PDF da nota e vincular a um cliente e/ou a uma OS.",
-    requer: null,
+    requer: "verNotas",
   },
   {
     titulo: "Configurações",

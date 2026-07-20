@@ -18,6 +18,7 @@ export default async function ClientesPage({
 
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verClientes) redirect("/");
 
   const where = q
     ? {

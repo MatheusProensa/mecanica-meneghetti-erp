@@ -21,6 +21,7 @@ export default async function OSDetalhePage({
 
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verOS) redirect("/");
 
   const [os, clientes, mecanicos] = await Promise.all([
     prisma.ordemServico.findUnique({

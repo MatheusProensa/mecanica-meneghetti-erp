@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "podeVerClientes" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "podeVerOS" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "podeVerNotas" BOOLEAN NOT NULL DEFAULT true;

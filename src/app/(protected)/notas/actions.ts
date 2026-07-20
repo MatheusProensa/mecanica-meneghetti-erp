@@ -66,6 +66,7 @@ function buildData(formData: FormData) {
 }
 
 export async function createNota(formData: FormData) {
+  await requirePermission("verNotas");
   await requirePermission("editar");
   const data = buildData(formData);
   if (!data.numero) throw new Error("Número da nota é obrigatório");
@@ -81,6 +82,7 @@ export async function createNota(formData: FormData) {
 }
 
 export async function updateNota(id: string, formData: FormData) {
+  await requirePermission("verNotas");
   await requirePermission("editar");
   const data = buildData(formData);
   if (!data.numero) throw new Error("Número da nota é obrigatório");
@@ -107,6 +109,7 @@ export async function updateNota(id: string, formData: FormData) {
 }
 
 export async function deleteNota(id: string) {
+  await requirePermission("verNotas");
   await requirePermission("excluir");
   const existing = await prisma.nota.findUniqueOrThrow({ where: { id } });
   await prisma.nota.delete({ where: { id } });

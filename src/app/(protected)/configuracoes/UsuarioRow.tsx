@@ -23,6 +23,9 @@ export default function UsuarioRow({
     podeVerFinanceiro: boolean;
     podeExcluir: boolean;
     podeAcessarConfiguracoes: boolean;
+    podeVerClientes: boolean;
+    podeVerOS: boolean;
+    podeVerNotas: boolean;
   };
   isSelf: boolean;
 }) {
@@ -98,6 +101,39 @@ export default function UsuarioRow({
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               Acessar Configurações
+            </label>
+          </div>
+        )}
+
+        {(role === "funcionario" || role === "visualizador") && (
+          <div className="space-y-2 rounded-lg bg-gray-50 p-3">
+            <p className="text-xs font-medium text-gray-500">O que esse usuário pode ver:</p>
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                name="podeVerClientes"
+                defaultChecked={user.podeVerClientes}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              Clientes
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                name="podeVerOS"
+                defaultChecked={user.podeVerOS}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              Ordens de Serviço
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                name="podeVerNotas"
+                defaultChecked={user.podeVerNotas}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              Notas
             </label>
           </div>
         )}

@@ -114,6 +114,39 @@ export default function NovoUsuarioForm() {
         </div>
       )}
 
+      {(role === "funcionario" || role === "visualizador") && (
+        <div className="space-y-2 rounded-lg bg-gray-50 p-3">
+          <p className="text-xs font-medium text-gray-500">O que esse usuário pode ver:</p>
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              name="podeVerClientes"
+              defaultChecked
+              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            Clientes
+          </label>
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              name="podeVerOS"
+              defaultChecked
+              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            Ordens de Serviço
+          </label>
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              name="podeVerNotas"
+              defaultChecked
+              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            Notas
+          </label>
+        </div>
+      )}
+
       {message && (
         <p
           className={`rounded-md px-3 py-2 text-sm ${

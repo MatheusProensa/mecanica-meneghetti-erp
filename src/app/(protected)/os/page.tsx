@@ -32,6 +32,7 @@ export default async function OSListPage({
 
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verOS) redirect("/");
 
   const numeroBuscado = q ? Number(q.replace(/\D/g, "")) : null;
 

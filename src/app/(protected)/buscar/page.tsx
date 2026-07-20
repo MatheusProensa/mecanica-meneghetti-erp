@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { formatCurrency, formatDate } from "@/lib/format";
 import EmptyState from "@/components/ui/EmptyState";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
@@ -10,48 +12,57 @@ export default async function BuscarPage({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  const usuario = await getCurrentUser();
+  if (!usuario) redirect("/login");
+
   const { q } = await searchParams;
   const query = q?.trim() ?? "";
   const numeroBuscado = query ? Number(query.replace(/\D/g, "")) : null;
 
   const [clientes, ordens, notas] = query
     ? await Promise.all([
-        prisma.cliente.findMany({
-          where: {
-            OR: [
-              { nome: { contains: query, mode: "insensitive" } },
-              { cpfCnpj: { contains: query, mode: "insensitive" } },
-              { telefone: { contains: query, mode: "insensitive" } },
-              { whatsapp: { contains: query, mode: "insensitive" } },
-            ],
-          },
-          take: 10,
-          orderBy: { nome: "asc" },
-        }),
-        prisma.ordemServico.findMany({
-          where: {
-            OR: [
-              { cliente: { nome: { contains: query, mode: "insensitive" } } },
-              { mecanicoResponsavel: { contains: query, mode: "insensitive" } },
-              { mecanico: { nome: { contains: query, mode: "insensitive" } } },
-              { observacoes: { contains: query, mode: "insensitive" } },
-              ...(numeroBuscado ? [{ id: numeroBuscado }] : []),
-            ],
-          },
-          include: { cliente: true, itens: true },
-          take: 10,
-          orderBy: { data: "desc" },
-        }),
-        prisma.nota.findMany({
-          where: {
-            OR: [
-              { numero: { contains: query, mode: "insensitive" } },
-              { observacoes: { contains: query, mode: "insensitive" } },
-            ],
-          },
-          take: 10,
-          orderBy: { dataEmissao: "desc" },
-        }),
+        !usuario.permissoes.verClientes
+          ? Promise.resolve([])
+          : prisma.cliente.findMany({
+              where: {
+                OR: [
+                  { nome: { contains: query, mode: "insensitive" } },
+                  { cpfCnpj: { contains: query, mode: "insensitive" } },
+                  { telefone: { contains: query, mode: "insensitive" } },
+                  { whatsapp: { contains: query, mode: "insensitive" } },
+                ],
+              },
+              take: 10,
+              orderBy: { nome: "asc" },
+            }),
+        !usuario.permissoes.verOS
+          ? Promise.resolve([])
+          : prisma.ordemServico.findMany({
+              where: {
+                OR: [
+                  { cliente: { nome: { contains: query, mode: "insensitive" } } },
+                  { mecanicoResponsavel: { contains: query, mode: "insensitive" } },
+                  { mecanico: { nome: { contains: query, mode: "insensitive" } } },
+                  { observacoes: { contains: query, mode: "insensitive" } },
+                  ...(numeroBuscado ? [{ id: numeroBuscado }] : []),
+                ],
+              },
+              include: { cliente: true, itens: true },
+              take: 10,
+              orderBy: { data: "desc" },
+            }),
+        !usuario.permissoes.verNotas
+          ? Promise.resolve([])
+          : prisma.nota.findMany({
+              where: {
+                OR: [
+                  { numero: { contains: query, mode: "insensitive" } },
+                  { observacoes: { contains: query, mode: "insensitive" } },
+                ],
+              },
+              take: 10,
+              orderBy: { dataEmissao: "desc" },
+            }),
       ])
     : [[], [], []];
 

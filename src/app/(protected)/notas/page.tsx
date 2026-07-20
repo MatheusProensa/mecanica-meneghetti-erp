@@ -45,6 +45,7 @@ export default async function NotasPage({
 
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verNotas) redirect("/");
 
   const anoAtual = new Date().getFullYear();
   const anosDisponiveis = Array.from({ length: 5 }, (_, i) => anoAtual - i);

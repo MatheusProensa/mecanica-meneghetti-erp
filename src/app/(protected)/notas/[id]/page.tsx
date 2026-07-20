@@ -16,6 +16,7 @@ export default async function NotaDetalhePage({
 
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verNotas) redirect("/");
 
   const nota = await prisma.nota.findUnique({ where: { id } });
 

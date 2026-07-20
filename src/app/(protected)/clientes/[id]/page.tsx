@@ -24,6 +24,7 @@ export default async function ClienteDetalhePage({
 
   const usuarioAtual = await getCurrentUser();
   if (!usuarioAtual) redirect("/login");
+  if (!usuarioAtual.permissoes.verClientes) redirect("/");
 
   const [cliente, session, empresa] = await Promise.all([
     prisma.cliente.findUnique({

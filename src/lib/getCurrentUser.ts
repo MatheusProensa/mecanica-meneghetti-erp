@@ -28,6 +28,9 @@ export async function getCurrentUser(): Promise<UsuarioAtual | null> {
       podeVerFinanceiro: true,
       podeExcluir: true,
       podeAcessarConfiguracoes: true,
+      podeVerClientes: true,
+      podeVerOS: true,
+      podeVerNotas: true,
     },
   });
   if (!user) return null;

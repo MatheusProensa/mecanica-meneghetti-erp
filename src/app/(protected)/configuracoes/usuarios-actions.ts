@@ -47,6 +47,9 @@ export async function createUsuario(
       podeVerFinanceiro: formData.get("podeVerFinanceiro") === "on",
       podeExcluir: formData.get("podeExcluir") === "on",
       podeAcessarConfiguracoes: formData.get("podeAcessarConfiguracoes") === "on",
+      podeVerClientes: formData.get("podeVerClientes") === "on",
+      podeVerOS: formData.get("podeVerOS") === "on",
+      podeVerNotas: formData.get("podeVerNotas") === "on",
     },
   });
 
@@ -75,6 +78,9 @@ export async function updateUsuarioPermissoes(id: string, formData: FormData) {
       podeVerFinanceiro: formData.get("podeVerFinanceiro") === "on",
       podeExcluir: formData.get("podeExcluir") === "on",
       podeAcessarConfiguracoes: formData.get("podeAcessarConfiguracoes") === "on",
+      podeVerClientes: formData.get("podeVerClientes") === "on",
+      podeVerOS: formData.get("podeVerOS") === "on",
+      podeVerNotas: formData.get("podeVerNotas") === "on",
     },
   });
 

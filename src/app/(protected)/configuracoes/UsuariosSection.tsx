@@ -14,6 +14,9 @@ export default async function UsuariosSection({ meuId }: { meuId: string }) {
       podeVerFinanceiro: true,
       podeExcluir: true,
       podeAcessarConfiguracoes: true,
+      podeVerClientes: true,
+      podeVerOS: true,
+      podeVerNotas: true,
     },
   });
 

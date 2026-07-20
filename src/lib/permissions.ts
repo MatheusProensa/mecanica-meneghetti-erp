@@ -5,7 +5,10 @@ export type Permission =
   | "excluir"
   | "verFinanceiro"
   | "acessarConfiguracoes"
-  | "gerenciarUsuarios";
+  | "gerenciarUsuarios"
+  | "verClientes"
+  | "verOS"
+  | "verNotas";
 
 export interface Permissoes {
   editar: boolean;
@@ -13,6 +16,9 @@ export interface Permissoes {
   verFinanceiro: boolean;
   acessarConfiguracoes: boolean;
   gerenciarUsuarios: boolean;
+  verClientes: boolean;
+  verOS: boolean;
+  verNotas: boolean;
 }
 
 interface FlagsUsuario {
@@ -21,10 +27,15 @@ interface FlagsUsuario {
   podeVerFinanceiro: boolean;
   podeExcluir: boolean;
   podeAcessarConfiguracoes: boolean;
+  podeVerClientes: boolean;
+  podeVerOS: boolean;
+  podeVerNotas: boolean;
 }
 
-/** Calcula as permissões efetivas a partir do perfil e, pro funcionário, das flags
- * configuradas pelo Dono. Visualizador nunca edita/exclui, independente das flags. */
+/** Calcula as permissões efetivas a partir do perfil e, pro funcionário e
+ * visualizador, das flags configuradas pelo Dono. Visualizador nunca
+ * edita/exclui/acessa Configurações, independente das flags — só o que ele
+ * pode *ver* (Clientes, OS, Notas) é configurável pro visualizador. */
 export function calcularPermissoes(user: FlagsUsuario): Permissoes {
   if (user.role === "dono") {
     return {
@@ -33,6 +44,9 @@ export function calcularPermissoes(user: FlagsUsuario): Permissoes {
       verFinanceiro: true,
       acessarConfiguracoes: true,
       gerenciarUsuarios: true,
+      verClientes: true,
+      verOS: true,
+      verNotas: true,
     };
   }
 
@@ -43,6 +57,9 @@ export function calcularPermissoes(user: FlagsUsuario): Permissoes {
       verFinanceiro: true,
       acessarConfiguracoes: false,
       gerenciarUsuarios: false,
+      verClientes: user.podeVerClientes,
+      verOS: user.podeVerOS,
+      verNotas: user.podeVerNotas,
     };
   }
 
@@ -52,5 +69,8 @@ export function calcularPermissoes(user: FlagsUsuario): Permissoes {
     verFinanceiro: user.podeVerFinanceiro,
     acessarConfiguracoes: user.podeAcessarConfiguracoes,
     gerenciarUsuarios: false,
+    verClientes: user.podeVerClientes,
+    verOS: user.podeVerOS,
+    verNotas: user.podeVerNotas,
   };
 }

@@ -7,6 +7,7 @@ import { createNota } from "../actions";
 export default async function NovaNotaPage() {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verNotas) redirect("/");
   if (!usuario.permissoes.editar) redirect("/notas");
 
   const [clientes, ordens] = await Promise.all([
