@@ -131,6 +131,13 @@ export default async function DashboardPage({
   const fimConsultaPeriodo = new Date(startOfDay(fimPeriodo).getTime() + UM_DIA_MS);
   const fimMes = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
+  /** Só passa a seguir o período escolhido no seletor quando ele foi de fato
+   * alterado — sem seleção nenhuma, os cards de resumo continuam mostrando
+   * o mês corrente (visão padrão ao abrir o Dashboard). */
+  const houveSelecaoDePeriodo = Boolean(agrupamentoRaw || periodoRaw || de || ate);
+  const inicioResumo = houveSelecaoDePeriodo ? inicioPeriodo : inicioMes;
+  const fimResumo = houveSelecaoDePeriodo ? fimConsultaPeriodo : fimMes;
+
   const [
     ordensDoPeriodo,
     osAbertaCount,
@@ -151,9 +158,9 @@ export default async function DashboardPage({
     prisma.ordemServico.count({ where: { status: "aberta" } }),
     prisma.ordemServico.count({ where: { status: "em_andamento" } }),
     prisma.ordemServico.count({
-      where: { status: "concluida", updatedAt: { gte: inicioMes } },
+      where: { status: "concluida", updatedAt: { gte: inicioResumo, lt: fimResumo } },
     }),
-    prisma.nota.count({ where: { createdAt: { gte: inicioMes } } }),
+    prisma.nota.count({ where: { createdAt: { gte: inicioResumo, lt: fimResumo } } }),
     prisma.nota.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
     prisma.ordemServico.findMany({
       orderBy: { createdAt: "desc" },
@@ -161,7 +168,7 @@ export default async function DashboardPage({
       include: { cliente: true, itens: true },
     }),
     prisma.ordemServico.findMany({
-      where: { pago: true, dataPagamento: { gte: inicioMes, lt: fimMes } },
+      where: { pago: true, dataPagamento: { gte: inicioResumo, lt: fimResumo } },
       include: { itens: true },
     }),
     prisma.ordemServico.findMany({
@@ -169,7 +176,7 @@ export default async function DashboardPage({
       include: { itens: true },
     }),
     prisma.despesa.aggregate({
-      where: { data: { gte: inicioMes, lt: fimMes } },
+      where: { data: { gte: inicioResumo, lt: fimResumo } },
       _sum: { valor: true },
     }),
     prisma.ordemServico.count({
@@ -188,6 +195,7 @@ export default async function DashboardPage({
   const despesasNoMes = despesasNoMesAgg._sum.valor ?? 0;
 
   const osAbertasCount = osAbertaCount + osEmAndamentoCount;
+  const rotuloResumo = houveSelecaoDePeriodo ? "no período" : "no mês";
 
   const chartData: ChartPoint[] = gerarBuckets(inicioPeriodo, fimPeriodo, agrupamento).map(
     (bucket) => ({
@@ -237,15 +245,7 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageHeader title="Dashboard" />
-        <PeriodFilter
-          agrupamento={agrupamento}
-          periodo={usarPersonalizado ? "personalizado" : String(periodo)}
-          de={de}
-          ate={ate}
-        />
-      </div>
+      <PageHeader title="Dashboard" />
 
       {verFinanceiro && (
         <div>
@@ -259,8 +259,9 @@ export default async function DashboardPage({
             <MetricCard
               icon="trending-up"
               iconColor="text-green-600"
-              label="Recebido no mês"
+              label={`Recebido ${rotuloResumo}`}
               value={formatCurrency(recebidoNoMes)}
+              context={houveSelecaoDePeriodo ? periodoLabel : undefined}
             />
             <MetricCard
               icon="clock"
@@ -272,8 +273,9 @@ export default async function DashboardPage({
             <MetricCard
               icon="trending-down"
               iconColor="text-red-600"
-              label="Despesas no mês"
+              label={`Despesas ${rotuloResumo}`}
               value={formatCurrency(despesasNoMes)}
+              context={houveSelecaoDePeriodo ? periodoLabel : undefined}
             />
             <Link href="/os?pagamento=atrasado" className="block">
               <MetricCard
@@ -302,20 +304,40 @@ export default async function DashboardPage({
         <MetricCard
           icon="chart-bar"
           iconColor="text-green-600"
-          label="OS concluídas no mês"
+          label={`OS concluídas ${rotuloResumo}`}
           value={osConcluidasNoMes}
+          context={houveSelecaoDePeriodo ? periodoLabel : undefined}
         />
         <MetricCard
           icon="file-text"
           iconColor="text-gray-500"
-          label="Notas anexadas no mês"
+          label={`Notas anexadas ${rotuloResumo}`}
           value={notasNoMes}
+          context={houveSelecaoDePeriodo ? periodoLabel : undefined}
           className="col-span-2 lg:col-span-1"
         />
         </div>
       </div>
 
-      {verFinanceiro && <DashboardCharts data={chartData} periodoLabel={periodoLabel} />}
+      {verFinanceiro && (
+        <div>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-sm font-semibold text-gray-900">Faturamento</h2>
+            <PeriodFilter
+              agrupamento={agrupamento}
+              periodo={usarPersonalizado ? "personalizado" : String(periodo)}
+              de={de}
+              ate={ate}
+            />
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            O período escolhido aqui também atualiza os cards de Financeiro acima.
+          </p>
+          <div className="mt-3">
+            <DashboardCharts data={chartData} periodoLabel={periodoLabel} />
+          </div>
+        </div>
+      )}
 
       <div className="rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
