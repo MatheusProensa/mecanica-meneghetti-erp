@@ -162,7 +162,7 @@ export default function OSResultados({
               <tbody>
                 {pagAtual.map((os) => (
                   <tr key={os.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-4 py-3">
+                    <td className="align-middle px-4 py-3">
                       <input
                         type="checkbox"
                         checked={selecionados.has(os.id)}
@@ -170,7 +170,7 @@ export default function OSResultados({
                         className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="align-middle px-6 py-3">
                       <Link
                         href={`/os/${os.id}`}
                         className="font-medium text-gray-900 hover:underline"
@@ -178,12 +178,12 @@ export default function OSResultados({
                         #{String(os.id).padStart(4, "0")}
                       </Link>
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{os.clienteNome}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
-                    <td className="px-6 py-3">
+                    <td className="align-middle px-6 py-3 text-gray-500">{os.clienteNome}</td>
+                    <td className="align-middle px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
+                    <td className="align-middle px-6 py-3">
                       <OSStatusSelect id={os.id} status={os.status} readOnly={!podeEditar} />
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="align-middle px-6 py-3">
                       <OSPagoToggle
                         id={os.id}
                         pago={os.pago}
@@ -192,7 +192,9 @@ export default function OSResultados({
                         readOnly={!podeEditar}
                       />
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{formatCurrency(os.valor)}</td>
+                    <td className="align-middle px-6 py-3 text-gray-500">
+                      {formatCurrency(os.valor)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
