@@ -71,7 +71,9 @@ export async function gerarDevedoresPdf({
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(107, 114, 128);
-  doc.text(periodoLabel, marginX, 53);
+  if (periodoLabel) {
+    doc.text(periodoLabel, marginX, 53);
+  }
   const emitidoEm = new Date().toLocaleDateString("pt-BR");
   doc.text(`Emitido em ${emitidoEm}`, pageWidth - marginX, 47, { align: "right" });
 

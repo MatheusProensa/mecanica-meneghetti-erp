@@ -106,7 +106,7 @@ export default async function ExtrasPage({
   if (funcionarioId) periodoLabelPartes.push(`funcionário: ${mecanicos.find((m) => m.id === funcionarioId)?.nome ?? ""}`);
   if (q) periodoLabelPartes.push(`cliente: "${q}"`);
   if (situacao) periodoLabelPartes.push(STATUS_OPCOES.find((s) => s.value === situacao)?.label ?? situacao);
-  const periodoLabel = periodoLabelPartes.length > 0 ? periodoLabelPartes.join(" · ") : "Todos os extras";
+  const periodoLabel = periodoLabelPartes.join(" · ");
 
   function extraHref(overrides: { situacao?: string | null }) {
     const nextSituacao = "situacao" in overrides ? overrides.situacao : situacao;

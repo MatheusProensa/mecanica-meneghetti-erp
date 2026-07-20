@@ -88,7 +88,7 @@ export default async function DevedoresPage({
   if (de || ate) periodoLabelPartes.push(`${de ? formatDate(dePersonalizado) : "..."} a ${ate ? formatDate(atePersonalizadoBruto) : "..."}`);
   if (q) periodoLabelPartes.push(`cliente: "${q}"`);
   if (situacao) periodoLabelPartes.push(SITUACOES.find((s) => s.value === situacao)?.label ?? situacao);
-  const periodoLabel = periodoLabelPartes.length > 0 ? periodoLabelPartes.join(" · ") : "Todas as dívidas";
+  const periodoLabel = periodoLabelPartes.join(" · ");
 
   function devedorHref(overrides: { situacao?: string | null }) {
     const nextSituacao = "situacao" in overrides ? overrides.situacao : situacao;

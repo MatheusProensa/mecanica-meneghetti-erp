@@ -101,7 +101,7 @@ export default async function OSListPage({
   if (status) periodoLabelPartes.push(osStatusMap[status]?.label ?? status);
   if (pagamento) periodoLabelPartes.push(PAGAMENTO_LABEL[pagamento] ?? pagamento);
   if (q) periodoLabelPartes.push(`busca: "${q}"`);
-  const periodoLabel = periodoLabelPartes.length > 0 ? periodoLabelPartes.join(" · ") : "Todas as OS";
+  const periodoLabel = periodoLabelPartes.join(" · ");
 
   return (
     <div>
