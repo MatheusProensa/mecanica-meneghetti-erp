@@ -13,6 +13,7 @@ export interface ResumoFinanceiro {
 }
 
 export interface DespesaLinha {
+  id?: string;
   descricao: string;
   categoria: string | null;
   fornecedor: string | null;

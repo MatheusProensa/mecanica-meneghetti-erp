@@ -1,16 +1,13 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
-import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
+import { formatCurrency, parseDateInputValue, formatDate } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
-import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
-import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
-import ExportarFinanceiroCsv from "@/components/ExportarFinanceiroCsv";
-import ExportarFinanceiroPdf from "@/components/ExportarFinanceiroPdf";
+import { PAGE_SIZE } from "@/components/ui/Pagination";
+import FinanceiroResultados from "./FinanceiroResultados";
 
 const MESES = [
   "Janeiro",
@@ -134,16 +131,12 @@ export default async function FinanceiroPage({
   const funcionariosNoMes = funcionariosNoMesAgg._sum.valor ?? 0;
   const lucroNoMes = recebidoNoMes - despesasTotal;
 
-  function despesaHrefPagina(p: number) {
-    const params = new URLSearchParams();
-    if (mes) params.set("mes", mes);
-    if (ano) params.set("ano", ano);
-    if (de) params.set("de", de);
-    if (ate) params.set("ate", ate);
-    if (p > 1) params.set("pagina", String(p));
-    const qs = params.toString();
-    return qs ? `/financeiro?${qs}` : "/financeiro";
-  }
+  const nomeArquivoCsv = usarPersonalizado
+    ? `financeiro-${de}-a-${ate}.csv`
+    : `financeiro-${ano ?? anoAtual}${mes ? `-${mes.padStart(2, "0")}` : ""}.csv`;
+  const nomeArquivoPdf = usarPersonalizado
+    ? `financeiro-${de}-a-${ate}.pdf`
+    : `financeiro-${ano ?? anoAtual}${mes ? `-${mes.padStart(2, "0")}` : ""}.pdf`;
 
   return (
     <div>
@@ -194,33 +187,7 @@ export default async function FinanceiroPage({
         />
       </div>
 
-      <div className="mt-8 flex items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold text-gray-900">Despesas</h2>
-        <div className="flex items-center gap-2">
-          <ExportarFinanceiroCsv
-            resumo={{ recebidoNoMes, aReceber, despesasTotal, funcionariosNoMes, lucroNoMes }}
-            despesas={despesasParaExport}
-            nomeArquivo={
-              usarPersonalizado
-                ? `financeiro-${de}-a-${ate}.csv`
-                : `financeiro-${ano ?? anoAtual}${mes ? `-${mes.padStart(2, "0")}` : ""}.csv`
-            }
-          />
-          <ExportarFinanceiroPdf
-            empresa={empresa}
-            periodoLabel={periodoLabel}
-            resumo={{ recebidoNoMes, aReceber, despesasTotal, funcionariosNoMes, lucroNoMes }}
-            despesas={despesasParaExport}
-            nomeArquivo={
-              usarPersonalizado
-                ? `financeiro-${de}-a-${ate}.pdf`
-                : `financeiro-${ano ?? anoAtual}${mes ? `-${mes.padStart(2, "0")}` : ""}.pdf`
-            }
-          />
-        </div>
-      </div>
-
-      <form className="mt-3 flex flex-wrap items-end gap-3">
+      <form className="mt-8 flex flex-wrap items-end gap-3">
         <div className="flex flex-1 gap-3 sm:flex-none">
           <div className="flex-1 sm:w-36 sm:flex-none">
             <label className="block text-xs font-medium text-gray-500">Mês</label>
@@ -287,87 +254,21 @@ export default async function FinanceiroPage({
         </p>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-gray-200 bg-white">
-        {despesas.length === 0 ? (
-          <EmptyState
-            icon="receipt"
-            title="Nenhuma despesa registrada"
-            description="Cadastre as despesas da oficina para acompanhar o quanto está saindo por mês."
-          />
-        ) : (
-          <>
-            <table className="hidden w-full text-left text-sm md:table">
-              <thead className="text-gray-500">
-                <tr>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Descrição
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Categoria
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Fornecedor
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {despesas.map((despesa) => (
-                  <tr key={despesa.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-6 py-3">
-                      <Link
-                        href={`/financeiro/${despesa.id}`}
-                        className="font-medium text-gray-900 hover:underline"
-                      >
-                        {despesa.descricao}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-3 text-gray-500">{despesa.categoria ?? "-"}</td>
-                    <td className="px-6 py-3 text-gray-500">{despesa.fornecedor ?? "-"}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(despesa.data)}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatCurrency(despesa.valor)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="divide-y divide-gray-100 md:hidden">
-              {despesas.map((despesa) => (
-                <Link
-                  key={despesa.id}
-                  href={`/financeiro/${despesa.id}`}
-                  className="block px-4 py-3 active:bg-gray-50"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="min-w-0 flex-1 truncate font-medium text-gray-900">
-                      {despesa.descricao}
-                    </p>
-                    <span className="shrink-0 text-sm font-semibold text-gray-900">
-                      {formatCurrency(despesa.valor)}
-                    </span>
-                  </div>
-                  <div className="mt-1 flex items-center justify-between gap-2">
-                    <p className="min-w-0 flex-1 truncate text-sm text-gray-500">
-                      {despesa.categoria ?? "-"}
-                      {despesa.fornecedor ? ` · ${despesa.fornecedor}` : ""}
-                    </p>
-                    <span className="shrink-0 text-xs text-gray-500">
-                      {formatDate(despesa.data)}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            <Pagination
-              paginaAtual={pagina}
-              totalItens={totalDespesas}
-              hrefForPage={despesaHrefPagina}
-            />
-          </>
-        )}
-      </div>
+      <FinanceiroResultados
+        pagAtual={despesas}
+        paraExportar={despesasParaExport}
+        totalDespesas={totalDespesas}
+        resumo={{ recebidoNoMes, aReceber, despesasTotal, funcionariosNoMes, lucroNoMes }}
+        empresa={empresa}
+        periodoLabel={periodoLabel}
+        pagina={pagina}
+        mes={mes}
+        ano={ano}
+        de={de}
+        ate={ate}
+        nomeArquivoCsv={nomeArquivoCsv}
+        nomeArquivoPdf={nomeArquivoPdf}
+      />
     </div>
   );
 }

@@ -24,7 +24,7 @@ const secoes: { titulo: string; texto: string; requer: Permission | null }[] = [
   {
     titulo: "Financeiro",
     texto:
-      "Mostra o que entrou, o que falta receber e as despesas da oficina no mês. Dá pra cadastrar despesas, filtrar por mês/ano ou por período personalizado, e exportar tudo em CSV ou PDF.",
+      "Mostra o que entrou, o que falta receber e as despesas da oficina no mês. Dá pra cadastrar despesas, filtrar por mês/ano ou por período personalizado, e exportar em CSV ou PDF — de tudo que está filtrado ou só das despesas marcadas com a caixinha de seleção.",
     requer: "verFinanceiro",
   },
   {

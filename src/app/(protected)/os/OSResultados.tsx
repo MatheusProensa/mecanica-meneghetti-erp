@@ -111,13 +111,7 @@ export default function OSResultados({
         </p>
         <ExportarOSPdf
           empresa={empresa}
-          periodoLabel={
-            usandoSelecao
-              ? periodoLabel === "Todas as OS"
-                ? "Seleção manual"
-                : `${periodoLabel} · seleção manual`
-              : periodoLabel
-          }
+          periodoLabel={periodoLabel}
           resumo={resumoParaExportar}
           ordens={ordensParaExportar}
           nomeArquivo={`ordens-de-servico-${new Date().toISOString().slice(0, 10)}.pdf`}

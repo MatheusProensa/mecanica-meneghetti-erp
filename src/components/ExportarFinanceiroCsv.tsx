@@ -12,6 +12,7 @@ interface Resumo {
 }
 
 interface DespesaLinha {
+  id?: string;
   descricao: string;
   categoria: string | null;
   fornecedor: string | null;
