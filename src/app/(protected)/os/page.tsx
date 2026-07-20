@@ -2,14 +2,18 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { getEmpresa } from "@/lib/getEmpresa";
 import type { Prisma, StatusOS } from "@/generated/prisma/client";
 import PageHeader from "@/components/ui/PageHeader";
-import EmptyState from "@/components/ui/EmptyState";
-import { osStatusMap } from "@/components/ui/StatusBadge";
-import OSStatusSelect from "@/components/OSStatusSelect";
-import OSPagoToggle from "@/components/OSPagoToggle";
-import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
+import { osStatusMap, pagamentoInfo } from "@/components/ui/StatusBadge";
+import { PAGE_SIZE } from "@/components/ui/Pagination";
+import OSResultados from "./OSResultados";
+
+const PAGAMENTO_LABEL: Record<string, string> = {
+  pago: "Pagos",
+  a_receber: "A receber",
+  atrasado: "Atrasados",
+};
 
 export default async function OSListPage({
   searchParams,
@@ -75,18 +79,7 @@ export default async function OSListPage({
     return qs ? `/os?${qs}` : "/os";
   }
 
-  function osHrefPagina(p: number) {
-    const params = new URLSearchParams();
-    if (q) params.set("q", q);
-    if (status) params.set("status", status);
-    if (pagamento) params.set("pagamento", pagamento);
-    if (ordenar) params.set("ordenar", ordenar);
-    if (p > 1) params.set("pagina", String(p));
-    const qs = params.toString();
-    return qs ? `/os?${qs}` : "/os";
-  }
-
-  const [ordens, totalOrdens] = await Promise.all([
+  const [ordens, totalOrdens, todasOrdens, empresa] = await Promise.all([
     prisma.ordemServico.findMany({
       where,
       include: { cliente: true, itens: true },
@@ -95,7 +88,19 @@ export default async function OSListPage({
       take: PAGE_SIZE,
     }),
     prisma.ordemServico.count({ where }),
+    prisma.ordemServico.findMany({
+      where,
+      include: { cliente: true, itens: true },
+      orderBy: ordenarPorCliente ? { cliente: { nome: "asc" } } : { data: "desc" },
+    }),
+    getEmpresa(),
   ]);
+
+  const periodoLabelPartes: string[] = [];
+  if (status) periodoLabelPartes.push(osStatusMap[status]?.label ?? status);
+  if (pagamento) periodoLabelPartes.push(PAGAMENTO_LABEL[pagamento] ?? pagamento);
+  if (q) periodoLabelPartes.push(`busca: "${q}"`);
+  const periodoLabel = periodoLabelPartes.length > 0 ? periodoLabelPartes.join(" · ") : "Todas as OS";
 
   return (
     <div>
@@ -180,124 +185,35 @@ export default async function OSListPage({
         </div>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
-        {ordens.length === 0 ? (
-          <EmptyState
-            icon="tools"
-            title="Nenhuma ordem de serviço encontrada"
-            description="Crie a primeira OS para começar a acompanhar os serviços da oficina."
-          />
-        ) : (
-          <>
-            <table className="hidden w-full text-left text-sm md:table">
-              <thead className="text-gray-500">
-                <tr>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">OS</th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Cliente
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                    Pagamento
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ordens.map((os) => {
-                  const valor = os.itens.reduce((s, i) => s + i.valor, 0);
-                  return (
-                    <tr key={os.id} className="border-t border-gray-100 hover:bg-gray-50">
-                      <td className="px-6 py-3">
-                        <Link
-                          href={`/os/${os.id}`}
-                          className="font-medium text-gray-900 hover:underline"
-                        >
-                          #{String(os.id).padStart(4, "0")}
-                        </Link>
-                      </td>
-                      <td className="px-6 py-3 text-gray-500">{os.cliente.nome}</td>
-                      <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
-                      <td className="px-6 py-3">
-                        <OSStatusSelect
-                          id={os.id}
-                          status={os.status}
-                          readOnly={!usuario.permissoes.editar}
-                        />
-                      </td>
-                      <td className="px-6 py-3">
-                        <OSPagoToggle
-                          id={os.id}
-                          pago={os.pago}
-                          previsaoEntrega={os.previsaoEntrega}
-                          cliente={{
-                            nome: os.cliente.nome,
-                            telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
-                            valor,
-                          }}
-                          readOnly={!usuario.permissoes.editar}
-                        />
-                      </td>
-                      <td className="px-6 py-3 text-gray-500">{formatCurrency(valor)}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            <div className="divide-y divide-gray-100 md:hidden">
-              {ordens.map((os) => {
-                const valor = os.itens.reduce((s, i) => s + i.valor, 0);
-                return (
-                  <div key={os.id} className="px-4 py-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <Link
-                        href={`/os/${os.id}`}
-                        className="min-w-0 flex-1 truncate font-medium text-gray-900 hover:underline"
-                      >
-                        #{String(os.id).padStart(4, "0")} — {os.cliente.nome}
-                      </Link>
-                      <span className="shrink-0 text-sm font-semibold text-gray-900">
-                        {formatCurrency(valor)}
-                      </span>
-                    </div>
-                    <div className="mt-1.5 flex items-center justify-between gap-2">
-                      <div className="flex min-w-0 items-center gap-1.5">
-                        <OSStatusSelect
-                          id={os.id}
-                          status={os.status}
-                          compact
-                          readOnly={!usuario.permissoes.editar}
-                        />
-                        <OSPagoToggle
-                          id={os.id}
-                          pago={os.pago}
-                          previsaoEntrega={os.previsaoEntrega}
-                          compact
-                          cliente={{
-                            nome: os.cliente.nome,
-                            telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
-                            valor,
-                          }}
-                          readOnly={!usuario.permissoes.editar}
-                        />
-                      </div>
-                      <span className="shrink-0 text-xs text-gray-500">
-                        {formatDate(os.data)}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <Pagination paginaAtual={pagina} totalItens={totalOrdens} hrefForPage={osHrefPagina} />
-          </>
-        )}
-      </div>
+      <OSResultados
+        pagAtual={ordens.map((os) => ({
+          id: os.id,
+          clienteNome: os.cliente.nome,
+          telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
+          data: os.data,
+          status: os.status,
+          pago: os.pago,
+          previsaoEntrega: os.previsaoEntrega,
+          valor: os.itens.reduce((s, i) => s + i.valor, 0),
+        }))}
+        paraExportar={todasOrdens.map((os) => ({
+          id: os.id,
+          clienteNome: os.cliente.nome,
+          data: os.data,
+          statusLabel: osStatusMap[os.status]?.label ?? os.status,
+          pagamentoLabel: pagamentoInfo(os).label,
+          valor: os.itens.reduce((s, i) => s + i.valor, 0),
+        }))}
+        totalOrdens={totalOrdens}
+        empresa={empresa}
+        periodoLabel={periodoLabel}
+        pagina={pagina}
+        status={status}
+        q={q}
+        pagamento={pagamento}
+        ordenar={ordenar}
+        podeEditar={usuario.permissoes.editar}
+      />
     </div>
   );
 }

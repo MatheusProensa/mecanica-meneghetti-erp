@@ -18,7 +18,7 @@ const secoes: { titulo: string; texto: string; requer: Permission | null }[] = [
   {
     titulo: "Ordens de Serviço",
     texto:
-      "Cada OS é vinculada a um cliente e tem uma lista de serviços/peças com valores. O total é calculado automaticamente somando os itens. Dá pra marcar status, marcar como paga, anexar fotos e cobrar no WhatsApp quando estiver em atraso.",
+      "Cada OS é vinculada a um cliente e tem uma lista de serviços/peças, cada um com sua própria data e valor. O total é calculado automaticamente somando os itens. Dá pra marcar status, marcar como paga, anexar fotos, cobrar no WhatsApp quando estiver em atraso, ordenar a lista por cliente (A-Z) e exportar um PDF — de tudo que está filtrado na tela ou só das OS marcadas com a caixinha de seleção.",
     requer: null,
   },
   {
