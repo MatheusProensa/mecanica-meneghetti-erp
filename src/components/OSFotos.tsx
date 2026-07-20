@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import SectionHeader from "@/components/ui/SectionHeader";
 import { addAnexoOS, deleteAnexoOS } from "@/app/(protected)/os/actions";
 
 export default function OSFotos({
@@ -14,7 +15,7 @@ export default function OSFotos({
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-900">Fotos</h2>
+      <SectionHeader icon="camera" iconColor="text-gray-600" title="Fotos" />
 
       {fotos.length > 0 && (
         <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">

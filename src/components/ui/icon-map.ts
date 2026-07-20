@@ -13,6 +13,7 @@ import {
   Inbox,
   UserX,
   HandCoins,
+  Camera,
   type LucideIcon,
 } from "lucide-react";
 
@@ -31,6 +32,7 @@ export const iconMap = {
   inbox: Inbox,
   "user-x": UserX,
   "hand-coins": HandCoins,
+  camera: Camera,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof iconMap;
