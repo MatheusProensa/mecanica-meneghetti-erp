@@ -40,7 +40,6 @@ export default function UsuarioRow({
             {user.name}
             {isSelf && <span className="ml-1.5 text-xs text-gray-400">(você)</span>}
           </p>
-          <p className="text-sm text-gray-500">{user.email}</p>
         </div>
         <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
           {ROLE_LABEL[user.role]}

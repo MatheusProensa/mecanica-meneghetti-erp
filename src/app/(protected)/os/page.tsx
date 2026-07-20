@@ -14,10 +14,17 @@ import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 export default async function OSListPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; q?: string; pagamento?: string; pagina?: string }>;
+  searchParams: Promise<{
+    status?: string;
+    q?: string;
+    pagamento?: string;
+    ordenar?: string;
+    pagina?: string;
+  }>;
 }) {
-  const { status, q, pagamento, pagina: paginaRaw } = await searchParams;
+  const { status, q, pagamento, ordenar, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
+  const ordenarPorCliente = ordenar === "az";
 
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
@@ -50,14 +57,20 @@ export default async function OSListPage({
   const where: Prisma.OrdemServicoWhereInput = condicoes.length > 0 ? { AND: condicoes } : {};
 
   // undefined = mantém o filtro atual da URL; null = remove o filtro
-  function osHref(overrides: { status?: string | null; pagamento?: string | null }) {
+  function osHref(overrides: {
+    status?: string | null;
+    pagamento?: string | null;
+    ordenar?: string | null;
+  }) {
     const nextStatus = "status" in overrides ? overrides.status : status;
     const nextPagamento = "pagamento" in overrides ? overrides.pagamento : pagamento;
+    const nextOrdenar = "ordenar" in overrides ? overrides.ordenar : ordenar;
 
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (nextStatus) params.set("status", nextStatus);
     if (nextPagamento) params.set("pagamento", nextPagamento);
+    if (nextOrdenar) params.set("ordenar", nextOrdenar);
     const qs = params.toString();
     return qs ? `/os?${qs}` : "/os";
   }
@@ -67,6 +80,7 @@ export default async function OSListPage({
     if (q) params.set("q", q);
     if (status) params.set("status", status);
     if (pagamento) params.set("pagamento", pagamento);
+    if (ordenar) params.set("ordenar", ordenar);
     if (p > 1) params.set("pagina", String(p));
     const qs = params.toString();
     return qs ? `/os?${qs}` : "/os";
@@ -76,7 +90,7 @@ export default async function OSListPage({
     prisma.ordemServico.findMany({
       where,
       include: { cliente: true, itens: true },
-      orderBy: { data: "desc" },
+      orderBy: ordenarPorCliente ? { cliente: { nome: "asc" } } : { data: "desc" },
       skip: (pagina - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     }),
@@ -146,6 +160,22 @@ export default async function OSListPage({
             label="Atrasados"
             href={osHref({ pagamento: "atrasado" })}
             active={pagamento === "atrasado"}
+          />
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Ordenar</p>
+        <div className="mt-1.5 flex flex-wrap gap-2">
+          <FilterLink
+            label="Mais recentes"
+            href={osHref({ ordenar: null })}
+            active={!ordenarPorCliente}
+          />
+          <FilterLink
+            label="Cliente (A-Z)"
+            href={osHref({ ordenar: "az" })}
+            active={ordenarPorCliente}
           />
         </div>
       </div>
