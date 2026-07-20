@@ -9,10 +9,10 @@ import PageHeader from "@/components/ui/PageHeader";
 import PeriodFilter from "@/components/PeriodFilter";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
 
-const PERIODOS_DIARIO = [7, 14, 30, 60, 90];
+const PERIODOS_DIARIO = [1];
 const PERIODOS_SEMANAL = [4, 8, 12, 26];
 const PERIODOS_MENSAL = [1, 3, 6, 12];
-const PERIODO_PADRAO: Record<Agrupamento, number> = { diario: 30, semanal: 8, mensal: 6 };
+const PERIODO_PADRAO: Record<Agrupamento, number> = { diario: 1, semanal: 8, mensal: 6 };
 const UM_DIA_MS = 24 * 60 * 60 * 1000;
 
 function startOfMonth(d: Date) {
@@ -210,7 +210,7 @@ export default async function DashboardPage({
     ? `${inicioPeriodo.toLocaleDateString("pt-BR")} a ${fimPeriodo.toLocaleDateString("pt-BR")}`
     : agrupamento === "diario"
       ? periodo === 1
-        ? "último dia"
+        ? "hoje"
         : `últimos ${periodo} dias`
       : agrupamento === "semanal"
         ? periodo === 1
@@ -245,7 +245,17 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-8">
-      <PageHeader title="Dashboard" />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <PageHeader title="Dashboard" />
+        {verFinanceiro && (
+          <PeriodFilter
+            agrupamento={agrupamento}
+            periodo={usarPersonalizado ? "personalizado" : String(periodo)}
+            de={de}
+            ate={ate}
+          />
+        )}
+      </div>
 
       {verFinanceiro && (
         <div>
@@ -319,25 +329,7 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      {verFinanceiro && (
-        <div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold text-gray-900">Faturamento</h2>
-            <PeriodFilter
-              agrupamento={agrupamento}
-              periodo={usarPersonalizado ? "personalizado" : String(periodo)}
-              de={de}
-              ate={ate}
-            />
-          </div>
-          <p className="mt-1 text-xs text-gray-500">
-            O período escolhido aqui também atualiza os cards de Financeiro acima.
-          </p>
-          <div className="mt-3">
-            <DashboardCharts data={chartData} periodoLabel={periodoLabel} />
-          </div>
-        </div>
-      )}
+      {verFinanceiro && <DashboardCharts data={chartData} periodoLabel={periodoLabel} />}
 
       <div className="rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">

@@ -4,14 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import type { Agrupamento } from "./DashboardCharts";
 
-const OPCOES: Record<Agrupamento, { value: string; label: string }[]> = {
-  diario: [
-    { value: "7", label: "Últimos 7 dias" },
-    { value: "14", label: "Últimos 14 dias" },
-    { value: "30", label: "Últimos 30 dias" },
-    { value: "60", label: "Últimos 60 dias" },
-    { value: "90", label: "Últimos 90 dias" },
-  ],
+const OPCOES: Partial<Record<Agrupamento, { value: string; label: string }[]>> = {
   semanal: [
     { value: "4", label: "Últimas 4 semanas" },
     { value: "8", label: "Últimas 8 semanas" },
@@ -27,13 +20,13 @@ const OPCOES: Record<Agrupamento, { value: string; label: string }[]> = {
 };
 
 const PERIODO_PADRAO: Record<Agrupamento, string> = {
-  diario: "30",
+  diario: "1",
   semanal: "8",
   mensal: "6",
 };
 
 const AGRUPAMENTOS: { value: Agrupamento; label: string }[] = [
-  { value: "diario", label: "Diário" },
+  { value: "diario", label: "Hoje" },
   { value: "semanal", label: "Semanal" },
   { value: "mensal", label: "Mensal" },
 ];
@@ -57,26 +50,21 @@ export default function PeriodFilter({
   const [ateInput, setAteInput] = useState(ate ?? "");
 
   function navegar(params: URLSearchParams) {
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   function handleAgrupamentoChange(next: Agrupamento) {
-    if (next === agrupamento) return;
+    setMostrarPersonalizado(false);
+    if (next === agrupamento && periodo !== "personalizado") return;
     const params = new URLSearchParams(searchParams.toString());
     params.set("agrupamento", next);
     params.set("periodo", PERIODO_PADRAO[next]);
     params.delete("de");
     params.delete("ate");
-    setMostrarPersonalizado(false);
     navegar(params);
   }
 
   function handlePeriodoChange(next: string) {
-    if (next === "personalizado") {
-      setMostrarPersonalizado(true);
-      return;
-    }
-    setMostrarPersonalizado(false);
     const params = new URLSearchParams(searchParams.toString());
     params.set("periodo", next);
     params.delete("de");
@@ -87,6 +75,7 @@ export default function PeriodFilter({
   function handleAplicarPersonalizado() {
     if (!deInput || !ateInput) return;
     const params = new URLSearchParams(searchParams.toString());
+    params.set("agrupamento", agrupamento);
     params.set("periodo", "personalizado");
     params.set("de", deInput);
     params.set("ate", ateInput);
@@ -104,7 +93,7 @@ export default function PeriodFilter({
             type="button"
             onClick={() => handleAgrupamentoChange(a.value)}
             className={`rounded px-2.5 py-1 transition-colors ${
-              agrupamento === a.value
+              agrupamento === a.value && !mostrarPersonalizado
                 ? "bg-blue-600 text-white"
                 : "text-gray-600 hover:bg-gray-50"
             }`}
@@ -112,20 +101,30 @@ export default function PeriodFilter({
             {a.label}
           </button>
         ))}
+        <button
+          type="button"
+          onClick={() => setMostrarPersonalizado(true)}
+          className={`rounded px-2.5 py-1 transition-colors ${
+            mostrarPersonalizado ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-50"
+          }`}
+        >
+          Personalizado
+        </button>
       </div>
 
-      <select
-        value={mostrarPersonalizado ? "personalizado" : periodo}
-        onChange={(e) => handlePeriodoChange(e.target.value)}
-        className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        {opcoes.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-        <option value="personalizado">Personalizado...</option>
-      </select>
+      {!mostrarPersonalizado && opcoes && (
+        <select
+          value={periodo}
+          onChange={(e) => handlePeriodoChange(e.target.value)}
+          className="rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        >
+          {opcoes.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      )}
 
       {mostrarPersonalizado && (
         <div className="flex items-center gap-1.5">
