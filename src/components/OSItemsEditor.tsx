@@ -4,17 +4,25 @@ import { useState } from "react";
 import CurrencyInput from "./CurrencyInput";
 import { formatNumberToCurrencyInput, parseCurrencyBR } from "@/lib/format";
 
-type Item = { descricao: string; valor: string };
+type Item = { data: string; descricao: string; valor: string };
+
+function toDateInputValue(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
 
 export default function OSItemsEditor({
   initialItens,
 }: {
-  initialItens?: { descricao: string; valor: number }[];
+  initialItens?: { data: Date; descricao: string; valor: number }[];
 }) {
   const [itens, setItens] = useState<Item[]>(
     initialItens && initialItens.length > 0
-      ? initialItens.map((i) => ({ descricao: i.descricao, valor: formatNumberToCurrencyInput(i.valor) }))
-      : [{ descricao: "", valor: "" }]
+      ? initialItens.map((i) => ({
+          data: toDateInputValue(i.data),
+          descricao: i.descricao,
+          valor: formatNumberToCurrencyInput(i.valor),
+        }))
+      : [{ data: toDateInputValue(new Date()), descricao: "", valor: "" }]
   );
 
   const total = itens.reduce((sum, item) => sum + parseCurrencyBR(item.valor), 0);
@@ -26,7 +34,7 @@ export default function OSItemsEditor({
   }
 
   function addItem() {
-    setItens((prev) => [...prev, { descricao: "", valor: "" }]);
+    setItens((prev) => [...prev, { data: toDateInputValue(new Date()), descricao: "", valor: "" }]);
   }
 
   function removeItem(index: number) {
@@ -45,6 +53,13 @@ export default function OSItemsEditor({
             key={index}
             className="flex flex-col gap-2 rounded-md border border-gray-100 p-2 sm:flex-row sm:items-center sm:border-0 sm:p-0"
           >
+            <input
+              type="date"
+              name="data"
+              value={item.data}
+              onChange={(e) => updateItem(index, "data", e.target.value)}
+              className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-40"
+            />
             <input
               type="text"
               name="descricao"

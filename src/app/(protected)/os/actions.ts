@@ -37,15 +37,20 @@ function str(formData: FormData, key: string): string | null {
 }
 
 function parseItens(formData: FormData) {
+  const datas = formData.getAll("data") as string[];
   const descricoes = formData.getAll("descricao") as string[];
   const valores = formData.getAll("valor") as string[];
 
-  return descricoes
-    .map((descricao, i) => ({
-      descricao: descricao.trim(),
+  return datas
+    .map((dataRaw, i) => ({
+      data: dataRaw ? new Date(dataRaw) : null,
+      descricao: (descricoes[i] ?? "").trim(),
       valor: parseCurrencyBR(valores[i]),
     }))
-    .filter((item) => item.descricao !== "" && item.valor > 0);
+    .filter(
+      (item): item is { data: Date; descricao: string; valor: number } =>
+        item.data !== null && item.descricao !== "" && item.valor > 0
+    );
 }
 
 export async function createOS(formData: FormData) {
