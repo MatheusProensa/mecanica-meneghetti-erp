@@ -6,7 +6,8 @@ import DashboardCharts, { type ChartPoint, type Agrupamento } from "@/components
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
-import PeriodFilter from "@/components/PeriodFilter";
+import AgrupamentoToggle from "@/components/AgrupamentoToggle";
+import PeriodoSelector from "@/components/PeriodoSelector";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
 
 const PERIODOS_DIARIO = [1, 7, 14, 30, 60, 90];
@@ -272,12 +273,7 @@ export default async function DashboardPage({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <PageHeader title="Dashboard" />
         {verFinanceiro && (
-          <PeriodFilter
-            agrupamento={agrupamento}
-            periodo={usarPersonalizado ? "personalizado" : String(periodo)}
-            de={de}
-            ate={ate}
-          />
+          <AgrupamentoToggle agrupamento={agrupamento} personalizado={usarPersonalizado} />
         )}
       </div>
 
@@ -353,7 +349,21 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      {verFinanceiro && <DashboardCharts data={chartData} periodoLabel={periodoLabel} />}
+      {verFinanceiro && (
+        <div>
+          <div className="flex justify-end">
+            <PeriodoSelector
+              agrupamento={agrupamento}
+              periodo={usarPersonalizado ? "personalizado" : String(periodo)}
+              de={de}
+              ate={ate}
+            />
+          </div>
+          <div className="mt-3">
+            <DashboardCharts data={chartData} periodoLabel={periodoLabel} />
+          </div>
+        </div>
+      )}
 
       <div className="rounded-xl border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
