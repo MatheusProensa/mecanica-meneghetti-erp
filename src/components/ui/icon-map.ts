@@ -14,6 +14,8 @@ import {
   UserX,
   HandCoins,
   Camera,
+  LayoutDashboard,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 
@@ -33,6 +35,8 @@ export const iconMap = {
   "user-x": UserX,
   "hand-coins": HandCoins,
   camera: Camera,
+  "layout-dashboard": LayoutDashboard,
+  settings: Settings,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof iconMap;
