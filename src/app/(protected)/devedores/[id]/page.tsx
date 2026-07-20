@@ -9,6 +9,7 @@ import DividaForm from "@/components/DividaForm";
 import DividaFotos from "@/components/DividaFotos";
 import CurrencyInput from "@/components/CurrencyInput";
 import MetricCard from "@/components/ui/MetricCard";
+import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { StatusBadge, situacaoDividaMap } from "@/components/ui/StatusBadge";
@@ -100,7 +101,7 @@ export default async function DividaDetalhePage({
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Dados da dívida</h2>
+        <SectionHeader icon="receipt" iconColor="text-red-600" title="Dados da dívida" />
         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
           <DividaForm
             divida={divida}
@@ -116,7 +117,7 @@ export default async function DividaDetalhePage({
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Pagamentos</h2>
+        <SectionHeader icon="hand-coins" iconColor="text-green-600" title="Pagamentos" />
 
         <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
           {divida.pagamentos.length === 0 ? (

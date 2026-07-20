@@ -7,6 +7,7 @@ import { formatCurrency, formatDate } from "@/lib/format";
 import ExtraForm from "@/components/ExtraForm";
 import CurrencyInput from "@/components/CurrencyInput";
 import MetricCard from "@/components/ui/MetricCard";
+import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { StatusBadge, statusExtraMap } from "@/components/ui/StatusBadge";
@@ -118,7 +119,7 @@ export default async function ExtraDetalhePage({
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Dados do lançamento</h2>
+        <SectionHeader icon="hand-coins" iconColor="text-blue-600" title="Dados do lançamento" />
         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
           <ExtraForm
             extra={extra}
@@ -132,7 +133,7 @@ export default async function ExtraDetalhePage({
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Pagamentos</h2>
+        <SectionHeader icon="trending-up" iconColor="text-green-600" title="Pagamentos" />
 
         <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
           {extra.pagamentos.length === 0 ? (
