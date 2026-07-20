@@ -130,13 +130,28 @@ export default async function DashboardPage({
 
   const fimConsultaPeriodo = new Date(startOfDay(fimPeriodo).getTime() + UM_DIA_MS);
   const fimMes = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const fimSemanaAtual = new Date(inicioSemanaAtual.getTime() + 7 * UM_DIA_MS);
+  const fimDiaAtual = new Date(startOfDay(now).getTime() + UM_DIA_MS);
 
-  /** Só passa a seguir o período escolhido no seletor quando ele foi de fato
-   * alterado — sem seleção nenhuma, os cards de resumo continuam mostrando
-   * o mês corrente (visão padrão ao abrir o Dashboard). */
-  const houveSelecaoDePeriodo = Boolean(agrupamentoRaw || periodoRaw || de || ate);
-  const inicioResumo = houveSelecaoDePeriodo ? inicioPeriodo : inicioMes;
-  const fimResumo = houveSelecaoDePeriodo ? fimConsultaPeriodo : fimMes;
+  /** Os cards de resumo mostram sempre a unidade atual do agrupamento
+   * escolhido (hoje / esta semana / este mês) — não acompanham quantos
+   * períodos o gráfico está exibindo, já que o gráfico existe pra ver
+   * tendência (janela ampla) e os cards pra ver a situação corrente. Só
+   * seguem um intervalo personalizado quando ele é escolhido de propósito. */
+  const inicioResumo = usarPersonalizado
+    ? inicioPeriodo
+    : agrupamento === "diario"
+      ? startOfDay(now)
+      : agrupamento === "semanal"
+        ? inicioSemanaAtual
+        : inicioMes;
+  const fimResumo = usarPersonalizado
+    ? fimConsultaPeriodo
+    : agrupamento === "diario"
+      ? fimDiaAtual
+      : agrupamento === "semanal"
+        ? fimSemanaAtual
+        : fimMes;
 
   const [
     ordensDoPeriodo,
@@ -195,7 +210,16 @@ export default async function DashboardPage({
   const despesasNoMes = despesasNoMesAgg._sum.valor ?? 0;
 
   const osAbertasCount = osAbertaCount + osEmAndamentoCount;
-  const rotuloResumo = houveSelecaoDePeriodo ? "no período" : "no mês";
+  const rotuloResumo = usarPersonalizado
+    ? "no período"
+    : agrupamento === "diario"
+      ? "hoje"
+      : agrupamento === "semanal"
+        ? "esta semana"
+        : "este mês";
+  const contextoResumo = usarPersonalizado
+    ? `${formatDate(inicioPeriodo)} a ${formatDate(fimPeriodo)}`
+    : undefined;
 
   const chartData: ChartPoint[] = gerarBuckets(inicioPeriodo, fimPeriodo, agrupamento).map(
     (bucket) => ({
@@ -271,7 +295,7 @@ export default async function DashboardPage({
               iconColor="text-green-600"
               label={`Recebido ${rotuloResumo}`}
               value={formatCurrency(recebidoNoMes)}
-              context={houveSelecaoDePeriodo ? periodoLabel : undefined}
+              context={contextoResumo}
             />
             <MetricCard
               icon="clock"
@@ -285,7 +309,7 @@ export default async function DashboardPage({
               iconColor="text-red-600"
               label={`Despesas ${rotuloResumo}`}
               value={formatCurrency(despesasNoMes)}
-              context={houveSelecaoDePeriodo ? periodoLabel : undefined}
+              context={contextoResumo}
             />
             <Link href="/os?pagamento=atrasado" className="block">
               <MetricCard
@@ -316,14 +340,14 @@ export default async function DashboardPage({
           iconColor="text-green-600"
           label={`OS concluídas ${rotuloResumo}`}
           value={osConcluidasNoMes}
-          context={houveSelecaoDePeriodo ? periodoLabel : undefined}
+          context={contextoResumo}
         />
         <MetricCard
           icon="file-text"
           iconColor="text-gray-500"
           label={`Notas anexadas ${rotuloResumo}`}
           value={notasNoMes}
-          context={houveSelecaoDePeriodo ? periodoLabel : undefined}
+          context={contextoResumo}
           className="col-span-2 lg:col-span-1"
         />
         </div>
