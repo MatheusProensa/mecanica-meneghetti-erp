@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { logoutAction } from "@/app/(protected)/actions";
 import type { Permissoes } from "@/lib/permissions";
+import DarkPatternBg from "@/components/ui/DarkPatternBg";
 
 const links = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard, requer: "verDashboard" as keyof Permissoes | null },
@@ -108,8 +109,10 @@ export default function Nav({
           transform: "none",
           left: isDesktop ? 0 : open ? 0 : -280,
         }}
-        className="fixed inset-y-0 z-50 flex w-[280px] shrink-0 flex-col bg-sidebar text-gray-300 lg:static lg:z-auto lg:w-64"
+        className="fixed inset-y-0 z-50 flex w-[280px] shrink-0 flex-col overflow-hidden bg-sidebar text-gray-300 lg:static lg:z-auto lg:w-64"
       >
+        <DarkPatternBg glowPosition="0% 0%" />
+
         <button
           type="button"
           onClick={onClose}
@@ -118,7 +121,7 @@ export default function Nav({
           <X className="h-5 w-5" />
         </button>
 
-      <div className="flex items-center justify-center border-b border-sidebar-hover px-5 py-7">
+      <div className="relative flex items-center justify-center border-b border-sidebar-hover px-5 py-7">
         <Image
           src="/logo.png"
           alt="Mecânica Meneghetti"
@@ -129,7 +132,7 @@ export default function Nav({
         />
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="relative flex-1 space-y-1 px-3 py-4">
         {linksVisiveis.map((link) => (
           <NavLink
             key={link.href}
@@ -153,7 +156,7 @@ export default function Nav({
         ))}
       </nav>
 
-      <div className="flex items-center gap-2 border-t border-sidebar-hover p-3">
+      <div className="relative flex items-center gap-2 border-t border-sidebar-hover p-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-white">
           {initials(userName || "?")}
         </div>
