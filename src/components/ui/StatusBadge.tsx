@@ -23,7 +23,7 @@ const dotClasses: Record<BadgeTone, string> = {
 export function StatusBadge({ label, tone }: { label: string; tone: BadgeTone }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${toneClasses[tone]}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${toneClasses[tone]}`}
     >
       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotClasses[tone]}`} />
       {label}
