@@ -2,19 +2,17 @@
 
 import { useState } from "react";
 import { FileDown } from "lucide-react";
-import { gerarOSPdf, type ResumoOS, type OSLinha } from "@/lib/gerarOSPdf";
+import { gerarOSPdf, type OSLinha } from "@/lib/gerarOSPdf";
 import type { DadosEmpresa } from "@/lib/business";
 
 export default function ExportarOSPdf({
   empresa,
   periodoLabel,
-  resumo,
   ordens,
   nomeArquivo,
 }: {
   empresa: DadosEmpresa;
   periodoLabel: string;
-  resumo: ResumoOS;
   ordens: OSLinha[];
   nomeArquivo: string;
 }) {
@@ -23,7 +21,7 @@ export default function ExportarOSPdf({
   async function exportar() {
     setGerando(true);
     try {
-      const doc = await gerarOSPdf({ empresa, periodoLabel, resumo, ordens });
+      const doc = await gerarOSPdf({ empresa, periodoLabel, ordens });
       doc.save(nomeArquivo);
     } finally {
       setGerando(false);

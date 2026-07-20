@@ -140,7 +140,7 @@ export default async function NotasPage({
       <PageHeader
         title="Notas"
         description="Arquivo de notas emitidas e recebidas — anexe o PDF para consulta futura."
-        action={usuario.permissoes.editar ? { label: "+ Nova nota", href: "/notas/nova" } : undefined}
+        action={usuario.permissoes.editarNotas ? { label: "+ Nova nota", href: "/notas/nova" } : undefined}
       />
 
       <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-3">

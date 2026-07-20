@@ -6,7 +6,7 @@ import { createDespesa } from "../actions";
 export default async function NovaDespesaPage() {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
-  if (!usuario.permissoes.verFinanceiro || !usuario.permissoes.editar) redirect("/financeiro");
+  if (!usuario.permissoes.verFinanceiro || !usuario.permissoes.editarFinanceiro) redirect("/financeiro");
 
   return (
     <div className="max-w-2xl">

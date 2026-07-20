@@ -107,7 +107,7 @@ export default async function OSListPage({
     <div>
       <PageHeader
         title="Ordens de Serviço"
-        action={usuario.permissoes.editar ? { label: "+ Nova OS", href: "/os/nova" } : undefined}
+        action={usuario.permissoes.editarOS ? { label: "+ Nova OS", href: "/os/nova" } : undefined}
       />
 
       <form className="mt-4 flex flex-wrap items-center gap-3">
@@ -213,7 +213,7 @@ export default async function OSListPage({
         q={q}
         pagamento={pagamento}
         ordenar={ordenar}
-        podeEditar={usuario.permissoes.editar}
+        podeEditar={usuario.permissoes.editarOS}
       />
     </div>
   );

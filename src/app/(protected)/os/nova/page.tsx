@@ -12,7 +12,7 @@ export default async function NovaOSPage({
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
   if (!usuario.permissoes.verOS) redirect("/");
-  if (!usuario.permissoes.editar) redirect("/os");
+  if (!usuario.permissoes.editarOS) redirect("/os");
 
   const { clienteId } = await searchParams;
   const [clientes, mecanicos] = await Promise.all([

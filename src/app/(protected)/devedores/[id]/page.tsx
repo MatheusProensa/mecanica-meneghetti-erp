@@ -23,7 +23,7 @@ export default async function DividaDetalhePage({
 
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
-  if (!usuario.permissoes.verFinanceiro) redirect("/");
+  if (!usuario.permissoes.verDevedores) redirect("/");
 
   const [divida, clientes] = await Promise.all([
     prisma.divida.findUnique({
@@ -68,7 +68,7 @@ export default async function DividaDetalhePage({
             <StatusBadge {...situacaoDividaMap[situacao]} />
           </div>
         </div>
-        {usuario.permissoes.excluir && (
+        {usuario.permissoes.excluirDevedores && (
           <ConfirmModal
             triggerLabel="Excluir dívida"
             title="Excluir esta dívida?"
@@ -106,13 +106,13 @@ export default async function DividaDetalhePage({
             divida={divida}
             clientes={clientes}
             action={updateDividaWithId}
-            readOnly={!usuario.permissoes.editar}
+            readOnly={!usuario.permissoes.editarDevedores}
           />
         </div>
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-        <DividaFotos dividaId={divida.id} fotos={fotos} readOnly={!usuario.permissoes.editar} />
+        <DividaFotos dividaId={divida.id} fotos={fotos} readOnly={!usuario.permissoes.editarDevedores} />
       </div>
 
       <div>
@@ -137,7 +137,7 @@ export default async function DividaDetalhePage({
                     </p>
                     {p.observacao && <p className="mt-0.5 text-sm text-gray-500">{p.observacao}</p>}
                   </div>
-                  {usuario.permissoes.excluir && (
+                  {usuario.permissoes.excluirDevedores && (
                     <form action={deletePagamento.bind(null, p.id, divida.id)}>
                       <button
                         type="submit"
@@ -153,7 +153,7 @@ export default async function DividaDetalhePage({
           )}
         </div>
 
-        {usuario.permissoes.editar && saldo > 0 && (
+        {usuario.permissoes.editarDevedores && saldo > 0 && (
           <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
             <h3 className="text-sm font-semibold text-gray-900">Registrar pagamento</h3>
             <form action={addPagamentoWithId} className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">

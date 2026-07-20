@@ -7,7 +7,7 @@ const secoes: { titulo: string; texto: string; requer: Permission | null }[] = [
     titulo: "Dashboard",
     texto:
       "Mostra um resumo geral: saldo em caixa, valores a receber, recebidos no mês, despesas, lucro líquido, OS em aberto, contas vencidas e os últimos cadastros feitos no sistema.",
-    requer: null,
+    requer: "verDashboard",
   },
   {
     titulo: "Clientes",
@@ -31,13 +31,13 @@ const secoes: { titulo: string; texto: string; requer: Permission | null }[] = [
     titulo: "Devedores",
     texto:
       "Pra clientes com serviços antigos em aberto. Cada dívida é montada por itens (data, descrição e valor de cada serviço) em vez de um valor único, e o total é somado automaticamente — fica fácil conferir e enviar o detalhamento pro cliente. Mostra também quanto já foi pago e o saldo restante. Dá pra registrar pagamentos parciais (o saldo é abatido automaticamente), anexar fotos e filtrar por cliente, período ou situação (em aberto, pagando, quitado). Esses pagamentos não entram no faturamento do mês do Financeiro — são tratados à parte, como recuperação de dívida.",
-    requer: "verFinanceiro",
+    requer: "verDevedores",
   },
   {
     titulo: "Extras",
     texto:
       "Controla pagamentos extras a funcionários vinculados a um cliente e/ou uma OS específica. Mostra o valor cobrado do cliente, o extra do funcionário e o lucro da empresa (calculado automaticamente). Também dá pra registrar pagamentos parciais do extra e acompanhar a situação (pendente, parcialmente pago, pago).",
-    requer: "verFinanceiro",
+    requer: "verExtras",
   },
   {
     titulo: "Notas",

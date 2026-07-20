@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import { getCurrentUser } from "@/lib/getCurrentUser";
@@ -89,7 +90,26 @@ export default async function DashboardPage({
   } = await searchParams;
 
   const usuario = await getCurrentUser();
-  const verFinanceiro = usuario?.permissoes.verFinanceiro ?? false;
+  if (!usuario) redirect("/login");
+  if (!usuario.permissoes.verDashboard) {
+    const destino = usuario.permissoes.verClientes
+      ? "/clientes"
+      : usuario.permissoes.verOS
+        ? "/os"
+        : usuario.permissoes.verFinanceiro
+          ? "/financeiro"
+          : usuario.permissoes.verDevedores
+            ? "/devedores"
+            : usuario.permissoes.verExtras
+              ? "/extras"
+              : usuario.permissoes.verNotas
+                ? "/notas"
+                : usuario.permissoes.acessarConfiguracoes
+                  ? "/configuracoes"
+                  : "/ajuda";
+    redirect(destino);
+  }
+  const verFinanceiro = usuario.permissoes.verFinanceiro;
 
   const agrupamento: Agrupamento =
     agrupamentoRaw === "diario" ? "diario" : agrupamentoRaw === "semanal" ? "semanal" : "mensal";

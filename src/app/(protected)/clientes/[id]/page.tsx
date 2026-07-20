@@ -87,7 +87,7 @@ export default async function ClienteDetalhePage({
             <WhatsAppLink phone={cliente.telefone ?? cliente.whatsapp} className="mt-1" />
           )}
         </div>
-        {usuarioAtual.permissoes.excluir && (
+        {usuarioAtual.permissoes.excluirClientes && (
           <ConfirmModal
             triggerLabel="Excluir cliente"
             title="Excluir este cliente?"
@@ -125,7 +125,7 @@ export default async function ClienteDetalhePage({
           <ClienteForm
             cliente={cliente}
             action={updateClienteWithId}
-            readOnly={!usuarioAtual.permissoes.editar}
+            readOnly={!usuarioAtual.permissoes.editarClientes}
           />
         </div>
       </div>
@@ -152,7 +152,7 @@ export default async function ClienteDetalhePage({
           <h2 className="text-sm font-semibold text-gray-900">
             Histórico de ordens de serviço
           </h2>
-          {usuarioAtual.permissoes.editar && (
+          {usuarioAtual.permissoes.editarClientes && (
             <Link
               href={`/os/nova?clienteId=${cliente.id}`}
               className="text-sm font-medium text-blue-600 hover:text-blue-700"
@@ -236,11 +236,11 @@ export default async function ClienteDetalhePage({
         </div>
       </div>
 
-      {usuarioAtual.permissoes.verFinanceiro && (
+      {usuarioAtual.permissoes.verDevedores && (
         <div>
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-gray-900">Dívidas antigas</h2>
-            {usuarioAtual.permissoes.editar && (
+            {usuarioAtual.permissoes.editarDevedores && (
               <Link
                 href={`/devedores/novo?clienteId=${cliente.id}`}
                 className="text-sm font-medium text-blue-600 hover:text-blue-700"
@@ -297,7 +297,7 @@ export default async function ClienteDetalhePage({
       <div>
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-900">Notas vinculadas</h2>
-          {usuarioAtual.permissoes.editar && (
+          {usuarioAtual.permissoes.editarClientes && (
             <Link
               href={`/notas/nova`}
               className="text-sm font-medium text-blue-600 hover:text-blue-700"

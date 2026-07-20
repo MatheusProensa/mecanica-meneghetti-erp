@@ -21,7 +21,7 @@ export default async function ExtraDetalhePage({
 
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
-  if (!usuario.permissoes.verFinanceiro) redirect("/");
+  if (!usuario.permissoes.verExtras) redirect("/");
 
   const [extra, mecanicos, clientes, ordens] = await Promise.all([
     prisma.extraFuncionario.findUnique({
@@ -77,7 +77,7 @@ export default async function ExtraDetalhePage({
             <StatusBadge {...statusExtraMap[status]} />
           </div>
         </div>
-        {usuario.permissoes.excluir && (
+        {usuario.permissoes.excluirExtras && (
           <ConfirmModal
             triggerLabel="Excluir extra"
             title="Excluir este extra?"
@@ -126,7 +126,7 @@ export default async function ExtraDetalhePage({
             clientes={clientes}
             ordens={ordensParaSelect.map((os) => ({ id: os.id, clienteNome: os.cliente.nome }))}
             action={updateExtraWithId}
-            readOnly={!usuario.permissoes.editar}
+            readOnly={!usuario.permissoes.editarExtras}
           />
         </div>
       </div>
@@ -152,7 +152,7 @@ export default async function ExtraDetalhePage({
                       {p.formaPagamento ? ` · ${p.formaPagamento}` : ""}
                     </p>
                   </div>
-                  {usuario.permissoes.excluir && (
+                  {usuario.permissoes.excluirExtras && (
                     <form action={deletePagamentoExtra.bind(null, p.id, extra.id)}>
                       <button
                         type="submit"
@@ -168,7 +168,7 @@ export default async function ExtraDetalhePage({
           )}
         </div>
 
-        {usuario.permissoes.editar && saldo > 0 && (
+        {usuario.permissoes.editarExtras && saldo > 0 && (
           <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
             <h3 className="text-sm font-semibold text-gray-900">Registrar pagamento</h3>
             <form action={addPagamentoWithId} className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">

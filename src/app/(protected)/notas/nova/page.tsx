@@ -8,7 +8,7 @@ export default async function NovaNotaPage() {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
   if (!usuario.permissoes.verNotas) redirect("/");
-  if (!usuario.permissoes.editar) redirect("/notas");
+  if (!usuario.permissoes.editarNotas) redirect("/notas");
 
   const [clientes, ordens] = await Promise.all([
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),

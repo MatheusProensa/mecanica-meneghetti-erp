@@ -57,7 +57,7 @@ export default async function NotaDetalhePage({
             Nota {nota.numero}
           </h1>
         </div>
-        {usuario.permissoes.excluir && (
+        {usuario.permissoes.excluirNotas && (
           <ConfirmModal
             triggerLabel="Excluir nota"
             title="Excluir esta nota?"
@@ -74,7 +74,7 @@ export default async function NotaDetalhePage({
           clientes={clientes}
           ordens={ordens.map((os) => ({ id: os.id, clienteNome: os.cliente.nome }))}
           action={updateNotaWithId}
-          readOnly={!usuario.permissoes.editar}
+          readOnly={!usuario.permissoes.editarNotas}
         />
       </div>
     </div>

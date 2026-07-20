@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import PasswordInput from "@/components/PasswordInput";
+import PermissoesFields from "./PermissoesFields";
 import { updateUsuarioPermissoes, deleteUsuario, resetSenhaUsuario } from "./usuarios-actions";
 
 const ROLE_LABEL: Record<string, string> = {
@@ -19,13 +20,26 @@ export default function UsuarioRow({
     name: string;
     email: string;
     role: "dono" | "funcionario" | "visualizador";
-    podeEditar: boolean;
-    podeVerFinanceiro: boolean;
-    podeExcluir: boolean;
-    podeAcessarConfiguracoes: boolean;
+    podeVerDashboard: boolean;
     podeVerClientes: boolean;
+    podeEditarClientes: boolean;
+    podeExcluirClientes: boolean;
     podeVerOS: boolean;
+    podeEditarOS: boolean;
+    podeExcluirOS: boolean;
+    podeVerFinanceiro: boolean;
+    podeEditarFinanceiro: boolean;
+    podeExcluirFinanceiro: boolean;
+    podeVerDevedores: boolean;
+    podeEditarDevedores: boolean;
+    podeExcluirDevedores: boolean;
+    podeVerExtras: boolean;
+    podeEditarExtras: boolean;
+    podeExcluirExtras: boolean;
     podeVerNotas: boolean;
+    podeEditarNotas: boolean;
+    podeExcluirNotas: boolean;
+    podeAcessarConfiguracoes: boolean;
   };
   isSelf: boolean;
 }) {
@@ -64,78 +78,8 @@ export default function UsuarioRow({
           </select>
         </div>
 
-        {role === "funcionario" && (
-          <div className="space-y-2 rounded-lg bg-gray-50 p-3">
-            <label className="flex items-center gap-2 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                name="podeEditar"
-                defaultChecked={user.podeEditar}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              Criar e editar cadastros
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                name="podeExcluir"
-                defaultChecked={user.podeExcluir}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              Excluir cadastros
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                name="podeVerFinanceiro"
-                defaultChecked={user.podeVerFinanceiro}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              Ver o Financeiro
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                name="podeAcessarConfiguracoes"
-                defaultChecked={user.podeAcessarConfiguracoes}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              Acessar Configurações
-            </label>
-          </div>
-        )}
-
         {(role === "funcionario" || role === "visualizador") && (
-          <div className="space-y-2 rounded-lg bg-gray-50 p-3">
-            <p className="text-xs font-medium text-gray-500">O que esse usuário pode ver:</p>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                name="podeVerClientes"
-                defaultChecked={user.podeVerClientes}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              Clientes
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                name="podeVerOS"
-                defaultChecked={user.podeVerOS}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              Ordens de Serviço
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                name="podeVerNotas"
-                defaultChecked={user.podeVerNotas}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              Notas
-            </label>
-          </div>
+          <PermissoesFields role={role} defaults={user} />
         )}
 
         <div className="flex flex-wrap items-center gap-2">

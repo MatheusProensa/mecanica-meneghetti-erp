@@ -87,17 +87,6 @@ export default function OSResultados({
     ? paraExportar.filter((os) => selecionados.has(os.id))
     : paraExportar;
 
-  const resumoParaExportar = {
-    quantidade: ordensParaExportar.length,
-    valorTotal: ordensParaExportar.reduce((s, os) => s + os.valor, 0),
-    recebido: ordensParaExportar
-      .filter((os) => os.pagamentoLabel === "Pago")
-      .reduce((s, os) => s + os.valor, 0),
-    aReceber: ordensParaExportar
-      .filter((os) => os.pagamentoLabel !== "Pago")
-      .reduce((s, os) => s + os.valor, 0),
-  };
-
   const todosDaPaginaMarcados =
     pagAtual.length > 0 && pagAtual.every((os) => selecionados.has(os.id));
 
@@ -112,7 +101,6 @@ export default function OSResultados({
         <ExportarOSPdf
           empresa={empresa}
           periodoLabel={periodoLabel}
-          resumo={resumoParaExportar}
           ordens={ordensParaExportar}
           nomeArquivo={`ordens-de-servico-${new Date().toISOString().slice(0, 10)}.pdf`}
         />

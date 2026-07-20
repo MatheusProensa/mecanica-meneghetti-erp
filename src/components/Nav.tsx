@@ -21,12 +21,12 @@ import { logoutAction } from "@/app/(protected)/actions";
 import type { Permissoes } from "@/lib/permissions";
 
 const links = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard, requer: null as keyof Permissoes | null },
+  { href: "/", label: "Dashboard", icon: LayoutDashboard, requer: "verDashboard" as keyof Permissoes | null },
   { href: "/clientes", label: "Clientes", icon: Users, requer: "verClientes" as const },
   { href: "/os", label: "Ordens de Serviço", icon: Wrench, requer: "verOS" as const },
   { href: "/financeiro", label: "Financeiro", icon: Wallet, requer: "verFinanceiro" as const },
-  { href: "/devedores", label: "Devedores", icon: UserX, requer: "verFinanceiro" as const },
-  { href: "/extras", label: "Extras", icon: HandCoins, requer: "verFinanceiro" as const },
+  { href: "/devedores", label: "Devedores", icon: UserX, requer: "verDevedores" as const },
+  { href: "/extras", label: "Extras", icon: HandCoins, requer: "verExtras" as const },
   { href: "/notas", label: "Notas", icon: FileText, requer: "verNotas" as const },
 ];
 

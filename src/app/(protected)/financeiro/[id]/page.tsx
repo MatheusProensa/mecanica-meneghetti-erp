@@ -39,7 +39,7 @@ export default async function DespesaDetalhePage({
           </Link>
           <h1 className="mt-1 text-xl font-semibold text-gray-900">{despesa.descricao}</h1>
         </div>
-        {usuario.permissoes.excluir && (
+        {usuario.permissoes.excluirFinanceiro && (
           <ConfirmModal
             triggerLabel="Excluir despesa"
             title="Excluir esta despesa?"
@@ -55,7 +55,7 @@ export default async function DespesaDetalhePage({
           itens={despesa.itens}
           anexoUrl={anexoUrl}
           action={updateDespesaWithId}
-          readOnly={!usuario.permissoes.editar}
+          readOnly={!usuario.permissoes.editarFinanceiro}
         />
       </div>
     </div>

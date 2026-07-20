@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import PasswordInput from "@/components/PasswordInput";
+import PermissoesFields from "./PermissoesFields";
 import { createUsuario } from "./usuarios-actions";
 
 export default function NovoUsuarioForm() {
@@ -73,78 +74,8 @@ export default function NovoUsuarioForm() {
         </div>
       </div>
 
-      {role === "funcionario" && (
-        <div className="space-y-2 rounded-lg bg-gray-50 p-3">
-          <p className="text-xs font-medium text-gray-500">O que esse funcionário pode fazer:</p>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              name="podeEditar"
-              defaultChecked
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            Criar e editar cadastros (Cliente, OS, Nota, Despesa)
-          </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              name="podeExcluir"
-              defaultChecked
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            Excluir cadastros (Cliente, OS, Nota, Despesa)
-          </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              name="podeVerFinanceiro"
-              defaultChecked
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            Ver o Financeiro (valores, lucro, despesas)
-          </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              name="podeAcessarConfiguracoes"
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            Acessar Configurações
-          </label>
-        </div>
-      )}
-
       {(role === "funcionario" || role === "visualizador") && (
-        <div className="space-y-2 rounded-lg bg-gray-50 p-3">
-          <p className="text-xs font-medium text-gray-500">O que esse usuário pode ver:</p>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              name="podeVerClientes"
-              defaultChecked
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            Clientes
-          </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              name="podeVerOS"
-              defaultChecked
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            Ordens de Serviço
-          </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              name="podeVerNotas"
-              defaultChecked
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            Notas
-          </label>
-        </div>
+        <PermissoesFields role={role} />
       )}
 
       {message && (

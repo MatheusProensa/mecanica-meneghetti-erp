@@ -41,8 +41,8 @@ function validarExtraData(data: ReturnType<typeof buildExtraData>) {
 }
 
 export async function createExtra(formData: FormData) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("verExtras");
+  await requirePermission("editarExtras");
   const data = buildExtraData(formData);
   validarExtraData(data);
 
@@ -55,8 +55,8 @@ export async function createExtra(formData: FormData) {
 }
 
 export async function updateExtra(id: string, formData: FormData) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("verExtras");
+  await requirePermission("editarExtras");
   const data = buildExtraData(formData);
   validarExtraData(data);
 
@@ -71,8 +71,8 @@ export async function updateExtra(id: string, formData: FormData) {
 }
 
 export async function deleteExtra(id: string) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("excluir");
+  await requirePermission("verExtras");
+  await requirePermission("excluirExtras");
   await prisma.extraFuncionario.delete({ where: { id } });
 
   revalidatePath("/extras");
@@ -80,8 +80,8 @@ export async function deleteExtra(id: string) {
 }
 
 export async function addPagamentoExtra(extraId: string, formData: FormData) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("verExtras");
+  await requirePermission("editarExtras");
 
   const dataRaw = str(formData, "data");
   const valor = parseCurrencyBR(str(formData, "valor"));
@@ -101,8 +101,8 @@ export async function addPagamentoExtra(extraId: string, formData: FormData) {
 }
 
 export async function deletePagamentoExtra(id: string, extraId: string) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("excluir");
+  await requirePermission("verExtras");
+  await requirePermission("excluirExtras");
   await prisma.pagamentoExtra.delete({ where: { id } });
 
   revalidatePath(`/extras/${extraId}`);

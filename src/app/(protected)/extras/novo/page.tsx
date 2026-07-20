@@ -11,7 +11,7 @@ export default async function NovoExtraPage({
 }) {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
-  if (!usuario.permissoes.verFinanceiro || !usuario.permissoes.editar) redirect("/extras");
+  if (!usuario.permissoes.verExtras || !usuario.permissoes.editarExtras) redirect("/extras");
 
   const { mecanicoId } = await searchParams;
   const [mecanicos, clientes, ordens] = await Promise.all([

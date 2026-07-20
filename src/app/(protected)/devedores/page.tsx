@@ -30,7 +30,7 @@ export default async function DevedoresPage({
 }) {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
-  if (!usuario.permissoes.verFinanceiro) redirect("/");
+  if (!usuario.permissoes.verDevedores) redirect("/");
 
   const { q, de, ate, situacao, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
@@ -106,7 +106,7 @@ export default async function DevedoresPage({
       <PageHeader
         title="Devedores"
         description="Clientes com serviços antigos em aberto — registre pagamentos parciais e acompanhe o saldo."
-        action={usuario.permissoes.editar ? { label: "+ Nova dívida", href: "/devedores/novo" } : undefined}
+        action={usuario.permissoes.editarDevedores ? { label: "+ Nova dívida", href: "/devedores/novo" } : undefined}
       />
 
       <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-3">

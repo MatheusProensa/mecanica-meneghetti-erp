@@ -35,8 +35,8 @@ function parseItensDivida(formData: FormData) {
 }
 
 export async function createDivida(formData: FormData) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("verDevedores");
+  await requirePermission("editarDevedores");
   const clienteId = str(formData, "clienteId");
   if (!clienteId) throw new Error("Cliente é obrigatório");
 
@@ -56,8 +56,8 @@ export async function createDivida(formData: FormData) {
 }
 
 export async function updateDivida(id: string, formData: FormData) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("verDevedores");
+  await requirePermission("editarDevedores");
   const clienteId = str(formData, "clienteId");
   if (!clienteId) throw new Error("Cliente é obrigatório");
 
@@ -82,8 +82,8 @@ export async function updateDivida(id: string, formData: FormData) {
 }
 
 export async function deleteDivida(id: string) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("excluir");
+  await requirePermission("verDevedores");
+  await requirePermission("excluirDevedores");
   const anexos = await prisma.anexoDivida.findMany({ where: { dividaId: id } });
   await prisma.divida.delete({ where: { id } });
   await Promise.all(anexos.map((a) => deleteDividaFoto(a.path).catch(() => {})));
@@ -93,8 +93,8 @@ export async function deleteDivida(id: string) {
 }
 
 export async function addPagamento(dividaId: string, formData: FormData) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("verDevedores");
+  await requirePermission("editarDevedores");
 
   const dataRaw = str(formData, "data");
   const valor = parseCurrencyBR(str(formData, "valor"));
@@ -115,8 +115,8 @@ export async function addPagamento(dividaId: string, formData: FormData) {
 }
 
 export async function deletePagamento(id: string, dividaId: string) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("excluir");
+  await requirePermission("verDevedores");
+  await requirePermission("excluirDevedores");
   await prisma.pagamentoDivida.delete({ where: { id } });
 
   revalidatePath(`/devedores/${dividaId}`);
@@ -124,8 +124,8 @@ export async function deletePagamento(id: string, dividaId: string) {
 }
 
 export async function addAnexoDivida(id: string, formData: FormData) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("verDevedores");
+  await requirePermission("editarDevedores");
   const file = formData.get("foto");
   if (!(file instanceof File) || file.size === 0) throw new Error("Selecione uma foto");
   if (!ALLOWED_FOTO_TYPES.has(file.type)) {
@@ -145,8 +145,8 @@ export async function addAnexoDivida(id: string, formData: FormData) {
 }
 
 export async function deleteAnexoDivida(id: string, dividaId: string) {
-  await requirePermission("verFinanceiro");
-  await requirePermission("excluir");
+  await requirePermission("verDevedores");
+  await requirePermission("excluirDevedores");
   const anexo = await prisma.anexoDivida.findUniqueOrThrow({ where: { id } });
   await prisma.anexoDivida.delete({ where: { id } });
   await deleteDividaFoto(anexo.path).catch(() => {});

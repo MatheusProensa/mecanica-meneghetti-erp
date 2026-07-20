@@ -63,7 +63,7 @@ export default async function ClientesPage({
       <PageHeader
         title="Clientes"
         description={contadorDescricao}
-        action={usuario.permissoes.editar ? { label: "+ Novo cliente", href: "/clientes/novo" } : undefined}
+        action={usuario.permissoes.editarClientes ? { label: "+ Novo cliente", href: "/clientes/novo" } : undefined}
       />
 
       <form className="mt-4">

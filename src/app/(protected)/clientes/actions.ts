@@ -14,7 +14,7 @@ function str(formData: FormData, key: string): string | null {
 
 export async function createCliente(formData: FormData) {
   await requirePermission("verClientes");
-  await requirePermission("editar");
+  await requirePermission("editarClientes");
   const nome = str(formData, "nome");
   if (!nome) throw new Error("Nome é obrigatório");
 
@@ -37,7 +37,7 @@ export async function createCliente(formData: FormData) {
 
 export async function updateCliente(id: string, formData: FormData) {
   await requirePermission("verClientes");
-  await requirePermission("editar");
+  await requirePermission("editarClientes");
   const nome = str(formData, "nome");
   if (!nome) throw new Error("Nome é obrigatório");
 
@@ -62,7 +62,7 @@ export async function updateCliente(id: string, formData: FormData) {
 
 export async function deleteCliente(id: string) {
   await requirePermission("verClientes");
-  await requirePermission("excluir");
+  await requirePermission("excluirClientes");
   try {
     await prisma.cliente.delete({ where: { id } });
   } catch (e) {

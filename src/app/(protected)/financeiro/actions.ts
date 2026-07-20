@@ -69,7 +69,7 @@ function buildData(formData: FormData) {
 
 export async function createDespesa(formData: FormData) {
   await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("editarFinanceiro");
   const data = buildData(formData);
   if (!data.descricao) throw new Error("Descrição é obrigatória");
   if (data.valor <= 0) throw new Error("Valor precisa ser maior que zero");
@@ -92,7 +92,7 @@ export async function createDespesa(formData: FormData) {
 
 export async function updateDespesa(id: string, formData: FormData) {
   await requirePermission("verFinanceiro");
-  await requirePermission("editar");
+  await requirePermission("editarFinanceiro");
   const data = buildData(formData);
   if (!data.descricao) throw new Error("Descrição é obrigatória");
   if (data.valor <= 0) throw new Error("Valor precisa ser maior que zero");
@@ -125,7 +125,7 @@ export async function updateDespesa(id: string, formData: FormData) {
 
 export async function deleteDespesa(id: string) {
   await requirePermission("verFinanceiro");
-  await requirePermission("excluir");
+  await requirePermission("excluirFinanceiro");
   const existing = await prisma.despesa.findUniqueOrThrow({ where: { id } });
   await prisma.despesa.delete({ where: { id } });
   if (existing.anexoPath) {

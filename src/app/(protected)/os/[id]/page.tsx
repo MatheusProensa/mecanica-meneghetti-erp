@@ -61,11 +61,11 @@ export default async function OSDetalhePage({
                 telefone: os.telefone ?? os.cliente.telefone ?? os.cliente.whatsapp,
                 valor: os.itens.reduce((s, i) => s + i.valor, 0),
               }}
-              readOnly={!usuario.permissoes.editar}
+              readOnly={!usuario.permissoes.editarOS}
             />
           </div>
         </div>
-        {usuario.permissoes.excluir && (
+        {usuario.permissoes.excluirOS && (
           <ConfirmModal
             triggerLabel="Excluir OS"
             title="Excluir esta OS?"
@@ -81,12 +81,12 @@ export default async function OSDetalhePage({
           mecanicos={mecanicos}
           os={os}
           action={updateOSWithId}
-          readOnly={!usuario.permissoes.editar}
+          readOnly={!usuario.permissoes.editarOS}
         />
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-        <OSFotos osId={os.id} fotos={fotos} readOnly={!usuario.permissoes.editar} />
+        <OSFotos osId={os.id} fotos={fotos} readOnly={!usuario.permissoes.editarOS} />
       </div>
     </div>
   );

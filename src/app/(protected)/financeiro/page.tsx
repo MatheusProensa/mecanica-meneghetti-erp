@@ -151,7 +151,7 @@ export default async function FinanceiroPage({
         title="Financeiro"
         description="Visão geral do que entrou, do que ainda falta receber e das despesas da oficina."
         action={
-          usuario.permissoes.editar
+          usuario.permissoes.editarFinanceiro
             ? { label: "+ Nova despesa", href: "/financeiro/nova" }
             : undefined
         }

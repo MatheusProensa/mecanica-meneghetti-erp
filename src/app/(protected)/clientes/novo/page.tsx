@@ -7,7 +7,7 @@ export default async function NovoClientePage() {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
   if (!usuario.permissoes.verClientes) redirect("/");
-  if (!usuario.permissoes.editar) redirect("/clientes");
+  if (!usuario.permissoes.editarClientes) redirect("/clientes");
 
   return (
     <div className="max-w-2xl">

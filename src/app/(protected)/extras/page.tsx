@@ -37,7 +37,7 @@ export default async function ExtrasPage({
 }) {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
-  if (!usuario.permissoes.verFinanceiro) redirect("/");
+  if (!usuario.permissoes.verExtras) redirect("/");
 
   const { funcionarioId, q, de, ate, situacao, pagina: paginaRaw } = await searchParams;
   const pagina = Math.max(1, Number(paginaRaw) || 1);
@@ -137,7 +137,7 @@ export default async function ExtrasPage({
       <PageHeader
         title="Extras"
         description="Pagamentos extras a funcionários vinculados a serviços específicos."
-        action={usuario.permissoes.editar ? { label: "+ Novo extra", href: "/extras/novo" } : undefined}
+        action={usuario.permissoes.editarExtras ? { label: "+ Novo extra", href: "/extras/novo" } : undefined}
       />
 
       <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">

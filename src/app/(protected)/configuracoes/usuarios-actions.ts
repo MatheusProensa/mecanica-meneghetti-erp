@@ -18,6 +18,57 @@ function roleValido(value: string): UserRole {
   return ROLES_VALIDOS.includes(value as UserRole) ? (value as UserRole) : "funcionario";
 }
 
+function permissoesFromFormData(formData: FormData, role: UserRole) {
+  const on = (key: string) => formData.get(key) === "on";
+  if (role === "dono") {
+    return {
+      podeVerDashboard: true,
+      podeVerClientes: true,
+      podeEditarClientes: true,
+      podeExcluirClientes: true,
+      podeVerOS: true,
+      podeEditarOS: true,
+      podeExcluirOS: true,
+      podeVerFinanceiro: true,
+      podeEditarFinanceiro: true,
+      podeExcluirFinanceiro: true,
+      podeVerDevedores: true,
+      podeEditarDevedores: true,
+      podeExcluirDevedores: true,
+      podeVerExtras: true,
+      podeEditarExtras: true,
+      podeExcluirExtras: true,
+      podeVerNotas: true,
+      podeEditarNotas: true,
+      podeExcluirNotas: true,
+      podeAcessarConfiguracoes: true,
+    };
+  }
+  const editarExcluir = role === "funcionario";
+  return {
+    podeVerDashboard: on("podeVerDashboard"),
+    podeVerClientes: on("podeVerClientes"),
+    podeEditarClientes: editarExcluir && on("podeEditarClientes"),
+    podeExcluirClientes: editarExcluir && on("podeExcluirClientes"),
+    podeVerOS: on("podeVerOS"),
+    podeEditarOS: editarExcluir && on("podeEditarOS"),
+    podeExcluirOS: editarExcluir && on("podeExcluirOS"),
+    podeVerFinanceiro: on("podeVerFinanceiro"),
+    podeEditarFinanceiro: editarExcluir && on("podeEditarFinanceiro"),
+    podeExcluirFinanceiro: editarExcluir && on("podeExcluirFinanceiro"),
+    podeVerDevedores: on("podeVerDevedores"),
+    podeEditarDevedores: editarExcluir && on("podeEditarDevedores"),
+    podeExcluirDevedores: editarExcluir && on("podeExcluirDevedores"),
+    podeVerExtras: on("podeVerExtras"),
+    podeEditarExtras: editarExcluir && on("podeEditarExtras"),
+    podeExcluirExtras: editarExcluir && on("podeExcluirExtras"),
+    podeVerNotas: on("podeVerNotas"),
+    podeEditarNotas: editarExcluir && on("podeEditarNotas"),
+    podeExcluirNotas: editarExcluir && on("podeExcluirNotas"),
+    podeAcessarConfiguracoes: editarExcluir && on("podeAcessarConfiguracoes"),
+  };
+}
+
 export async function createUsuario(
   _prevState: string | undefined,
   formData: FormData
@@ -43,13 +94,7 @@ export async function createUsuario(
       email,
       passwordHash,
       role,
-      podeEditar: formData.get("podeEditar") === "on",
-      podeVerFinanceiro: formData.get("podeVerFinanceiro") === "on",
-      podeExcluir: formData.get("podeExcluir") === "on",
-      podeAcessarConfiguracoes: formData.get("podeAcessarConfiguracoes") === "on",
-      podeVerClientes: formData.get("podeVerClientes") === "on",
-      podeVerOS: formData.get("podeVerOS") === "on",
-      podeVerNotas: formData.get("podeVerNotas") === "on",
+      ...permissoesFromFormData(formData, role),
     },
   });
 
@@ -74,13 +119,7 @@ export async function updateUsuarioPermissoes(id: string, formData: FormData) {
     where: { id },
     data: {
       role,
-      podeEditar: formData.get("podeEditar") === "on",
-      podeVerFinanceiro: formData.get("podeVerFinanceiro") === "on",
-      podeExcluir: formData.get("podeExcluir") === "on",
-      podeAcessarConfiguracoes: formData.get("podeAcessarConfiguracoes") === "on",
-      podeVerClientes: formData.get("podeVerClientes") === "on",
-      podeVerOS: formData.get("podeVerOS") === "on",
-      podeVerNotas: formData.get("podeVerNotas") === "on",
+      ...permissoesFromFormData(formData, role),
     },
   });
 

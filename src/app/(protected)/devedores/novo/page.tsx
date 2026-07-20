@@ -11,7 +11,7 @@ export default async function NovaDividaPage({
 }) {
   const usuario = await getCurrentUser();
   if (!usuario) redirect("/login");
-  if (!usuario.permissoes.verFinanceiro || !usuario.permissoes.editar) redirect("/devedores");
+  if (!usuario.permissoes.verDevedores || !usuario.permissoes.editarDevedores) redirect("/devedores");
 
   const { clienteId } = await searchParams;
   const clientes = await prisma.cliente.findMany({ orderBy: { nome: "asc" } });
