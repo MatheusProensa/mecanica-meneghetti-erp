@@ -4,7 +4,15 @@ import { useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import type { Agrupamento } from "./DashboardCharts";
 
-const OPCOES: Partial<Record<Agrupamento, { value: string; label: string }[]>> = {
+const OPCOES: Record<Agrupamento, { value: string; label: string }[]> = {
+  diario: [
+    { value: "1", label: "Hoje" },
+    { value: "7", label: "Últimos 7 dias" },
+    { value: "14", label: "Últimos 14 dias" },
+    { value: "30", label: "Últimos 30 dias" },
+    { value: "60", label: "Últimos 60 dias" },
+    { value: "90", label: "Últimos 90 dias" },
+  ],
   semanal: [
     { value: "1", label: "Esta semana" },
     { value: "4", label: "Últimas 4 semanas" },
@@ -21,13 +29,13 @@ const OPCOES: Partial<Record<Agrupamento, { value: string; label: string }[]>> =
 };
 
 const PERIODO_PADRAO: Record<Agrupamento, string> = {
-  diario: "1",
-  semanal: "1",
-  mensal: "1",
+  diario: "30",
+  semanal: "8",
+  mensal: "6",
 };
 
 const AGRUPAMENTOS: { value: Agrupamento; label: string }[] = [
-  { value: "diario", label: "Hoje" },
+  { value: "diario", label: "Diário" },
   { value: "semanal", label: "Semanal" },
   { value: "mensal", label: "Mensal" },
 ];
@@ -113,7 +121,7 @@ export default function PeriodFilter({
         </button>
       </div>
 
-      {!mostrarPersonalizado && opcoes && (
+      {!mostrarPersonalizado && (
         <select
           value={periodo}
           onChange={(e) => handlePeriodoChange(e.target.value)}

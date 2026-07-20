@@ -9,10 +9,10 @@ import PageHeader from "@/components/ui/PageHeader";
 import PeriodFilter from "@/components/PeriodFilter";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
 
-const PERIODOS_DIARIO = [1];
+const PERIODOS_DIARIO = [1, 7, 14, 30, 60, 90];
 const PERIODOS_SEMANAL = [1, 4, 8, 12, 26];
 const PERIODOS_MENSAL = [1, 3, 6, 12];
-const PERIODO_PADRAO: Record<Agrupamento, number> = { diario: 1, semanal: 1, mensal: 1 };
+const PERIODO_PADRAO: Record<Agrupamento, number> = { diario: 30, semanal: 8, mensal: 6 };
 const UM_DIA_MS = 24 * 60 * 60 * 1000;
 
 function startOfMonth(d: Date) {
