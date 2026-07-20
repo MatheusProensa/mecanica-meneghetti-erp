@@ -116,7 +116,7 @@ export default function OSResultados({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-500">
                 <tr>
                   <th className="w-10 px-4 py-3">
                     <input

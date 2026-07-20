@@ -7,6 +7,7 @@ import DashboardCharts, { type ChartPoint, type Agrupamento } from "@/components
 import MetricCard from "@/components/ui/MetricCard";
 import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
+import SectionHeader from "@/components/ui/SectionHeader";
 import AgrupamentoToggle from "@/components/AgrupamentoToggle";
 import PeriodoSelector from "@/components/PeriodoSelector";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
@@ -299,12 +300,12 @@ export default async function DashboardPage({
 
       {verFinanceiro && (
         <div>
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-900">Financeiro</h2>
-            <Link href="/financeiro" className="text-sm font-medium text-blue-600 hover:text-blue-700">
-              Ver detalhes →
-            </Link>
-          </div>
+          <SectionHeader
+            icon="wallet"
+            iconColor="text-green-600"
+            title="Financeiro"
+            action={{ label: "Ver detalhes", href: "/financeiro" }}
+          />
           <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             <MetricCard
               icon="trending-up"
@@ -342,7 +343,7 @@ export default async function DashboardPage({
       )}
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Operacional</h2>
+        <SectionHeader icon="tools" iconColor="text-blue-600" title="Operacional" />
         <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
         <MetricCard
           icon="tools"
@@ -386,11 +387,13 @@ export default async function DashboardPage({
       )}
 
       <div className="rounded-xl border border-gray-200 bg-white">
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-          <h2 className="text-sm font-semibold text-gray-900">Últimas movimentações</h2>
-          <Link href="/os" className="text-sm font-medium text-blue-600 hover:text-blue-700">
-            Ver todas →
-          </Link>
+        <div className="border-b border-gray-200 px-6 py-4">
+          <SectionHeader
+            icon="inbox"
+            iconColor="text-gray-600"
+            title="Últimas movimentações"
+            action={{ label: "Ver todas", href: "/os" }}
+          />
         </div>
 
         {movimentacoes.length === 0 ? (
@@ -402,7 +405,7 @@ export default async function DashboardPage({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-500">
                 <tr>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Tipo</th>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">

@@ -274,7 +274,7 @@ export default async function NotasPage({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-500">
                 <tr>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
                     Número
