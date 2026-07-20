@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
@@ -189,14 +190,17 @@ export default async function ExtrasPage({
         </div>
         <div className="flex-1 sm:flex-none">
           <label className="block text-xs font-medium text-gray-500">Cliente</label>
-          <input
-            type="text"
-            name="q"
-            defaultValue={q}
-            autoComplete="off"
-            placeholder="Buscar por nome..."
-            className="mt-1 h-[38px] w-full min-w-[160px] rounded-lg border border-gray-300 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
+          <div className="relative mt-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              name="q"
+              defaultValue={q}
+              autoComplete="off"
+              placeholder="Buscar por nome..."
+              className="h-[38px] w-full min-w-[160px] rounded-lg border border-gray-300 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
         </div>
         <div className="flex flex-1 gap-3 sm:flex-none">
           <div className="flex-1 sm:w-40 sm:flex-none">

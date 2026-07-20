@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
@@ -113,14 +114,17 @@ export default async function OSListPage({
       <form className="mt-4 flex flex-wrap items-center gap-3">
         {status && <input type="hidden" name="status" value={status} />}
         {pagamento && <input type="hidden" name="pagamento" value={pagamento} />}
-        <input
-          type="text"
-          name="q"
-          defaultValue={q}
-          autoComplete="off"
-          placeholder="Buscar por número (#0001) ou cliente..."
-          className="w-full max-w-xs rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
+        <div className="relative w-full max-w-xs">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            name="q"
+            defaultValue={q}
+            autoComplete="off"
+            placeholder="Buscar por número (#0001) ou cliente..."
+            className="w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
         <button
           type="submit"
           className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
@@ -66,14 +67,15 @@ export default async function ClientesPage({
         action={usuario.permissoes.editarClientes ? { label: "+ Novo cliente", href: "/clientes/novo" } : undefined}
       />
 
-      <form className="mt-4">
+      <form className="relative mt-4 max-w-md">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <input
           type="text"
           name="q"
           defaultValue={q}
           autoComplete="off"
           placeholder="Buscar por nome, CPF/CNPJ ou telefone..."
-          className="w-full max-w-md rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </form>
 

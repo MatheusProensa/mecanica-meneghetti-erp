@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { redirect } from "next/navigation";
 import { FileText } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -238,13 +239,16 @@ export default async function NotasPage({
           <label className="block text-xs font-medium text-gray-500">
             Número ou observação
           </label>
-          <input
-            type="text"
-            name="q"
-            defaultValue={q}
-            autoComplete="off"
-            className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
+          <div className="relative mt-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              name="q"
+              defaultValue={q}
+              autoComplete="off"
+              className="h-[38px] w-full rounded-lg border border-gray-300 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
         </div>
         <button
           type="submit"
