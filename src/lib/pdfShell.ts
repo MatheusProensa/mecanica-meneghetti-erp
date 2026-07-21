@@ -35,8 +35,8 @@ export function desenharCabecalhoPdf(
   doc.rect(0, 0, pageWidth, HEADER_HEIGHT, "F");
 
   if (logoBase64) {
-    const logoH = 20;
-    doc.addImage(logoBase64, "JPEG", PDF_MARGIN_X, (HEADER_HEIGHT - logoH) / 2, logoH, logoH);
+    const logoH = 25;
+    doc.addImage(logoBase64, "PNG", PDF_MARGIN_X, (HEADER_HEIGHT - logoH) / 2, logoH, logoH);
   }
 
   doc.setFont("helvetica", "bold");
@@ -183,23 +183,25 @@ export function desenharResumoTextoPdf(
   return cursor;
 }
 
-/** Estilo do cabeçalho da tabela: sem preenchimento, borda inferior grossa (igual ao handoff). */
+/** Estilo do cabeçalho da tabela: sem preenchimento, só a borda inferior grossa (igual ao handoff) — sem linhas verticais/grade. */
 export const TABLE_HEAD_STYLES = {
   fillColor: [255, 255, 255] as [number, number, number],
   textColor: PDF_INK_300,
   fontStyle: "bold" as const,
   fontSize: 8,
   lineColor: PDF_INK_900 as [number, number, number],
-  lineWidth: 0.3,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  lineWidth: { top: 0, right: 0, bottom: 0.4, left: 0 } as any,
 };
 
-/** Estilo do corpo da tabela: sem zebra, linhas horizontais bem claras. */
+/** Estilo do corpo da tabela: sem zebra, só linha horizontal bem clara embaixo de cada linha — sem grade. */
 export const TABLE_BODY_STYLES = {
   fontSize: 9,
   textColor: PDF_INK_900 as [number, number, number],
   cellPadding: 3,
   lineColor: PDF_GRAY_BG,
-  lineWidth: 0.15,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  lineWidth: { top: 0, right: 0, bottom: 0.15, left: 0 } as any,
 };
 
 export type PdfBadgeTone = "green" | "amber" | "red" | "blue" | "gray";
