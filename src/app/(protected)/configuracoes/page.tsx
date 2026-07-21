@@ -121,7 +121,7 @@ export default async function ConfiguracoesPage({
       </div>
 
       <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
-        <nav className="flex gap-1.5 overflow-x-auto pb-1 lg:w-64 lg:shrink-0 lg:flex-col lg:overflow-visible lg:pb-0">
+        <nav className="flex flex-wrap gap-1.5 lg:w-64 lg:shrink-0 lg:flex-col lg:flex-nowrap">
           {secoes.map(({ key, label, descricao, icon: Icon }) => {
             const ativo = secao === key;
             return (
