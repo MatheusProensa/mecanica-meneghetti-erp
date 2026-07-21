@@ -7,6 +7,7 @@ import { StatusBadge, situacaoDividaMap } from "@/components/ui/StatusBadge";
 import EmptyState from "@/components/ui/EmptyState";
 import Pagination from "@/components/ui/Pagination";
 import ExportarDevedoresPdf from "@/components/ExportarDevedoresPdf";
+import ExportarDevedoresCsv from "@/components/ExportarDevedoresCsv";
 import type { DadosEmpresa } from "@/lib/business";
 import type { SituacaoDivida } from "@/lib/dividas";
 
@@ -97,20 +98,34 @@ export default function DevedoresResultados({
             ? `${selecionados.size} selecionado${selecionados.size === 1 ? "" : "s"} para o PDF`
             : "Nenhum marcado — o PDF sai com tudo que está filtrado"}
         </p>
-        <ExportarDevedoresPdf
-          empresa={empresa}
-          periodoLabel={periodoLabel}
-          resumo={resumoParaExportar}
-          dividas={dividasParaExportar.map((d) => ({
-            clienteNome: d.clienteNome,
-            dataServico: d.dataServico,
-            valorOriginal: d.valorOriginal,
-            totalPago: d.totalPago,
-            saldo: d.saldo,
-            situacao: d.situacao,
-          }))}
-          nomeArquivo={`devedores-${new Date().toISOString().slice(0, 10)}.pdf`}
-        />
+        <div className="flex items-center gap-2">
+          <ExportarDevedoresCsv
+            resumo={resumoParaExportar}
+            dividas={dividasParaExportar.map((d) => ({
+              clienteNome: d.clienteNome,
+              dataServico: d.dataServico,
+              valorOriginal: d.valorOriginal,
+              totalPago: d.totalPago,
+              saldo: d.saldo,
+              situacao: d.situacao,
+            }))}
+            nomeArquivo={`devedores-${new Date().toISOString().slice(0, 10)}.csv`}
+          />
+          <ExportarDevedoresPdf
+            empresa={empresa}
+            periodoLabel={periodoLabel}
+            resumo={resumoParaExportar}
+            dividas={dividasParaExportar.map((d) => ({
+              clienteNome: d.clienteNome,
+              dataServico: d.dataServico,
+              valorOriginal: d.valorOriginal,
+              totalPago: d.totalPago,
+              saldo: d.saldo,
+              situacao: d.situacao,
+            }))}
+            nomeArquivo={`devedores-${new Date().toISOString().slice(0, 10)}.pdf`}
+          />
+        </div>
       </div>
 
       <div className="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">

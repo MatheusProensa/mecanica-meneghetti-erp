@@ -15,6 +15,7 @@ import CountUp from "@/components/ui/CountUp";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, statusExtraMap } from "@/components/ui/StatusBadge";
 import ExportarExtrasPdf from "@/components/ExportarExtrasPdf";
+import ExportarExtrasCsv from "@/components/ExportarExtrasCsv";
 
 const STATUS_OPCOES: { value: StatusExtra; label: string }[] = [
   { value: "pendente", label: "Pendente" },
@@ -244,7 +245,26 @@ export default async function ExtrasPage({
         ))}
       </div>
 
-      <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex justify-end gap-2">
+        <ExportarExtrasCsv
+          resumo={{
+            totalExtras: totalExtrasFiltrado,
+            totalPago: pagoFiltrado,
+            faltaPagar: faltaPagarFiltrado,
+            lucroEmpresa: lucroEmpresaFiltrado,
+          }}
+          extras={filtrados.map((e) => ({
+            data: e.data,
+            mecanicoNome: e.mecanico.nome,
+            clienteOuOs:
+              e.cliente?.nome ?? (e.ordemServico ? `OS #${String(e.ordemServico.id).padStart(4, "0")}` : "-"),
+            valorExtra: e.valorExtra,
+            saldo: e.saldo,
+            lucroEmpresa: e.lucroEmpresa,
+            status: e.status,
+          }))}
+          nomeArquivo={`extras-${new Date().toISOString().slice(0, 10)}.csv`}
+        />
         <ExportarExtrasPdf
           empresa={empresa}
           periodoLabel={periodoLabel}
