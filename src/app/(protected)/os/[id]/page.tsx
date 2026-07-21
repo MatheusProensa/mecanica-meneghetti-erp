@@ -75,7 +75,7 @@ export default async function OSDetalhePage({
 
       <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-900 to-gray-800 shadow-sm">
         <DarkPatternBg />
-        <div className="relative flex flex-wrap items-start justify-between gap-4 px-5 py-6 sm:px-6">
+        <div className="relative flex flex-wrap items-center justify-between gap-4 px-5 py-6 sm:px-6">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-blue-400">
               Ordem de serviço #{String(os.id).padStart(4, "0")}

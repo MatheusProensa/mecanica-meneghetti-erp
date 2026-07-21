@@ -10,7 +10,7 @@ const PDF_GRAY_BG: [number, number, number] = [243, 244, 246];
 
 export const PDF_MARGIN_X = 15;
 
-const HEADER_HEIGHT = 34;
+const HEADER_HEIGHT = 40;
 const CARD_MARGIN = 9;
 const CARD_TOP_GAP = 6;
 
@@ -35,22 +35,24 @@ export function desenharCabecalhoPdf(
   doc.rect(0, 0, pageWidth, HEADER_HEIGHT, "F");
 
   if (logoBase64) {
-    const logoH = 25;
+    const logoH = 32;
     doc.addImage(logoBase64, "PNG", PDF_MARGIN_X, (HEADER_HEIGHT - logoH) / 2, logoH, logoH);
   }
 
+  const textoX = pageWidth - PDF_MARGIN_X - 30;
+
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
+  doc.setFontSize(18);
   doc.setTextColor(...PDF_BRAND);
-  doc.text(titulo, pageWidth - PDF_MARGIN_X, subtitulo ? HEADER_HEIGHT / 2 - 1 : HEADER_HEIGHT / 2 + 2, {
-    align: "right",
+  doc.text(titulo, textoX, subtitulo ? HEADER_HEIGHT / 2 - 2 : HEADER_HEIGHT / 2 + 2, {
+    align: "center",
   });
 
   if (subtitulo) {
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
+    doc.setFontSize(11);
     doc.setTextColor(...PDF_INK_300);
-    doc.text(subtitulo, pageWidth - PDF_MARGIN_X, HEADER_HEIGHT / 2 + 5, { align: "right" });
+    doc.text(subtitulo, textoX, HEADER_HEIGHT / 2 + 7, { align: "center" });
   }
 
   doc.setFillColor(...PDF_GRAY_BG);

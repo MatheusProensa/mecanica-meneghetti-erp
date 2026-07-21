@@ -27,7 +27,7 @@ export default function ClienteInfoSection({
     <div>
       <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-900 to-gray-800 shadow-sm">
         <DarkPatternBg />
-        <div className="relative flex flex-wrap items-start justify-between gap-4 px-5 py-6 sm:px-6">
+        <div className="relative flex flex-wrap items-center justify-between gap-4 px-5 py-6 sm:px-6">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-blue-400">Cliente</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight text-white">{cliente.nome}</h1>
