@@ -23,7 +23,7 @@ export default function DashboardHero({ nome, agora }: { nome: string; agora: Da
   const [now, setNow] = useState(agora);
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 30_000);
+    const id = setInterval(() => setNow(new Date()), 1_000);
     return () => clearInterval(id);
   }, []);
 
@@ -38,6 +38,7 @@ export default function DashboardHero({ nome, agora }: { nome: string; agora: Da
     timeZone: FUSO,
     hour: "2-digit",
     minute: "2-digit",
+    second: "2-digit",
   });
 
   return (
@@ -49,9 +50,8 @@ export default function DashboardHero({ nome, agora }: { nome: string; agora: Da
           {saudacao(horaEmBrasilia(now))}, {primeiroNome}
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-white">Dashboard</h1>
-        <p className="mt-1 text-sm capitalize text-gray-300">
-          {dataFormatada} · {horaFormatada}
-        </p>
+        <p className="mt-1 text-sm capitalize text-gray-300">{dataFormatada}</p>
+        <p className="mt-0.5 text-sm tabular-nums text-gray-400">{horaFormatada}</p>
       </div>
     </div>
   );
