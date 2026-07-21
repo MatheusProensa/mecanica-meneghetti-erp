@@ -293,7 +293,12 @@ export default async function DashboardPage({
 
       {verFinanceiro && (
         <div className="flex justify-end">
-          <AgrupamentoToggle agrupamento={agrupamento} personalizado={modoPersonalizado} />
+          <AgrupamentoToggle
+            agrupamento={agrupamento}
+            personalizado={modoPersonalizado}
+            de={de}
+            ate={ate}
+          />
         </div>
       )}
 
@@ -371,14 +376,11 @@ export default async function DashboardPage({
 
       {verFinanceiro && (
         <div>
-          <div className="flex justify-end">
-            <PeriodoSelector
-              agrupamento={agrupamento}
-              periodo={periodoRaw === "personalizado" ? "personalizado" : String(periodo)}
-              de={de}
-              ate={ate}
-            />
-          </div>
+          {!modoPersonalizado && (
+            <div className="flex justify-end">
+              <PeriodoSelector agrupamento={agrupamento} periodo={String(periodo)} />
+            </div>
+          )}
           <div className="mt-3">
             <DashboardCharts data={chartData} periodoLabel={periodoLabel} />
           </div>
