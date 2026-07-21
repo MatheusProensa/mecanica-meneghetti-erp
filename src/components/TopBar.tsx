@@ -3,11 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, Eye, EyeOff } from "lucide-react";
+import { useValoresVisibilidade } from "./ValoresVisibilidadeContext";
 
 export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   const router = useRouter();
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const { oculto, alternar } = useValoresVisibilidade();
 
   function handleSearchSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -71,6 +73,16 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
           >
             <Search className="h-5 w-5" />
           </button>
+
+          <button
+            type="button"
+            onClick={alternar}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:hidden"
+            aria-label={oculto ? "Mostrar valores" : "Ocultar valores"}
+            title={oculto ? "Mostrar valores" : "Ocultar valores"}
+          >
+            {oculto ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+          </button>
         </>
       )}
 
@@ -81,9 +93,19 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
           name="q"
           autoComplete="off"
           placeholder="Pesquisar cliente, OS, telefone, nota..."
-          className="w-full rounded-md border border-gray-200 bg-gray-50 py-2 pl-9 pr-3 text-sm text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-9 pr-3 text-sm text-gray-700 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </form>
+
+      <button
+        type="button"
+        onClick={alternar}
+        className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:flex"
+        aria-label={oculto ? "Mostrar valores" : "Ocultar valores"}
+        title={oculto ? "Mostrar valores" : "Ocultar valores"}
+      >
+        {oculto ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+      </button>
     </header>
   );
 }

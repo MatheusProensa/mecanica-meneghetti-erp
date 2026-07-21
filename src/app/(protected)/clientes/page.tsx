@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { formatCurrency, formatDate } from "@/lib/format";
-import PageHeader from "@/components/ui/PageHeader";
+import PageHero from "@/components/ui/PageHero";
 import EmptyState from "@/components/ui/EmptyState";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import WhatsAppLink from "@/components/ui/WhatsAppLink";
@@ -61,7 +61,7 @@ export default async function ClientesPage({
 
   return (
     <div>
-      <PageHeader
+      <PageHero
         title="Clientes"
         description={contadorDescricao}
         action={usuario.permissoes.editarClientes ? { label: "+ Novo cliente", href: "/clientes/novo" } : undefined}

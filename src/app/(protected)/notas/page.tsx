@@ -7,9 +7,10 @@ import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getSignedPdfUrls } from "@/lib/supabase-storage";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma, TipoNota } from "@/generated/prisma/client";
-import PageHeader from "@/components/ui/PageHeader";
+import PageHero from "@/components/ui/PageHero";
 import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
+import ValorOculto from "@/components/ui/ValorOculto";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, notaTipoMap } from "@/components/ui/StatusBadge";
 
@@ -138,7 +139,7 @@ export default async function NotasPage({
 
   return (
     <div>
-      <PageHeader
+      <PageHero
         title="Notas"
         description="Arquivo de notas emitidas e recebidas — anexe o PDF para consulta futura."
         action={usuario.permissoes.editarNotas ? { label: "+ Nova nota", href: "/notas/nova" } : undefined}
@@ -149,13 +150,13 @@ export default async function NotasPage({
           icon="trending-up"
           iconColor="text-green-600"
           label="Total emitidas"
-          value={formatCurrency(totalEmitidas)}
+          value={<ValorOculto>{formatCurrency(totalEmitidas)}</ValorOculto>}
         />
         <MetricCard
           icon="trending-down"
           iconColor="text-red-600"
           label="Total recebidas"
-          value={formatCurrency(totalRecebidas)}
+          value={<ValorOculto>{formatCurrency(totalRecebidas)}</ValorOculto>}
         />
         <MetricCard
           icon="file-text"

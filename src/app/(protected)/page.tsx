@@ -5,6 +5,7 @@ import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import DashboardCharts, { type ChartPoint, type Agrupamento } from "@/components/DashboardCharts";
 import MetricCard from "@/components/ui/MetricCard";
+import ValorOculto from "@/components/ui/ValorOculto";
 import EmptyState from "@/components/ui/EmptyState";
 import SectionHeader from "@/components/ui/SectionHeader";
 import DashboardHero from "@/components/DashboardHero";
@@ -321,21 +322,21 @@ export default async function DashboardPage({
               icon="trending-up"
               iconColor="text-green-600"
               label={`Recebido ${rotuloResumo}`}
-              value={formatCurrency(recebidoNoMes)}
+              value={<ValorOculto>{formatCurrency(recebidoNoMes)}</ValorOculto>}
               context={contextoResumo}
             />
             <MetricCard
               icon="clock"
               iconColor="text-amber-600"
               label="A receber"
-              value={formatCurrency(aReceber)}
+              value={<ValorOculto>{formatCurrency(aReceber)}</ValorOculto>}
               context={`${osAReceber.length} OS em aberto`}
             />
             <MetricCard
               icon="trending-down"
               iconColor="text-red-600"
               label={`Despesas ${rotuloResumo}`}
-              value={formatCurrency(despesasNoMes)}
+              value={<ValorOculto>{formatCurrency(despesasNoMes)}</ValorOculto>}
               context={contextoResumo}
             />
             <Link href="/os?pagamento=atrasado" className="block">

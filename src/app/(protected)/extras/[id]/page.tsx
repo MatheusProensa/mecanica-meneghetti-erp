@@ -7,6 +7,7 @@ import { formatCurrency, formatDate } from "@/lib/format";
 import ExtraForm from "@/components/ExtraForm";
 import CurrencyInput from "@/components/CurrencyInput";
 import MetricCard from "@/components/ui/MetricCard";
+import ValorOculto from "@/components/ui/ValorOculto";
 import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -93,25 +94,25 @@ export default async function ExtraDetalhePage({
           icon="hand-coins"
           iconColor="text-blue-600"
           label="Valor do extra"
-          value={formatCurrency(extra.valorExtra)}
+          value={<ValorOculto>{formatCurrency(extra.valorExtra)}</ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Já pago"
-          value={formatCurrency(totalPago)}
+          value={<ValorOculto>{formatCurrency(totalPago)}</ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Saldo restante"
-          value={formatCurrency(saldo)}
+          value={<ValorOculto>{formatCurrency(saldo)}</ValorOculto>}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroEmpresa >= 0 ? "text-green-600" : "text-red-600"}
           label="Lucro da empresa"
-          value={formatCurrency(lucroEmpresa)}
+          value={<ValorOculto>{formatCurrency(lucroEmpresa)}</ValorOculto>}
           context="Serviço − extra − outros custos"
           highlight={lucroEmpresa >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"

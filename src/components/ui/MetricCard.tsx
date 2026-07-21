@@ -2,7 +2,7 @@ import { iconMap, type IconName } from "./icon-map";
 
 export interface MetricCardProps {
   label: string;
-  value: string | number;
+  value: React.ReactNode;
   icon: IconName;
   iconColor: string;
   context?: string;

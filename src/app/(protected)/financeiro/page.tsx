@@ -4,8 +4,9 @@ import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, parseDateInputValue, formatDate } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
-import PageHeader from "@/components/ui/PageHeader";
+import PageHero from "@/components/ui/PageHero";
 import MetricCard from "@/components/ui/MetricCard";
+import ValorOculto from "@/components/ui/ValorOculto";
 import { PAGE_SIZE } from "@/components/ui/Pagination";
 import FinanceiroResultados from "./FinanceiroResultados";
 
@@ -147,7 +148,7 @@ export default async function FinanceiroPage({
 
   return (
     <div>
-      <PageHeader
+      <PageHero
         title="Financeiro"
         description="Visão geral do que entrou, do que ainda falta receber e das despesas da oficina."
         action={
@@ -162,35 +163,35 @@ export default async function FinanceiroPage({
           icon="trending-up"
           iconColor="text-green-600"
           label={`Recebido ${rotuloResumo}`}
-          value={formatCurrency(recebidoNoMes)}
+          value={<ValorOculto>{formatCurrency(recebidoNoMes)}</ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="A receber"
-          value={formatCurrency(aReceber)}
+          value={<ValorOculto>{formatCurrency(aReceber)}</ValorOculto>}
           context={`${osAReceber.length} OS em aberto`}
         />
         <MetricCard
           icon="trending-down"
           iconColor="text-red-600"
           label={`Despesas ${rotuloResumo}`}
-          value={formatCurrency(despesasTotal)}
+          value={<ValorOculto>{formatCurrency(despesasTotal)}</ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="users"
           iconColor="text-gray-500"
           label={`Funcionários ${rotuloResumo}`}
-          value={formatCurrency(funcionariosNoMes)}
+          value={<ValorOculto>{formatCurrency(funcionariosNoMes)}</ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroNoMes >= 0 ? "text-green-600" : "text-red-600"}
           label={`Lucro ${rotuloResumo}`}
-          value={formatCurrency(lucroNoMes)}
+          value={<ValorOculto>{formatCurrency(lucroNoMes)}</ValorOculto>}
           context={contextoResumo ?? "Recebido − Despesas"}
           highlight={lucroNoMes >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"

@@ -9,6 +9,7 @@ import { calcularSituacaoDivida, dataMaisAntigaItem } from "@/lib/dividas";
 import ClienteForm from "@/components/ClienteForm";
 import CobrancaCliente from "@/components/CobrancaCliente";
 import MetricCard from "@/components/ui/MetricCard";
+import ValorOculto from "@/components/ui/ValorOculto";
 import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -103,7 +104,7 @@ export default async function ClienteDetalhePage({
           icon="wallet"
           iconColor="text-blue-600"
           label="Total gasto"
-          value={formatCurrency(valorTotalGasto)}
+          value={<ValorOculto>{formatCurrency(valorTotalGasto)}</ValorOculto>}
         />
         <MetricCard
           icon="tools"

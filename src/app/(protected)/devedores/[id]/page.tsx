@@ -9,6 +9,7 @@ import DividaForm from "@/components/DividaForm";
 import DividaFotos from "@/components/DividaFotos";
 import CurrencyInput from "@/components/CurrencyInput";
 import MetricCard from "@/components/ui/MetricCard";
+import ValorOculto from "@/components/ui/ValorOculto";
 import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -84,19 +85,19 @@ export default async function DividaDetalhePage({
           icon="alert-triangle"
           iconColor="text-red-600"
           label="Valor original"
-          value={formatCurrency(valorOriginal)}
+          value={<ValorOculto>{formatCurrency(valorOriginal)}</ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Já pago"
-          value={formatCurrency(totalPago)}
+          value={<ValorOculto>{formatCurrency(totalPago)}</ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Saldo restante"
-          value={formatCurrency(saldo)}
+          value={<ValorOculto>{formatCurrency(saldo)}</ValorOculto>}
         />
       </div>
 

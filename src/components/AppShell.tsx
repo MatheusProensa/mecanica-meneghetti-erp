@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Nav from "./Nav";
 import TopBar from "./TopBar";
+import { ValoresVisibilidadeProvider } from "./ValoresVisibilidadeContext";
 import type { Permissoes } from "@/lib/permissions";
 
 export default function AppShell({
@@ -25,17 +26,19 @@ export default function AppShell({
   }
 
   return (
-    <div className="flex flex-1">
-      <Nav
-        userName={userName}
-        permissoes={permissoes}
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8">{children}</main>
+    <ValoresVisibilidadeProvider>
+      <div className="flex flex-1">
+        <Nav
+          userName={userName}
+          permissoes={permissoes}
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <TopBar onMenuClick={() => setSidebarOpen(true)} />
+          <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8">{children}</main>
+        </div>
       </div>
-    </div>
+    </ValoresVisibilidadeProvider>
   );
 }

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import type { Prisma, StatusOS } from "@/generated/prisma/client";
-import PageHeader from "@/components/ui/PageHeader";
+import PageHero from "@/components/ui/PageHero";
 import { osStatusMap, pagamentoInfo } from "@/components/ui/StatusBadge";
 import { PAGE_SIZE } from "@/components/ui/Pagination";
 import OSResultados from "./OSResultados";
@@ -106,7 +106,7 @@ export default async function OSListPage({
 
   return (
     <div>
-      <PageHeader
+      <PageHero
         title="Ordens de Serviço"
         action={usuario.permissoes.editarOS ? { label: "+ Nova OS", href: "/os/nova" } : undefined}
       />

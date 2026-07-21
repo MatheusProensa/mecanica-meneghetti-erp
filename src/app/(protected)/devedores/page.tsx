@@ -7,8 +7,9 @@ import { getEmpresa } from "@/lib/getEmpresa";
 import { calcularSituacaoDivida, dataMaisAntigaItem, type SituacaoDivida } from "@/lib/dividas";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
-import PageHeader from "@/components/ui/PageHeader";
+import PageHero from "@/components/ui/PageHero";
 import MetricCard from "@/components/ui/MetricCard";
+import ValorOculto from "@/components/ui/ValorOculto";
 import { PAGE_SIZE } from "@/components/ui/Pagination";
 import DevedoresResultados from "./DevedoresResultados";
 
@@ -104,7 +105,7 @@ export default async function DevedoresPage({
 
   return (
     <div>
-      <PageHeader
+      <PageHero
         title="Devedores"
         description="Clientes com serviços antigos em aberto — registre pagamentos parciais e acompanhe o saldo."
         action={usuario.permissoes.editarDevedores ? { label: "+ Nova dívida", href: "/devedores/novo" } : undefined}
@@ -115,19 +116,19 @@ export default async function DevedoresPage({
           icon="alert-triangle"
           iconColor="text-red-600"
           label="Total das dívidas"
-          value={formatCurrency(totalDividas)}
+          value={<ValorOculto>{formatCurrency(totalDividas)}</ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Total recebido"
-          value={formatCurrency(totalRecebido)}
+          value={<ValorOculto>{formatCurrency(totalRecebido)}</ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Saldo a receber"
-          value={formatCurrency(saldoAReceber)}
+          value={<ValorOculto>{formatCurrency(saldoAReceber)}</ValorOculto>}
           className="col-span-2 lg:col-span-1"
         />
       </div>

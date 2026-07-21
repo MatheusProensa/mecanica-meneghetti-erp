@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import type { Permission } from "@/lib/permissions";
-import PageHeader from "@/components/ui/PageHeader";
+import PageHero from "@/components/ui/PageHero";
 import type { IconName } from "@/components/ui/icon-map";
 import { iconMap } from "@/components/ui/icon-map";
 
@@ -94,7 +94,7 @@ export default async function AjudaPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <PageHeader title="Ajuda" description="Um resumo rápido de como usar cada parte do sistema." />
+      <PageHero title="Ajuda" description="Um resumo rápido de como usar cada parte do sistema." />
 
       <div className="space-y-4">
         {secoesVisiveis.map((secao) => {

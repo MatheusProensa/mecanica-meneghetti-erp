@@ -7,9 +7,10 @@ import { getEmpresa } from "@/lib/getEmpresa";
 import { calcularStatusExtra, type StatusExtra } from "@/lib/extras";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
-import PageHeader from "@/components/ui/PageHeader";
+import PageHero from "@/components/ui/PageHero";
 import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
+import ValorOculto from "@/components/ui/ValorOculto";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, statusExtraMap } from "@/components/ui/StatusBadge";
 import ExportarExtrasPdf from "@/components/ExportarExtrasPdf";
@@ -135,7 +136,7 @@ export default async function ExtrasPage({
 
   return (
     <div>
-      <PageHeader
+      <PageHero
         title="Extras"
         description="Pagamentos extras a funcionários vinculados a serviços específicos."
         action={usuario.permissoes.editarExtras ? { label: "+ Novo extra", href: "/extras/novo" } : undefined}
@@ -146,25 +147,25 @@ export default async function ExtrasPage({
           icon="hand-coins"
           iconColor="text-blue-600"
           label="Extras no mês"
-          value={formatCurrency(totalExtrasNoMes)}
+          value={<ValorOculto>{formatCurrency(totalExtrasNoMes)}</ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Já pago"
-          value={formatCurrency(pagoNoMes)}
+          value={<ValorOculto>{formatCurrency(pagoNoMes)}</ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Falta pagar"
-          value={formatCurrency(faltaPagarNoMes)}
+          value={<ValorOculto>{formatCurrency(faltaPagarNoMes)}</ValorOculto>}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroEmpresaNoMes >= 0 ? "text-green-600" : "text-red-600"}
           label="Lucro da empresa"
-          value={formatCurrency(lucroEmpresaNoMes)}
+          value={<ValorOculto>{formatCurrency(lucroEmpresaNoMes)}</ValorOculto>}
           context="Nesses serviços, no mês"
           highlight={lucroEmpresaNoMes >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"
