@@ -108,6 +108,7 @@ export default async function OSListPage({
     <div>
       <PageHero
         title="Ordens de Serviço"
+        description="Acompanhe o andamento e o pagamento de cada serviço da oficina."
         action={usuario.permissoes.editarOS ? { label: "+ Nova OS", href: "/os/nova" } : undefined}
       />
 
