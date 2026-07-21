@@ -118,8 +118,8 @@ export default function AgrupamentoToggle({
       </div>
 
       <div
-        className={`flex flex-wrap items-center gap-1.5 overflow-hidden transition-all duration-300 ease-out ${
-          personalizado ? "max-w-md opacity-100" : "max-h-0 max-w-0 opacity-0"
+        className={`flex flex-nowrap items-center gap-1.5 overflow-hidden transition-all duration-300 ease-out ${
+          personalizado ? "max-w-md opacity-100" : "max-w-0 opacity-0"
         }`}
       >
         <input
