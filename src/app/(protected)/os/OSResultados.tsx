@@ -204,8 +204,8 @@ export default function OSResultados({
                         {formatCurrency(os.valor)}
                       </span>
                     </div>
-                    <div className="mt-1.5 flex items-center justify-between gap-2">
-                      <div className="flex min-w-0 items-center gap-1.5">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <div className="flex items-center gap-1.5">
                         <OSStatusSelect id={os.id} status={os.status} compact readOnly={!podeEditar} />
                         <OSPagoToggle
                           id={os.id}
@@ -216,7 +216,7 @@ export default function OSResultados({
                           readOnly={!podeEditar}
                         />
                       </div>
-                      <span className="shrink-0 text-xs text-gray-500">{formatDate(os.data)}</span>
+                      <span className="ml-auto text-xs text-gray-500">{formatDate(os.data)}</span>
                     </div>
                   </div>
                 </div>

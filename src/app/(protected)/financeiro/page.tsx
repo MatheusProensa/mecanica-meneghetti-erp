@@ -199,62 +199,58 @@ export default async function FinanceiroPage({
         />
       </div>
 
-      <form className="mt-8 flex flex-wrap items-end gap-3">
-        <div className="flex flex-1 gap-3 sm:flex-none">
-          <div className="flex-1 sm:w-36 sm:flex-none">
-            <label className="block text-xs font-medium text-gray-500">Mês</label>
-            <select
-              name="mes"
-              defaultValue={mes ?? ""}
-              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
-            >
-              <option value="">Todos</option>
-              {MESES.map((label, i) => (
-                <option key={label} value={i + 1}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex-1 sm:w-24 sm:flex-none">
-            <label className="block text-xs font-medium text-gray-500">Ano</label>
-            <select
-              name="ano"
-              defaultValue={ano ?? ""}
-              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
-            >
-              <option value="">Todos</option>
-              {anosDisponiveis.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              ))}
-            </select>
-          </div>
+      <form className="mt-8 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
+        <div className="sm:w-36">
+          <label className="block text-xs font-medium text-gray-500">Mês</label>
+          <select
+            name="mes"
+            defaultValue={mes ?? ""}
+            className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+          >
+            <option value="">Todos</option>
+            {MESES.map((label, i) => (
+              <option key={label} value={i + 1}>
+                {label}
+              </option>
+            ))}
+          </select>
         </div>
-        <div className="flex flex-1 gap-3 sm:flex-none">
-          <div className="flex-1 sm:w-40 sm:flex-none">
-            <label className="block text-xs font-medium text-gray-500">De</label>
-            <input
-              type="date"
-              name="de"
-              defaultValue={de ?? ""}
-              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
-            />
-          </div>
-          <div className="flex-1 sm:w-40 sm:flex-none">
-            <label className="block text-xs font-medium text-gray-500">Até</label>
-            <input
-              type="date"
-              name="ate"
-              defaultValue={ate ?? ""}
-              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
-            />
-          </div>
+        <div className="sm:w-24">
+          <label className="block text-xs font-medium text-gray-500">Ano</label>
+          <select
+            name="ano"
+            defaultValue={ano ?? ""}
+            className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+          >
+            <option value="">Todos</option>
+            {anosDisponiveis.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="sm:w-40">
+          <label className="block text-xs font-medium text-gray-500">De</label>
+          <input
+            type="date"
+            name="de"
+            defaultValue={de ?? ""}
+            className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+          />
+        </div>
+        <div className="sm:w-40">
+          <label className="block text-xs font-medium text-gray-500">Até</label>
+          <input
+            type="date"
+            name="ate"
+            defaultValue={ate ?? ""}
+            className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+          />
         </div>
         <button
           type="submit"
-          className="h-[38px] rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="col-span-2 h-[38px] rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 sm:col-auto sm:w-auto"
         >
           Filtrar
         </button>

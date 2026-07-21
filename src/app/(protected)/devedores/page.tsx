@@ -134,9 +134,9 @@ export default async function DevedoresPage({
         />
       </div>
 
-      <form className="mt-6 flex flex-wrap items-end gap-3">
+      <form className="mt-6 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
         {situacao && <input type="hidden" name="situacao" value={situacao} />}
-        <div className="flex-1 sm:flex-none">
+        <div className="col-span-2 sm:w-auto sm:flex-1 sm:min-w-[180px]">
           <label className="block text-xs font-medium text-gray-500">Cliente</label>
           <div className="relative mt-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -146,33 +146,31 @@ export default async function DevedoresPage({
               defaultValue={q}
               autoComplete="off"
               placeholder="Buscar por nome..."
-              className="h-[38px] w-full min-w-[180px] rounded-lg border border-gray-300 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="h-[38px] w-full rounded-lg border border-gray-300 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
-        <div className="flex flex-1 gap-3 sm:flex-none">
-          <div className="flex-1 sm:w-40 sm:flex-none">
-            <label className="block text-xs font-medium text-gray-500">De</label>
-            <input
-              type="date"
-              name="de"
-              defaultValue={de ?? ""}
-              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
-            />
-          </div>
-          <div className="flex-1 sm:w-40 sm:flex-none">
-            <label className="block text-xs font-medium text-gray-500">Até</label>
-            <input
-              type="date"
-              name="ate"
-              defaultValue={ate ?? ""}
-              className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
-            />
-          </div>
+        <div className="sm:w-40">
+          <label className="block text-xs font-medium text-gray-500">De</label>
+          <input
+            type="date"
+            name="de"
+            defaultValue={de ?? ""}
+            className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+          />
+        </div>
+        <div className="sm:w-40">
+          <label className="block text-xs font-medium text-gray-500">Até</label>
+          <input
+            type="date"
+            name="ate"
+            defaultValue={ate ?? ""}
+            className="mt-1 h-[38px] w-full rounded-lg border border-gray-300 px-3 text-sm"
+          />
         </div>
         <button
           type="submit"
-          className="h-[38px] rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="col-span-2 h-[38px] rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 sm:col-auto sm:w-auto"
         >
           Filtrar
         </button>
