@@ -201,7 +201,7 @@ export default async function FinanceiroPage({
 
       <form className="mt-8 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
         <div className="sm:w-36">
-          <label className="block text-xs font-medium text-gray-500">Mês</label>
+          <label className="block text-center text-xs font-medium text-gray-500">Mês</label>
           <select
             name="mes"
             defaultValue={mes ?? ""}
@@ -216,7 +216,7 @@ export default async function FinanceiroPage({
           </select>
         </div>
         <div className="sm:w-24">
-          <label className="block text-xs font-medium text-gray-500">Ano</label>
+          <label className="block text-center text-xs font-medium text-gray-500">Ano</label>
           <select
             name="ano"
             defaultValue={ano ?? ""}
@@ -231,7 +231,7 @@ export default async function FinanceiroPage({
           </select>
         </div>
         <div className="sm:w-40">
-          <label className="block text-xs font-medium text-gray-500">De</label>
+          <label className="block text-center text-xs font-medium text-gray-500">De</label>
           <input
             type="date"
             name="de"
@@ -240,7 +240,7 @@ export default async function FinanceiroPage({
           />
         </div>
         <div className="sm:w-40">
-          <label className="block text-xs font-medium text-gray-500">Até</label>
+          <label className="block text-center text-xs font-medium text-gray-500">Até</label>
           <input
             type="date"
             name="ate"

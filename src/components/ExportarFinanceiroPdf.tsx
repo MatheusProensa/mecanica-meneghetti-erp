@@ -35,7 +35,7 @@ export default function ExportarFinanceiroPdf({
       type="button"
       onClick={exportar}
       disabled={gerando}
-      className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+      className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
     >
       <FileDown className="h-4 w-4" />
       {gerando ? "Gerando..." : "Exportar PDF"}

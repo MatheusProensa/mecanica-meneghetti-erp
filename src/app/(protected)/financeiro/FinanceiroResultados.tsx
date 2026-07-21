@@ -92,9 +92,9 @@ export default function FinanceiroResultados({
 
   return (
     <>
-      <div className="mt-8 flex items-center justify-between gap-3">
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-sm font-semibold text-gray-900">Despesas</h2>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <ExportarFinanceiroCsv
             resumo={resumo}
             despesas={despesasParaExportar}

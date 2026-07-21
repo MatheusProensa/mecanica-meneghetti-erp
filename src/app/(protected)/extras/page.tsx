@@ -206,7 +206,7 @@ export default async function ExtrasPage({
           </div>
         </div>
         <div className="sm:w-40">
-          <label className="block text-xs font-medium text-gray-500">De</label>
+          <label className="block text-center text-xs font-medium text-gray-500">De</label>
           <input
             type="date"
             name="de"
@@ -215,7 +215,7 @@ export default async function ExtrasPage({
           />
         </div>
         <div className="sm:w-40">
-          <label className="block text-xs font-medium text-gray-500">Até</label>
+          <label className="block text-center text-xs font-medium text-gray-500">Até</label>
           <input
             type="date"
             name="ate"
@@ -243,7 +243,7 @@ export default async function ExtrasPage({
         ))}
       </div>
 
-      <div className="mt-4 flex justify-end gap-2">
+      <div className="mt-4 flex flex-wrap justify-end gap-2">
         <ExportarExtrasCsv
           resumo={{
             totalExtras: totalExtrasFiltrado,

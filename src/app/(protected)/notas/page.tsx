@@ -186,7 +186,7 @@ export default async function NotasPage({
       <form className="mt-3 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
         {tipo && <input type="hidden" name="tipo" value={tipo} />}
         <div className="sm:w-36">
-          <label className="block text-xs font-medium text-gray-500">Mês</label>
+          <label className="block text-center text-xs font-medium text-gray-500">Mês</label>
           <select
             name="mes"
             defaultValue={mes ?? ""}
@@ -201,7 +201,7 @@ export default async function NotasPage({
           </select>
         </div>
         <div className="sm:w-24">
-          <label className="block text-xs font-medium text-gray-500">Ano</label>
+          <label className="block text-center text-xs font-medium text-gray-500">Ano</label>
           <select
             name="ano"
             defaultValue={ano ?? ""}
@@ -216,7 +216,7 @@ export default async function NotasPage({
           </select>
         </div>
         <div className="sm:w-40">
-          <label className="block text-xs font-medium text-gray-500">De</label>
+          <label className="block text-center text-xs font-medium text-gray-500">De</label>
           <input
             type="date"
             name="de"
@@ -225,7 +225,7 @@ export default async function NotasPage({
           />
         </div>
         <div className="sm:w-40">
-          <label className="block text-xs font-medium text-gray-500">Até</label>
+          <label className="block text-center text-xs font-medium text-gray-500">Até</label>
           <input
             type="date"
             name="ate"

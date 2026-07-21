@@ -151,7 +151,7 @@ export default async function DevedoresPage({
           </div>
         </div>
         <div className="sm:w-40">
-          <label className="block text-xs font-medium text-gray-500">De</label>
+          <label className="block text-center text-xs font-medium text-gray-500">De</label>
           <input
             type="date"
             name="de"
@@ -160,7 +160,7 @@ export default async function DevedoresPage({
           />
         </div>
         <div className="sm:w-40">
-          <label className="block text-xs font-medium text-gray-500">Até</label>
+          <label className="block text-center text-xs font-medium text-gray-500">Até</label>
           <input
             type="date"
             name="ate"
