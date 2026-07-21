@@ -243,7 +243,7 @@ export default async function ExtrasPage({
         ))}
       </div>
 
-      <div className="mt-4 flex flex-wrap justify-end gap-2">
+      <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-end">
         <ExportarExtrasCsv
           resumo={{
             totalExtras: totalExtrasFiltrado,

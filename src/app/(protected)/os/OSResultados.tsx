@@ -98,12 +98,14 @@ export default function OSResultados({
             ? `${selecionados.size} selecionada${selecionados.size === 1 ? "" : "s"} para o PDF`
             : "Nenhuma marcada — o PDF sai com tudo que está filtrado"}
         </p>
-        <ExportarOSPdf
-          empresa={empresa}
-          periodoLabel={periodoLabel}
-          ordens={ordensParaExportar}
-          nomeArquivo={`ordens-de-servico-${new Date().toISOString().slice(0, 10)}.pdf`}
-        />
+        <div className="flex w-full justify-center sm:w-auto sm:justify-start">
+          <ExportarOSPdf
+            empresa={empresa}
+            periodoLabel={periodoLabel}
+            ordens={ordensParaExportar}
+            nomeArquivo={`ordens-de-servico-${new Date().toISOString().slice(0, 10)}.pdf`}
+          />
+        </div>
       </div>
 
       <div className="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">

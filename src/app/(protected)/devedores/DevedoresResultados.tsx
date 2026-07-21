@@ -98,7 +98,7 @@ export default function DevedoresResultados({
             ? `${selecionados.size} selecionado${selecionados.size === 1 ? "" : "s"} para o PDF`
             : "Nenhum marcado — o PDF sai com tudo que está filtrado"}
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full flex-wrap justify-center gap-2 sm:w-auto sm:justify-start">
           <ExportarDevedoresCsv
             resumo={resumoParaExportar}
             dividas={dividasParaExportar.map((d) => ({
