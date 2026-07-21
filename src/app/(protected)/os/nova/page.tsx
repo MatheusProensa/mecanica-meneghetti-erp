@@ -24,7 +24,7 @@ export default async function NovaOSPage({
   return (
     <div className="max-w-2xl">
       <FormPageHeader backHref="/os" backLabel="Ordens de Serviço" title="Nova ordem de serviço" />
-      <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+      <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
         <OSForm
           clientes={clientes}
           mecanicos={mecanicos}

@@ -12,7 +12,7 @@ export default async function NovaDespesaPage() {
   return (
     <div className="max-w-2xl">
       <FormPageHeader backHref="/financeiro" backLabel="Financeiro" title="Nova despesa" />
-      <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+      <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
         <DespesaForm action={createDespesa} />
       </div>
     </div>

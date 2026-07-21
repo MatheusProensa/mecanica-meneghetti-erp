@@ -265,7 +265,7 @@ export default async function NotasPage({
         </p>
       )}
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">
         {notas.length === 0 ? (
           <EmptyState
             icon="file-text"

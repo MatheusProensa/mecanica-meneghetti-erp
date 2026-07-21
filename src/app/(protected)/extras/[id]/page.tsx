@@ -121,7 +121,7 @@ export default async function ExtraDetalhePage({
 
       <div>
         <SectionHeader icon="hand-coins" iconColor="text-blue-600" title="Dados do lançamento" />
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
           <ExtraForm
             extra={extra}
             mecanicos={mecanicos}
@@ -136,7 +136,7 @@ export default async function ExtraDetalhePage({
       <div>
         <SectionHeader icon="trending-up" iconColor="text-green-600" title="Pagamentos" />
 
-        <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-[var(--shadow-card)]">
           {extra.pagamentos.length === 0 ? (
             <EmptyState
               icon="clock"
@@ -171,7 +171,7 @@ export default async function ExtraDetalhePage({
         </div>
 
         {usuario.permissoes.editarExtras && saldo > 0 && (
-          <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+          <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
             <h3 className="text-sm font-semibold text-gray-900">Registrar pagamento</h3>
             <form action={addPagamentoWithId} className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>

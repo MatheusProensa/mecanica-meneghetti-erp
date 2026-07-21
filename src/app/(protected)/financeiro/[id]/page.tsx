@@ -49,7 +49,7 @@ export default async function DespesaDetalhePage({
         )}
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
         <DespesaForm
           despesa={despesa}
           itens={despesa.itens}

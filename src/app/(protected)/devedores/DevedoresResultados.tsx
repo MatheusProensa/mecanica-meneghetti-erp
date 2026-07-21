@@ -113,7 +113,7 @@ export default function DevedoresResultados({
         />
       </div>
 
-      <div className="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">
         {pagAtual.length === 0 ? (
           <EmptyState
             icon="user-x"

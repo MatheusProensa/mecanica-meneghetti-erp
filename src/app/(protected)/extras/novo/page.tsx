@@ -28,7 +28,7 @@ export default async function NovoExtraPage({
   return (
     <div className="max-w-2xl">
       <FormPageHeader backHref="/extras" backLabel="Extras" title="Novo extra" />
-      <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+      <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
         <ExtraForm
           mecanicos={mecanicos}
           clientes={clientes}

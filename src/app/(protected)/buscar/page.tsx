@@ -90,7 +90,7 @@ export default async function BuscarPage({
       {clientes.length > 0 && (
         <section>
           <h2 className="text-sm font-semibold text-gray-900">Clientes</h2>
-          <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+          <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
             <table className="hidden w-full text-left text-sm md:table">
               <tbody>
                 {clientes.map((cliente) => (
@@ -146,7 +146,7 @@ export default async function BuscarPage({
       {ordens.length > 0 && (
         <section>
           <h2 className="text-sm font-semibold text-gray-900">Ordens de Serviço</h2>
-          <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+          <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
             <table className="hidden w-full text-left text-sm md:table">
               <tbody>
                 {ordens.map((os) => (
@@ -200,7 +200,7 @@ export default async function BuscarPage({
       {notas.length > 0 && (
         <section>
           <h2 className="text-sm font-semibold text-gray-900">Notas</h2>
-          <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+          <div className="mt-3 overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
             <table className="hidden w-full text-left text-sm md:table">
               <tbody>
                 {notas.map((nota) => (

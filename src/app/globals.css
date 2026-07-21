@@ -3,6 +3,17 @@
 :root {
   --background: #ffffff;
   --foreground: #111827;
+
+  /* tokens de marca/redesign — ver design_handoff_meneghetti_erp/README.md */
+  --color-brand-50: oklch(96% 0.02 255);
+  --color-brand-100: oklch(92% 0.045 255);
+  --color-brand-600: oklch(52% 0.17 255);
+  --color-brand-700: oklch(45% 0.17 255);
+  --color-ink-900: oklch(24% 0.02 260);
+  --color-ink-500: oklch(50% 0.015 260);
+  --color-ink-300: oklch(70% 0.01 260);
+  --color-ink-100: oklch(96% 0.004 260);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 6px rgba(15, 23, 42, 0.04);
 }
 
 @theme inline {
@@ -14,6 +25,15 @@
   --color-sidebar-hover: #1a1d27;
   /* tinta derivada do azul da marca (blue-600), em vez de um hex solto sem relação */
   --color-sidebar-active: color-mix(in srgb, #2563eb 22%, #0f1117);
+
+  --color-brand-50: var(--color-brand-50);
+  --color-brand-100: var(--color-brand-100);
+  --color-brand-600: var(--color-brand-600);
+  --color-brand-700: var(--color-brand-700);
+  --color-ink-900: var(--color-ink-900);
+  --color-ink-500: var(--color-ink-500);
+  --color-ink-300: var(--color-ink-300);
+  --color-ink-100: var(--color-ink-100);
 }
 
 body {

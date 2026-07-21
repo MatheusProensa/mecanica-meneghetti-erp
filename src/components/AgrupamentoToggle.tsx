@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import type { Agrupamento } from "./DashboardCharts";
 
@@ -15,6 +15,8 @@ const AGRUPAMENTOS: { value: Agrupamento; label: string }[] = [
   { value: "semanal", label: "Semanal" },
   { value: "mensal", label: "Mensal" },
 ];
+
+type Selecao = Agrupamento | "personalizado";
 
 export default function AgrupamentoToggle({
   agrupamento,
@@ -32,13 +34,32 @@ export default function AgrupamentoToggle({
   const searchParams = useSearchParams();
   const [deInput, setDeInput] = useState(de ?? "");
   const [ateInput, setAteInput] = useState(ate ?? "");
+  const [, startTransition] = useTransition();
+
+  // Seleção "otimista": destaca o botão clicado na hora, sem esperar a
+  // navegação (que revalida os dados no servidor) terminar.
+  const selecaoAtual: Selecao = personalizado ? "personalizado" : agrupamento;
+  const [selecaoOtimista, setSelecaoOtimista] = useState<Selecao | null>(null);
+
+  // Descarta o valor otimista assim que os dados reais do servidor alcançarem
+  // o clique (ajuste de estado durante a renderização, não em efeito).
+  const [selecaoAtualAnterior, setSelecaoAtualAnterior] = useState(selecaoAtual);
+  if (selecaoAtual !== selecaoAtualAnterior) {
+    setSelecaoAtualAnterior(selecaoAtual);
+    setSelecaoOtimista(null);
+  }
+
+  const selecao = selecaoOtimista ?? selecaoAtual;
 
   function navegar(params: URLSearchParams) {
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    });
   }
 
   function handleAgrupamentoChange(next: Agrupamento) {
     if (next === agrupamento && !personalizado) return;
+    setSelecaoOtimista(next);
     const params = new URLSearchParams(searchParams.toString());
     params.set("agrupamento", next);
     params.set("periodo", PERIODO_PADRAO[next]);
@@ -49,6 +70,7 @@ export default function AgrupamentoToggle({
 
   function handlePersonalizado() {
     if (personalizado) return;
+    setSelecaoOtimista("personalizado");
     const params = new URLSearchParams(searchParams.toString());
     params.set("agrupamento", agrupamento);
     params.set("periodo", "personalizado");
@@ -69,15 +91,15 @@ export default function AgrupamentoToggle({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <div className="flex rounded-md border border-gray-200 bg-white p-0.5 text-xs font-medium">
+      <div className="flex rounded-lg border border-gray-200 bg-white p-1 text-xs font-medium shadow-[var(--shadow-card)]">
         {AGRUPAMENTOS.map((a) => (
           <button
             key={a.value}
             type="button"
             onClick={() => handleAgrupamentoChange(a.value)}
-            className={`rounded px-2.5 py-1 transition-colors ${
-              agrupamento === a.value && !personalizado
-                ? "bg-blue-600 text-white"
+            className={`rounded-md px-2.5 py-1.5 transition-all duration-150 ease-out active:scale-95 ${
+              selecao === a.value
+                ? "bg-blue-600 text-white shadow-sm"
                 : "text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -87,8 +109,8 @@ export default function AgrupamentoToggle({
         <button
           type="button"
           onClick={handlePersonalizado}
-          className={`rounded px-2.5 py-1 transition-colors ${
-            personalizado ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-50"
+          className={`rounded-md px-2.5 py-1.5 transition-all duration-150 ease-out active:scale-95 ${
+            selecao === "personalizado" ? "bg-blue-600 text-white shadow-sm" : "text-gray-600 hover:bg-gray-50"
           }`}
         >
           Personalizado

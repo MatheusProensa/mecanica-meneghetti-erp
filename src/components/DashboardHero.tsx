@@ -47,7 +47,7 @@ export default function DashboardHero({ nome, agora }: { nome: string; agora: Da
 
       <div className="relative px-5 py-6 sm:px-6">
         <p className="text-sm text-gray-400">
-          {saudacao(horaEmBrasilia(now))}, {primeiroNome}
+          {saudacao(horaEmBrasilia(now))}, {primeiroNome}!
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-white">Dashboard</h1>
         <p className="mt-1 text-sm capitalize text-gray-300">{dataFormatada}</p>

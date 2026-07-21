@@ -116,7 +116,7 @@ export default function FinanceiroResultados({
           : "Nenhuma marcada — a exportação sai com tudo que está filtrado"}
       </p>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">
         {pagAtual.length === 0 ? (
           <EmptyState
             icon="receipt"

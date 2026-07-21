@@ -67,7 +67,7 @@ export default async function NotaDetalhePage({
         )}
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
         <NotaForm
           nota={nota}
           pdfUrl={pdfUrl}

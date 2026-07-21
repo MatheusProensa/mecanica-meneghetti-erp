@@ -43,7 +43,7 @@ export default function MetricCard({
 
   return (
     <div
-      className={`min-h-[90px] rounded-xl border p-3.5 shadow-[0_1px_2px_rgba(17,24,39,0.04)] transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:min-h-[110px] sm:p-5 ${
+      className={`min-h-[90px] rounded-xl border p-3.5 shadow-[var(--shadow-card)] transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:min-h-[110px] sm:p-5 ${
         style ? `${style.border} ${style.bg}` : "border-gray-200 bg-white"
       } ${className ?? ""}`}
     >

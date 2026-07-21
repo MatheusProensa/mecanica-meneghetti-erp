@@ -58,7 +58,7 @@ export default function UsuarioRow({
   const deleteWithId = deleteUsuario.bind(null, user.id);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => setAberto((v) => !v)}

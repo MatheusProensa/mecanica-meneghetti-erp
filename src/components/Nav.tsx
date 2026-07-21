@@ -59,10 +59,10 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 rounded-md border-l-[3px] py-2.5 pl-2.5 pr-3 text-sm font-medium transition-colors ${
+      className={`flex items-center gap-3 rounded-[999px_8px_8px_999px] border py-2.5 pl-3.5 pr-3 text-sm font-medium transition-colors ${
         active
-          ? "border-l-blue-600 bg-sidebar-active text-blue-400"
-          : "border-l-transparent text-gray-400 hover:bg-sidebar-hover hover:text-gray-200"
+          ? "border-[rgba(59,130,246,0.25)] bg-[rgba(37,99,235,0.16)] font-semibold text-[#bfdbfe]"
+          : "border-transparent text-gray-400 hover:bg-sidebar-hover hover:text-gray-200"
       }`}
     >
       <Icon className="h-5 w-5 shrink-0" />

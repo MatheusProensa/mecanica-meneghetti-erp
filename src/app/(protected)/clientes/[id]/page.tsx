@@ -123,7 +123,7 @@ export default async function ClienteDetalhePage({
 
       <div>
         <SectionHeader icon="users" iconColor="text-blue-600" title="Dados cadastrais" />
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
           <ClienteForm
             cliente={cliente}
             action={updateClienteWithId}
@@ -161,7 +161,7 @@ export default async function ClienteDetalhePage({
           }
         />
 
-        <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+        <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
           {cliente.ordensServico.length === 0 ? (
             <EmptyState
               icon="tools"
@@ -248,7 +248,7 @@ export default async function ClienteDetalhePage({
             }
           />
 
-          <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+          <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
             {cliente.dividas.length === 0 ? (
               <EmptyState
                 icon="user-x"
@@ -304,7 +304,7 @@ export default async function ClienteDetalhePage({
           }
         />
 
-        <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white">
+        <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
           {cliente.notas.length === 0 ? (
             <EmptyState
               icon="file-text"

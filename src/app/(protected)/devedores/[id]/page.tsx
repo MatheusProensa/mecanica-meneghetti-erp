@@ -103,7 +103,7 @@ export default async function DividaDetalhePage({
 
       <div>
         <SectionHeader icon="receipt" iconColor="text-red-600" title="Dados da dívida" />
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
           <DividaForm
             divida={divida}
             clientes={clientes}
@@ -120,7 +120,7 @@ export default async function DividaDetalhePage({
       <div>
         <SectionHeader icon="hand-coins" iconColor="text-green-600" title="Pagamentos" />
 
-        <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-[var(--shadow-card)]">
           {divida.pagamentos.length === 0 ? (
             <EmptyState
               icon="clock"
@@ -156,7 +156,7 @@ export default async function DividaDetalhePage({
         </div>
 
         {usuario.permissoes.editarDevedores && saldo > 0 && (
-          <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+          <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
             <h3 className="text-sm font-semibold text-gray-900">Registrar pagamento</h3>
             <form action={addPagamentoWithId} className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
