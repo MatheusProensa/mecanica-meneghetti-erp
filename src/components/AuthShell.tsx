@@ -35,6 +35,9 @@ export default function AuthShell({
         <p className="mt-5 text-center text-xs text-gray-500">
           © {new Date().getFullYear()} Mecânica Meneghetti
         </p>
+        <p className="mt-1 text-center text-[11px] text-gray-400">
+          Desenvolvido por Matheus Proensa
+        </p>
       </div>
     </div>
   );
