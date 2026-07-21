@@ -5,6 +5,15 @@ import type { DadosEmpresa } from "./business";
 import { formatCurrency, formatDate } from "./format";
 import { gerarPayloadPix } from "./pixPayload";
 import { carregarLogoComprimida } from "./pdfLogo";
+import {
+  desenharCabecalhoPdf,
+  desenharRodapePdf,
+  desenharTotalPdf,
+  PDF_INK_900,
+  PDF_MARGIN_X,
+  TABLE_BODY_STYLES,
+  TABLE_HEAD_STYLES,
+} from "./pdfShell";
 
 export interface CobrancaOS {
   id: number;
@@ -39,63 +48,38 @@ export async function gerarCobrancaPdf({
 }: GerarCobrancaPdfParams): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
-  const marginX = 15;
 
   const logoBase64 = await carregarLogoComprimida();
-  if (logoBase64) {
-    doc.addImage(logoBase64, "JPEG", marginX, 12, 22, 22);
-  }
-
-  const infoX = logoBase64 ? marginX + 28 : marginX;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(17, 24, 39);
-  doc.text(empresa.nome, infoX, 18);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(107, 114, 128);
-  doc.text(empresa.endereco, infoX, 24);
-  doc.text(`Tel: ${empresa.telefone}  •  CNPJ: ${empresa.cnpj}`, infoX, 29);
-
-  doc.setDrawColor(229, 231, 235);
-  doc.line(marginX, 38, pageWidth - marginX, 38);
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(13);
-  doc.setTextColor(17, 24, 39);
-  doc.text("Cobrança de Serviços", marginX, 47);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(107, 114, 128);
   // formatDate força UTC (correto pra datas sem hora vindas do banco); aqui é o instante atual,
   // então usa o fuso local do navegador de quem está gerando o PDF, senão a data vem adiantada.
   const emitidoEm = new Date().toLocaleDateString("pt-BR");
-  doc.text(`Emitido em ${emitidoEm}`, pageWidth - marginX, 47, { align: "right" });
+  let y = desenharCabecalhoPdf(doc, {
+    titulo: "Cobrança de Serviços",
+    subtitulo: `Emitido em ${emitidoEm}`,
+    logoBase64,
+  });
 
-  let y = 56;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.setTextColor(17, 24, 39);
-  doc.text("Cliente", marginX, y);
+  doc.setTextColor(...PDF_INK_900);
+  doc.text("Cliente", PDF_MARGIN_X, y);
   y += 5;
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(55, 65, 81);
-  doc.text(cliente.nome, marginX, y);
+  doc.text(cliente.nome, PDF_MARGIN_X, y);
   y += 5;
   if (cliente.telefone) {
-    doc.text(cliente.telefone, marginX, y);
+    doc.text(cliente.telefone, PDF_MARGIN_X, y);
     y += 5;
   }
   if (cliente.endereco) {
-    doc.text(cliente.endereco, marginX, y);
+    doc.text(cliente.endereco, PDF_MARGIN_X, y);
     y += 5;
   }
   if (cliente.cpfCnpj) {
-    doc.text(cliente.cpfCnpj, marginX, y);
+    doc.text(cliente.cpfCnpj, PDF_MARGIN_X, y);
     y += 5;
   }
 
@@ -103,7 +87,7 @@ export async function gerarCobrancaPdf({
 
   autoTable(doc, {
     startY: y + 3,
-    margin: { left: marginX, right: marginX },
+    margin: { left: PDF_MARGIN_X, right: PDF_MARGIN_X },
     head: [["OS", "Data", "Descrição", { content: "Valor", styles: { halign: "right" } }]],
     body: ordens.map((os) => [
       `#${String(os.id).padStart(4, "0")}`,
@@ -111,27 +95,24 @@ export async function gerarCobrancaPdf({
       os.descricao || "-",
       formatCurrency(os.valor),
     ]),
-    foot: [
-      [
-        "",
-        "",
-        "Total em aberto",
-        { content: formatCurrency(total), styles: { halign: "right" } },
-      ],
-    ],
-    headStyles: { fillColor: [17, 24, 39], textColor: 255, fontStyle: "bold" },
-    footStyles: { fillColor: [243, 244, 246], textColor: [17, 24, 39], fontStyle: "bold" },
+    headStyles: TABLE_HEAD_STYLES,
     columnStyles: {
       0: { cellWidth: 20 },
       1: { cellWidth: 25 },
       3: { cellWidth: 30, halign: "right" },
     },
-    styles: { fontSize: 9.5, textColor: [55, 65, 81], cellPadding: 3 },
-    theme: "striped",
+    styles: { ...TABLE_BODY_STYLES, fontSize: 9.5 },
+    theme: "plain",
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let afterTableY = (doc as any).lastAutoTable.finalY + 10;
+  let afterTableY = (doc as any).lastAutoTable.finalY + 8;
+  afterTableY = desenharTotalPdf(doc, {
+    label: "Total em aberto",
+    valor: formatCurrency(total),
+    y: afterTableY,
+  });
+  afterTableY += 10;
 
   if (pixKey) {
     let qrDataUrl: string | null = null;
@@ -149,15 +130,15 @@ export async function gerarCobrancaPdf({
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
-    doc.setTextColor(17, 24, 39);
-    doc.text("Pagamento via Pix", marginX, afterTableY);
+    doc.setTextColor(...PDF_INK_900);
+    doc.text("Pagamento via Pix", PDF_MARGIN_X, afterTableY);
 
     if (qrDataUrl) {
       const qrSize = 30;
       const qrY = afterTableY + 3;
-      doc.addImage(qrDataUrl, "PNG", marginX, qrY, qrSize, qrSize);
+      doc.addImage(qrDataUrl, "PNG", PDF_MARGIN_X, qrY, qrSize, qrSize);
 
-      const textX = marginX + qrSize + 6;
+      const textX = PDF_MARGIN_X + qrSize + 6;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(55, 65, 81);
@@ -170,7 +151,7 @@ export async function gerarCobrancaPdf({
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9.5);
       doc.setTextColor(55, 65, 81);
-      doc.text(`Chave Pix: ${pixKey}`, marginX, afterTableY + 5);
+      doc.text(`Chave Pix: ${pixKey}`, PDF_MARGIN_X, afterTableY + 5);
       afterTableY += 13;
     }
   }
@@ -178,25 +159,27 @@ export async function gerarCobrancaPdf({
   if (dadosBancarios) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
-    doc.setTextColor(17, 24, 39);
-    doc.text("Dados bancários", marginX, afterTableY);
+    doc.setTextColor(...PDF_INK_900);
+    doc.text("Dados bancários", PDF_MARGIN_X, afterTableY);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(55, 65, 81);
-    const linhasBanco = doc.splitTextToSize(dadosBancarios, pageWidth - marginX * 2);
-    doc.text(linhasBanco, marginX, afterTableY + 5);
+    const linhasBanco = doc.splitTextToSize(dadosBancarios, pageWidth - PDF_MARGIN_X * 2);
+    doc.text(linhasBanco, PDF_MARGIN_X, afterTableY + 5);
     afterTableY += 5 + linhasBanco.length * 4.5 + 5;
   }
 
   if (observacoes) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
-    doc.setTextColor(17, 24, 39);
-    doc.text("Observações", marginX, afterTableY);
+    doc.setTextColor(...PDF_INK_900);
+    doc.text("Observações", PDF_MARGIN_X, afterTableY);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(55, 65, 81);
-    const linhas = doc.splitTextToSize(observacoes, pageWidth - marginX * 2);
-    doc.text(linhas, marginX, afterTableY + 5);
+    const linhas = doc.splitTextToSize(observacoes, pageWidth - PDF_MARGIN_X * 2);
+    doc.text(linhas, PDF_MARGIN_X, afterTableY + 5);
   }
+
+  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
 
   return doc;
 }
