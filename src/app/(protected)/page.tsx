@@ -299,14 +299,26 @@ export default async function DashboardPage({
     <div className="space-y-8">
       <DashboardHero nome={usuario.name} agora={now} />
 
-      {verFinanceiro && (
-        <div className="flex justify-end">
-          <AgrupamentoToggle
-            agrupamento={agrupamento}
-            personalizado={modoPersonalizado}
-            de={de}
-            ate={ate}
-          />
+      {(verFinanceiro || usuario.permissoes.editarOS) && (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {verFinanceiro ? (
+            <AgrupamentoToggle
+              agrupamento={agrupamento}
+              personalizado={modoPersonalizado}
+              de={de}
+              ate={ate}
+            />
+          ) : (
+            <div />
+          )}
+          {usuario.permissoes.editarOS && (
+            <Link
+              href="/os/nova"
+              className="inline-flex h-[38px] shrink-0 items-center justify-center rounded-lg bg-brand-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-700"
+            >
+              + Nova OS
+            </Link>
+          )}
         </div>
       )}
 
