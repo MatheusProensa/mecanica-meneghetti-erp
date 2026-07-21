@@ -6,17 +6,24 @@ import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
 import { calcularSituacaoDivida, dataMaisAntigaItem } from "@/lib/dividas";
-import ClienteForm from "@/components/ClienteForm";
 import CobrancaCliente from "@/components/CobrancaCliente";
+import ClienteInfoSection from "@/components/ClienteInfoSection";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
 import CountUp from "@/components/ui/CountUp";
 import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
-import ConfirmModal from "@/components/ui/ConfirmModal";
-import { StatusBadge, osStatusMap, notaTipoMap, situacaoDividaMap } from "@/components/ui/StatusBadge";
-import WhatsAppLink from "@/components/ui/WhatsAppLink";
+import {
+  StatusBadge,
+  osStatusMap,
+  notaTipoMap,
+  situacaoDividaMap,
+  pagamentoInfo,
+} from "@/components/ui/StatusBadge";
 import { updateCliente, deleteCliente } from "../actions";
+
+const STATUS_OS_ABERTAS = new Set(["aberta", "em_andamento", "aguardando_peca", "aguardando_cliente"]);
+const STATUS_OS_CONCLUIDAS = new Set(["concluida", "entregue"]);
 
 export default async function ClienteDetalhePage({
   params,
@@ -63,7 +70,8 @@ export default async function ClienteDetalhePage({
     (sum, os) => sum + os.itens.reduce((s, item) => s + item.valor, 0),
     0
   );
-  const quantidadeServicos = cliente.ordensServico.length;
+  const osAbertasCount = cliente.ordensServico.filter((os) => STATUS_OS_ABERTAS.has(os.status)).length;
+  const osConcluidasCount = cliente.ordensServico.filter((os) => STATUS_OS_CONCLUIDAS.has(os.status)).length;
   const ultimaVisita = cliente.ordensServico[0]?.data ?? null;
 
   const ordensAbertas = cliente.ordensServico
@@ -80,27 +88,19 @@ export default async function ClienteDetalhePage({
 
   return (
     <div className="max-w-4xl space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <Link href="/clientes" className="text-sm text-gray-500 hover:underline">
-            ← Clientes
-          </Link>
-          <h1 className="mt-1 text-xl font-semibold text-gray-900">{cliente.nome}</h1>
-          {(cliente.telefone || cliente.whatsapp) && (
-            <WhatsAppLink phone={cliente.telefone ?? cliente.whatsapp} className="mt-1" />
-          )}
-        </div>
-        {usuarioAtual.permissoes.excluirClientes && (
-          <ConfirmModal
-            triggerLabel="Excluir cliente"
-            title="Excluir este cliente?"
-            description={`Tem certeza que deseja excluir "${cliente.nome}"? Essa ação não pode ser desfeita.`}
-            action={deleteClienteWithId}
-          />
-        )}
-      </div>
+      <Link href="/clientes" className="text-sm text-gray-500 hover:underline">
+        ← Voltar para clientes
+      </Link>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+      <ClienteInfoSection
+        cliente={cliente}
+        action={updateClienteWithId}
+        deleteAction={deleteClienteWithId}
+        podeEditar={usuarioAtual.permissoes.editarClientes}
+        podeExcluir={usuarioAtual.permissoes.excluirClientes}
+      />
+
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <MetricCard
           icon="wallet"
           iconColor="text-brand-600"
@@ -110,27 +110,21 @@ export default async function ClienteDetalhePage({
         <MetricCard
           icon="tools"
           iconColor="text-brand-600"
-          label="Serviços realizados"
-          value={quantidadeServicos}
+          label="OS abertas"
+          value={<CountUp value={osAbertasCount} />}
+        />
+        <MetricCard
+          icon="chart-bar"
+          iconColor="text-green-600"
+          label="OS concluídas"
+          value={<CountUp value={osConcluidasCount} />}
         />
         <MetricCard
           icon="calendar"
           iconColor="text-amber-600"
           label="Última visita"
           value={formatDate(ultimaVisita)}
-          className="col-span-2 lg:col-span-1"
         />
-      </div>
-
-      <div>
-        <SectionHeader icon="users" iconColor="text-brand-600" title="Dados cadastrais" />
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
-          <ClienteForm
-            cliente={cliente}
-            action={updateClienteWithId}
-            readOnly={!usuarioAtual.permissoes.editarClientes}
-          />
-        </div>
       </div>
 
       {ordensAbertas.length > 0 && (
@@ -184,6 +178,9 @@ export default async function ClienteDetalhePage({
                     <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
                       Valor
                     </th>
+                    <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                      Pago
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -201,8 +198,11 @@ export default async function ClienteDetalhePage({
                       <td className="px-6 py-3">
                         <StatusBadge {...osStatusMap[os.status]} />
                       </td>
-                      <td className="px-6 py-3 text-gray-500">
+                      <td className="px-6 py-3 text-gray-500 tabular-nums">
                         {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
+                      </td>
+                      <td className="px-6 py-3">
+                        <StatusBadge {...pagamentoInfo(os)} />
                       </td>
                     </tr>
                   ))}
@@ -224,7 +224,8 @@ export default async function ClienteDetalhePage({
                     </div>
                     <div className="flex flex-col items-end gap-1">
                       <StatusBadge {...osStatusMap[os.status]} />
-                      <span className="text-sm text-gray-600">
+                      <StatusBadge {...pagamentoInfo(os)} />
+                      <span className="text-sm tabular-nums text-gray-600">
                         {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
                       </span>
                     </div>

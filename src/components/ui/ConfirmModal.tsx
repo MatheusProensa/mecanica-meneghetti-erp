@@ -18,12 +18,14 @@ function ConfirmSubmitButton({ label }: { label: string }) {
 
 export default function ConfirmModal({
   triggerLabel = "Excluir",
+  triggerClassName = "rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50",
   title,
   description,
   action,
   confirmLabel = "Excluir",
 }: {
   triggerLabel?: string;
+  triggerClassName?: string;
   title: string;
   description: string;
   action: (formData: FormData) => void;
@@ -56,7 +58,7 @@ export default function ConfirmModal({
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+        className={triggerClassName}
       >
         {triggerLabel}
       </button>
