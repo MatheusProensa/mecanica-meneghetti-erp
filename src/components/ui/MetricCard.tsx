@@ -47,9 +47,9 @@ export default function MetricCard({
         style ? `${style.border} ${style.bg}` : "border-gray-200 bg-white"
       } ${className ?? ""}`}
     >
-      <div className="flex flex-col items-center gap-2 text-center sm:gap-2.5">
-        <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg sm:h-8 sm:w-8 ${iconBg}`}>
-          <Icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${iconColor}`} />
+      <div className="flex flex-col items-start gap-2 text-left sm:gap-2.5">
+        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-9 sm:w-9 ${iconBg}`}>
+          <Icon className={`h-4 w-4 sm:h-[18px] sm:w-[18px] ${iconColor}`} />
         </span>
         <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 sm:text-xs">
           {label}

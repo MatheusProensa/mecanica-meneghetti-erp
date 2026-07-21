@@ -109,7 +109,7 @@ export default function Nav({
           transform: "none",
           left: isDesktop ? 0 : open ? 0 : -280,
         }}
-        className="fixed inset-y-0 z-50 flex w-[280px] shrink-0 flex-col overflow-hidden bg-sidebar text-gray-300 lg:static lg:z-auto lg:w-64"
+        className="fixed inset-y-0 z-50 flex w-[280px] shrink-0 flex-col overflow-hidden bg-sidebar text-gray-300 lg:relative lg:z-auto lg:w-64"
       >
         <DarkPatternBg glowPosition="0% 0%" />
 

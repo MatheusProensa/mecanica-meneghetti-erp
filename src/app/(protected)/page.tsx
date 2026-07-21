@@ -291,7 +291,7 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-8">
-      <DashboardHero nome={usuario.name} agora={now} osAtrasadasCount={osAtrasadasCount} />
+      <DashboardHero nome={usuario.name} agora={now} />
 
       {verFinanceiro && (
         <div className="flex justify-end">
