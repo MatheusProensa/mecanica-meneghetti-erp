@@ -38,6 +38,7 @@ function validarExtraData(data: ReturnType<typeof buildExtraData>) {
   if (!data.descricao) throw new Error("Descrição do serviço é obrigatória");
   if (data.valorServico <= 0) throw new Error("Valor do serviço precisa ser maior que zero");
   if (data.valorExtra <= 0) throw new Error("Valor do extra precisa ser maior que zero");
+  if (data.outrosCustos < 0) throw new Error("Outros custos não pode ser negativo");
 }
 
 export async function createExtra(formData: FormData) {

@@ -28,8 +28,11 @@ interface ExtraLinha {
 }
 
 function csvEscape(value: string): string {
-  if (/[",\n;]/.test(value)) return `"${value.replace(/"/g, '""')}"`;
-  return value;
+  // Evita injeção de fórmula: se abrir com =, +, -, @ etc., o Excel pode
+  // interpretar como fórmula executável ao abrir o arquivo exportado.
+  const seguro = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  if (/[",\n;]/.test(seguro)) return `"${seguro.replace(/"/g, '""')}"`;
+  return seguro;
 }
 
 function valorCsv(n: number): string {

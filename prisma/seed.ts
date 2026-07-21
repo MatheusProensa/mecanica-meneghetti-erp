@@ -6,8 +6,8 @@ async function upsertUser(name: string, email: string, password: string) {
   const passwordHash = await bcrypt.hash(password, 10);
   await prisma.user.upsert({
     where: { email },
-    update: { name, passwordHash },
-    create: { name, email, passwordHash },
+    update: { name, passwordHash, role: "dono" },
+    create: { name, email, passwordHash, role: "dono" },
   });
   console.log(`Usuário pronto: ${email}`);
 }
@@ -15,7 +15,7 @@ async function upsertUser(name: string, email: string, password: string) {
 async function main() {
   await upsertUser(
     process.env.SEED_OWNER_NAME ?? "Dono",
-    process.env.SEED_OWNER_EMAIL ?? "dono@oficina.local",
+    (process.env.SEED_OWNER_EMAIL ?? "dono@oficina.local").trim().toLowerCase(),
     process.env.SEED_OWNER_PASSWORD ?? "mudar123"
   );
 }
