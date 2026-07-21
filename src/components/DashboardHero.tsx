@@ -45,7 +45,7 @@ export default function DashboardHero({ nome, agora }: { nome: string; agora: Da
     <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-900 to-gray-800 shadow-sm">
       <DarkPatternBg />
 
-      <div className="relative px-5 py-6 sm:px-6">
+      <div className="relative px-5 py-6 text-center sm:px-6 sm:text-left">
         <p className="text-sm text-gray-400">
           {saudacao(horaEmBrasilia(now))}, {primeiroNome}!
         </p>
