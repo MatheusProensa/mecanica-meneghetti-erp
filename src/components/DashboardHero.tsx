@@ -1,5 +1,15 @@
 import DarkPatternBg from "@/components/ui/DarkPatternBg";
 
+const FUSO = "America/Sao_Paulo";
+
+function horaEmBrasilia(agora: Date): number {
+  return Number(
+    new Intl.DateTimeFormat("pt-BR", { timeZone: FUSO, hourCycle: "h23", hour: "2-digit" }).format(
+      agora
+    )
+  );
+}
+
 function saudacao(hora: number) {
   if (hora < 12) return "Bom dia";
   if (hora < 18) return "Boa tarde";
@@ -9,9 +19,15 @@ function saudacao(hora: number) {
 export default function DashboardHero({ nome, agora }: { nome: string; agora: Date }) {
   const primeiroNome = nome.split(" ")[0];
   const dataFormatada = agora.toLocaleDateString("pt-BR", {
+    timeZone: FUSO,
     weekday: "long",
     day: "2-digit",
     month: "long",
+  });
+  const horaFormatada = agora.toLocaleTimeString("pt-BR", {
+    timeZone: FUSO,
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   return (
@@ -20,10 +36,12 @@ export default function DashboardHero({ nome, agora }: { nome: string; agora: Da
 
       <div className="relative px-5 py-6 sm:px-6">
         <p className="text-sm text-gray-400">
-          {saudacao(agora.getHours())}, {primeiroNome}
+          {saudacao(horaEmBrasilia(agora))}, {primeiroNome}
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight text-white">Dashboard</h1>
-        <p className="mt-1 text-sm capitalize text-gray-300">{dataFormatada}</p>
+        <p className="mt-1 text-sm capitalize text-gray-300">
+          {dataFormatada} · {horaFormatada}
+        </p>
       </div>
     </div>
   );
