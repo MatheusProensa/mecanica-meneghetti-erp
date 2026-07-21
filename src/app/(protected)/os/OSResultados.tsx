@@ -175,7 +175,7 @@ export default function OSResultados({
                         readOnly={!podeEditar}
                       />
                     </td>
-                    <td className="align-middle px-6 py-3 text-gray-500">
+                    <td className="align-middle px-6 py-3 text-gray-500 tabular-nums">
                       {formatCurrency(os.valor)}
                     </td>
                   </tr>
@@ -200,7 +200,7 @@ export default function OSResultados({
                       >
                         #{String(os.id).padStart(4, "0")} — {os.clienteNome}
                       </Link>
-                      <span className="shrink-0 text-sm font-semibold text-gray-900">
+                      <span className="shrink-0 text-sm font-semibold tabular-nums text-gray-900">
                         {formatCurrency(os.valor)}
                       </span>
                     </div>

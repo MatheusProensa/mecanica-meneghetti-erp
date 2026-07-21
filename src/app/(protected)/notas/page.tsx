@@ -325,7 +325,7 @@ export default async function NotasPage({
                     <td className="max-w-xs truncate px-6 py-3 text-gray-500">
                       {nota.observacoes ?? "-"}
                     </td>
-                    <td className="px-6 py-3 text-gray-500">
+                    <td className="px-6 py-3 text-gray-500 tabular-nums">
                       {nota.valor !== null ? formatCurrency(nota.valor) : "-"}
                     </td>
                     <td className="px-6 py-3">
@@ -367,7 +367,7 @@ export default async function NotasPage({
                     <p className="mt-1 text-sm text-gray-500">{nota.observacoes}</p>
                   )}
                   <div className="mt-2 flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium tabular-nums text-gray-900">
                       {nota.valor !== null ? formatCurrency(nota.valor) : "-"}
                     </span>
                     {nota.arquivoPdfPath && pdfUrls[nota.arquivoPdfPath] && (

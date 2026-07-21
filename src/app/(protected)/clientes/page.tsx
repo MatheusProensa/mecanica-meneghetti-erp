@@ -144,7 +144,7 @@ export default async function ClientesPage({
                       <td className="px-6 py-3 text-gray-500">
                         {cliente.cidade ?? <span className="text-gray-300">não informado</span>}
                       </td>
-                      <td className="px-6 py-3 text-gray-500">{formatCurrency(totalGasto)}</td>
+                      <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(totalGasto)}</td>
                       <td className="px-6 py-3 text-gray-500">
                         {ultimaVisita ? (
                           formatDate(ultimaVisita)

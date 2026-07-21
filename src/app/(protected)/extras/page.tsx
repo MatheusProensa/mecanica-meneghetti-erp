@@ -317,11 +317,11 @@ export default async function ExtrasPage({
                     <td className="px-6 py-3 text-gray-500">
                       {e.cliente?.nome ?? (e.ordemServico ? `OS #${String(e.ordemServico.id).padStart(4, "0")}` : "-")}
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{formatCurrency(e.valorExtra)}</td>
-                    <td className="px-6 py-3 font-medium text-gray-900">
+                    <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(e.valorExtra)}</td>
+                    <td className="px-6 py-3 font-medium tabular-nums text-gray-900">
                       {formatCurrency(e.saldo)}
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{formatCurrency(e.lucroEmpresa)}</td>
+                    <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(e.lucroEmpresa)}</td>
                     <td className="px-6 py-3">
                       <StatusBadge {...statusExtraMap[e.status]} />
                     </td>
@@ -344,7 +344,7 @@ export default async function ExtrasPage({
                   </p>
                   <div className="mt-1.5 flex items-center justify-between gap-2">
                     <span className="text-xs text-gray-500">{formatDate(e.data)}</span>
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="text-sm font-semibold tabular-nums text-gray-900">
                       Saldo: {formatCurrency(e.saldo)}
                     </span>
                   </div>

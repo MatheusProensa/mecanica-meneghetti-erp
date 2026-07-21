@@ -171,9 +171,9 @@ export default function DevedoresResultados({
                       </Link>
                     </td>
                     <td className="px-6 py-3 text-gray-500">{formatDate(d.dataServico)}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatCurrency(d.valorOriginal)}</td>
-                    <td className="px-6 py-3 text-gray-500">{formatCurrency(d.totalPago)}</td>
-                    <td className="px-6 py-3 font-medium text-gray-900">
+                    <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(d.valorOriginal)}</td>
+                    <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(d.totalPago)}</td>
+                    <td className="px-6 py-3 font-medium tabular-nums text-gray-900">
                       {formatCurrency(d.saldo)}
                     </td>
                     <td className="px-6 py-3">
@@ -202,7 +202,7 @@ export default function DevedoresResultados({
                     </div>
                     <div className="mt-1.5 flex items-center justify-between gap-2">
                       <span className="text-xs text-gray-500">{formatDate(d.dataServico)}</span>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-semibold tabular-nums text-gray-900">
                         Saldo: {formatCurrency(d.saldo)}
                       </span>
                     </div>

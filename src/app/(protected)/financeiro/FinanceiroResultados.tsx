@@ -179,7 +179,7 @@ export default function FinanceiroResultados({
                     <td className="align-middle px-6 py-3 text-gray-500">
                       {formatDate(despesa.data)}
                     </td>
-                    <td className="align-middle px-6 py-3 text-gray-500">
+                    <td className="align-middle px-6 py-3 text-gray-500 tabular-nums">
                       {formatCurrency(despesa.valor)}
                     </td>
                   </tr>
@@ -201,7 +201,7 @@ export default function FinanceiroResultados({
                       <p className="min-w-0 flex-1 truncate font-medium text-gray-900">
                         {despesa.descricao}
                       </p>
-                      <span className="shrink-0 text-sm font-semibold text-gray-900">
+                      <span className="shrink-0 text-sm font-semibold tabular-nums text-gray-900">
                         {formatCurrency(despesa.valor)}
                       </span>
                     </div>
