@@ -10,7 +10,7 @@ export default function AuthShell({
 }) {
   return (
     <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-sidebar px-4 py-10">
-      <DarkPatternBg glowPosition="50% 0%" />
+      <DarkPatternBg glowPosition="50% 0%" glowSize="900px" />
 
       <div className="relative w-full max-w-sm">
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white shadow-[0_24px_70px_-20px_rgba(0,0,0,0.55)]">
