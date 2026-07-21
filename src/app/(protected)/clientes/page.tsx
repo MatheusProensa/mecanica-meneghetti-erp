@@ -80,6 +80,7 @@ export default async function ClientesPage({
       </form>
 
       <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">
+        <div className="h-[3px] bg-brand-600" />
         {clientes.length === 0 ? (
           <EmptyState
             icon="users"

@@ -10,6 +10,7 @@ import ClienteForm from "@/components/ClienteForm";
 import CobrancaCliente from "@/components/CobrancaCliente";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
+import CountUp from "@/components/ui/CountUp";
 import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -104,7 +105,7 @@ export default async function ClienteDetalhePage({
           icon="wallet"
           iconColor="text-brand-600"
           label="Total gasto"
-          value={<ValorOculto>{formatCurrency(valorTotalGasto)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={valorTotalGasto} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="tools"

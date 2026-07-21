@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/getCurrentUser";
 import DashboardCharts, { type ChartPoint, type Agrupamento } from "@/components/DashboardCharts";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
+import CountUp from "@/components/ui/CountUp";
 import EmptyState from "@/components/ui/EmptyState";
 import SectionHeader from "@/components/ui/SectionHeader";
 import DashboardHero from "@/components/DashboardHero";
@@ -322,21 +323,21 @@ export default async function DashboardPage({
               icon="trending-up"
               iconColor="text-green-600"
               label={`Recebido ${rotuloResumo}`}
-              value={<ValorOculto>{formatCurrency(recebidoNoMes)}</ValorOculto>}
+              value={<ValorOculto><CountUp value={recebidoNoMes} format={formatCurrency} /></ValorOculto>}
               context={contextoResumo}
             />
             <MetricCard
               icon="clock"
               iconColor="text-amber-600"
               label="A receber"
-              value={<ValorOculto>{formatCurrency(aReceber)}</ValorOculto>}
+              value={<ValorOculto><CountUp value={aReceber} format={formatCurrency} /></ValorOculto>}
               context={`${osAReceber.length} OS em aberto`}
             />
             <MetricCard
               icon="trending-down"
               iconColor="text-red-600"
               label={`Despesas ${rotuloResumo}`}
-              value={<ValorOculto>{formatCurrency(despesasNoMes)}</ValorOculto>}
+              value={<ValorOculto><CountUp value={despesasNoMes} format={formatCurrency} /></ValorOculto>}
               context={contextoResumo}
             />
             <Link href="/os?pagamento=atrasado" className="block">
@@ -344,7 +345,7 @@ export default async function DashboardPage({
                 icon="alert-triangle"
                 iconColor="text-red-600"
                 label="OS atrasadas"
-                value={osAtrasadasCount}
+                value={<CountUp value={osAtrasadasCount} format={(n) => String(Math.round(n))} />}
                 context={osAtrasadasCount > 0 ? "cobrança vencida" : "tudo em dia"}
                 highlight={osAtrasadasCount > 0 ? "danger" : undefined}
               />
@@ -360,21 +361,21 @@ export default async function DashboardPage({
           icon="tools"
           iconColor="text-brand-600"
           label="OS abertas"
-          value={osAbertasCount}
+          value={<CountUp value={osAbertasCount} format={(n) => String(Math.round(n))} />}
           context={`${osEmAndamentoCount} em andamento`}
         />
         <MetricCard
           icon="chart-bar"
           iconColor="text-green-600"
           label={`OS concluídas ${rotuloResumo}`}
-          value={osConcluidasNoMes}
+          value={<CountUp value={osConcluidasNoMes} format={(n) => String(Math.round(n))} />}
           context={contextoResumo}
         />
         <MetricCard
           icon="file-text"
           iconColor="text-gray-500"
           label={`Notas anexadas ${rotuloResumo}`}
-          value={notasNoMes}
+          value={<CountUp value={notasNoMes} format={(n) => String(Math.round(n))} />}
           context={contextoResumo}
           className="col-span-2 lg:col-span-1"
         />

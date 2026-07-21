@@ -11,6 +11,7 @@ import PageHero from "@/components/ui/PageHero";
 import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
+import CountUp from "@/components/ui/CountUp";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, statusExtraMap } from "@/components/ui/StatusBadge";
 import ExportarExtrasPdf from "@/components/ExportarExtrasPdf";
@@ -147,25 +148,25 @@ export default async function ExtrasPage({
           icon="hand-coins"
           iconColor="text-brand-600"
           label="Extras no mês"
-          value={<ValorOculto>{formatCurrency(totalExtrasNoMes)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={totalExtrasNoMes} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Já pago"
-          value={<ValorOculto>{formatCurrency(pagoNoMes)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={pagoNoMes} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Falta pagar"
-          value={<ValorOculto>{formatCurrency(faltaPagarNoMes)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={faltaPagarNoMes} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroEmpresaNoMes >= 0 ? "text-green-600" : "text-red-600"}
           label="Lucro da empresa"
-          value={<ValorOculto>{formatCurrency(lucroEmpresaNoMes)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={lucroEmpresaNoMes} format={formatCurrency} /></ValorOculto>}
           context="Nesses serviços, no mês"
           highlight={lucroEmpresaNoMes >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"
@@ -268,6 +269,7 @@ export default async function ExtrasPage({
       </div>
 
       <div className="mt-3 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">
+        <div className="h-[3px] bg-brand-600" />
         {pagAtual.length === 0 ? (
           <EmptyState
             icon="hand-coins"

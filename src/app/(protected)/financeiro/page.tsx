@@ -7,6 +7,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import PageHero from "@/components/ui/PageHero";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
+import CountUp from "@/components/ui/CountUp";
 import { PAGE_SIZE } from "@/components/ui/Pagination";
 import FinanceiroResultados from "./FinanceiroResultados";
 
@@ -163,35 +164,35 @@ export default async function FinanceiroPage({
           icon="trending-up"
           iconColor="text-green-600"
           label={`Recebido ${rotuloResumo}`}
-          value={<ValorOculto>{formatCurrency(recebidoNoMes)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={recebidoNoMes} format={formatCurrency} /></ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="A receber"
-          value={<ValorOculto>{formatCurrency(aReceber)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={aReceber} format={formatCurrency} /></ValorOculto>}
           context={`${osAReceber.length} OS em aberto`}
         />
         <MetricCard
           icon="trending-down"
           iconColor="text-red-600"
           label={`Despesas ${rotuloResumo}`}
-          value={<ValorOculto>{formatCurrency(despesasTotal)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={despesasTotal} format={formatCurrency} /></ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="users"
           iconColor="text-gray-500"
           label={`Funcionários ${rotuloResumo}`}
-          value={<ValorOculto>{formatCurrency(funcionariosNoMes)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={funcionariosNoMes} format={formatCurrency} /></ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroNoMes >= 0 ? "text-green-600" : "text-red-600"}
           label={`Lucro ${rotuloResumo}`}
-          value={<ValorOculto>{formatCurrency(lucroNoMes)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={lucroNoMes} format={formatCurrency} /></ValorOculto>}
           context={contextoResumo ?? "Recebido − Despesas"}
           highlight={lucroNoMes >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"

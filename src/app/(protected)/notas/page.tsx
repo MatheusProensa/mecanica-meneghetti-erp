@@ -11,6 +11,7 @@ import PageHero from "@/components/ui/PageHero";
 import EmptyState from "@/components/ui/EmptyState";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
+import CountUp from "@/components/ui/CountUp";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, notaTipoMap } from "@/components/ui/StatusBadge";
 
@@ -150,13 +151,13 @@ export default async function NotasPage({
           icon="trending-up"
           iconColor="text-green-600"
           label="Total emitidas"
-          value={<ValorOculto>{formatCurrency(totalEmitidas)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={totalEmitidas} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="trending-down"
           iconColor="text-red-600"
           label="Total recebidas"
-          value={<ValorOculto>{formatCurrency(totalRecebidas)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={totalRecebidas} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="file-text"
@@ -266,6 +267,7 @@ export default async function NotasPage({
       )}
 
       <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[var(--shadow-card)]">
+        <div className="h-[3px] bg-brand-600" />
         {notas.length === 0 ? (
           <EmptyState
             icon="file-text"

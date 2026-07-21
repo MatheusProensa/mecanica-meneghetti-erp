@@ -8,6 +8,7 @@ import ExtraForm from "@/components/ExtraForm";
 import CurrencyInput from "@/components/CurrencyInput";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
+import CountUp from "@/components/ui/CountUp";
 import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -94,25 +95,25 @@ export default async function ExtraDetalhePage({
           icon="hand-coins"
           iconColor="text-brand-600"
           label="Valor do extra"
-          value={<ValorOculto>{formatCurrency(extra.valorExtra)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={extra.valorExtra} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Já pago"
-          value={<ValorOculto>{formatCurrency(totalPago)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={totalPago} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Saldo restante"
-          value={<ValorOculto>{formatCurrency(saldo)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={saldo} format={formatCurrency} /></ValorOculto>}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroEmpresa >= 0 ? "text-green-600" : "text-red-600"}
           label="Lucro da empresa"
-          value={<ValorOculto>{formatCurrency(lucroEmpresa)}</ValorOculto>}
+          value={<ValorOculto><CountUp value={lucroEmpresa} format={formatCurrency} /></ValorOculto>}
           context="Serviço − extra − outros custos"
           highlight={lucroEmpresa >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"
