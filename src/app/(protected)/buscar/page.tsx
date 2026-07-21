@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { formatCurrency, formatDate } from "@/lib/format";
+import PageHero from "@/components/ui/PageHero";
 import EmptyState from "@/components/ui/EmptyState";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
 import WhatsAppLink from "@/components/ui/WhatsAppLink";
@@ -70,12 +71,12 @@ export default async function BuscarPage({
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-xl font-semibold text-gray-900">Resultados da busca</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {query ? `"${query}" — ${totalResultados} resultado(s)` : "Digite algo no campo de busca no topo."}
-        </p>
-      </div>
+      <PageHero
+        title="Resultados da busca"
+        description={
+          query ? `"${query}" — ${totalResultados} resultado(s)` : "Digite algo no campo de busca no topo."
+        }
+      />
 
       {query && totalResultados === 0 && (
         <div className="rounded-[10px] border border-gray-200 bg-white">
