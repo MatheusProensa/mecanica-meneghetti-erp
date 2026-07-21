@@ -61,6 +61,11 @@ export default function DashboardCharts({
       <p className="mb-4 text-sm font-medium text-gray-700">
         Faturamento das OS ({periodoLabel})
       </p>
+      {data.length === 0 ? (
+        <div className="flex h-[220px] w-full items-center justify-center text-sm text-gray-400 sm:h-[300px]">
+          Escolha o período personalizado (De/Até) pra ver o gráfico
+        </div>
+      ) : (
       <div className="h-[220px] w-full sm:h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -91,6 +96,7 @@ export default function DashboardCharts({
           </AreaChart>
         </ResponsiveContainer>
       </div>
+      )}
     </div>
   );
 }

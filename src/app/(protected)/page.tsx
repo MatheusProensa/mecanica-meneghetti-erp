@@ -241,28 +241,34 @@ export default async function DashboardPage({
     ? `${formatDate(inicioPeriodo)} a ${formatDate(fimPeriodo)}`
     : undefined;
 
-  const chartData: ChartPoint[] = gerarBuckets(inicioPeriodo, fimPeriodo, agrupamento).map(
-    (bucket) => ({
-      rotulo: bucket.rotulo,
-      faturamento: ordensDoPeriodo
-        .filter((os) => os.data >= bucket.inicio && os.data < bucket.fim)
-        .reduce((sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0), 0),
-    })
-  );
+  /** Clicou em "Personalizado" mas ainda não aplicou um De/Até válido —
+   * o gráfico não deve mostrar os dados do agrupamento anterior nesse meio-tempo. */
+  const aguardandoPersonalizado = modoPersonalizado && !usarPersonalizado;
 
-  const periodoLabel = usarPersonalizado
-    ? `${inicioPeriodo.toLocaleDateString("pt-BR")} a ${fimPeriodo.toLocaleDateString("pt-BR")}`
-    : agrupamento === "diario"
-      ? periodo === 1
-        ? "hoje"
-        : `últimos ${periodo} dias`
-      : agrupamento === "semanal"
+  const chartData: ChartPoint[] = aguardandoPersonalizado
+    ? []
+    : gerarBuckets(inicioPeriodo, fimPeriodo, agrupamento).map((bucket) => ({
+        rotulo: bucket.rotulo,
+        faturamento: ordensDoPeriodo
+          .filter((os) => os.data >= bucket.inicio && os.data < bucket.fim)
+          .reduce((sum, os) => sum + os.itens.reduce((s, i) => s + i.valor, 0), 0),
+      }));
+
+  const periodoLabel = aguardandoPersonalizado
+    ? "selecione o período"
+    : usarPersonalizado
+      ? `${inicioPeriodo.toLocaleDateString("pt-BR")} a ${fimPeriodo.toLocaleDateString("pt-BR")}`
+      : agrupamento === "diario"
         ? periodo === 1
-          ? "esta semana"
-          : `últimas ${periodo} semanas`
-        : periodo === 1
-          ? "este mês"
-          : `últimos ${periodo} meses`;
+          ? "hoje"
+          : `últimos ${periodo} dias`
+        : agrupamento === "semanal"
+          ? periodo === 1
+            ? "esta semana"
+            : `últimas ${periodo} semanas`
+          : periodo === 1
+            ? "este mês"
+            : `últimos ${periodo} meses`;
 
   const movimentacoes = [
     ...ultimasNotas.map((n) => ({
