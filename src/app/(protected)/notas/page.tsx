@@ -151,13 +151,13 @@ export default async function NotasPage({
           icon="trending-up"
           iconColor="text-green-600"
           label="Total emitidas"
-          value={<ValorOculto><CountUp value={totalEmitidas} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={totalEmitidas} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="trending-down"
           iconColor="text-red-600"
           label="Total recebidas"
-          value={<ValorOculto><CountUp value={totalRecebidas} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={totalRecebidas} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="file-text"

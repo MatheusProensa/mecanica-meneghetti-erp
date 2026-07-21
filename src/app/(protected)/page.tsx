@@ -299,26 +299,14 @@ export default async function DashboardPage({
     <div className="space-y-8">
       <DashboardHero nome={usuario.name} agora={now} />
 
-      {(verFinanceiro || usuario.permissoes.editarOS) && (
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {verFinanceiro ? (
-            <AgrupamentoToggle
-              agrupamento={agrupamento}
-              personalizado={modoPersonalizado}
-              de={de}
-              ate={ate}
-            />
-          ) : (
-            <div />
-          )}
-          {usuario.permissoes.editarOS && (
-            <Link
-              href="/os/nova"
-              className="inline-flex h-[38px] shrink-0 items-center justify-center rounded-lg bg-brand-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-700"
-            >
-              + Nova OS
-            </Link>
-          )}
+      {verFinanceiro && (
+        <div className="flex justify-end">
+          <AgrupamentoToggle
+            agrupamento={agrupamento}
+            personalizado={modoPersonalizado}
+            de={de}
+            ate={ate}
+          />
         </div>
       )}
 
@@ -335,21 +323,21 @@ export default async function DashboardPage({
               icon="trending-up"
               iconColor="text-green-600"
               label={`Recebido ${rotuloResumo}`}
-              value={<ValorOculto><CountUp value={recebidoNoMes} format={formatCurrency} /></ValorOculto>}
+              value={<ValorOculto><CountUp value={recebidoNoMes} kind="currency" /></ValorOculto>}
               context={contextoResumo}
             />
             <MetricCard
               icon="clock"
               iconColor="text-amber-600"
               label="A receber"
-              value={<ValorOculto><CountUp value={aReceber} format={formatCurrency} /></ValorOculto>}
+              value={<ValorOculto><CountUp value={aReceber} kind="currency" /></ValorOculto>}
               context={`${osAReceber.length} OS em aberto`}
             />
             <MetricCard
               icon="trending-down"
               iconColor="text-red-600"
               label={`Despesas ${rotuloResumo}`}
-              value={<ValorOculto><CountUp value={despesasNoMes} format={formatCurrency} /></ValorOculto>}
+              value={<ValorOculto><CountUp value={despesasNoMes} kind="currency" /></ValorOculto>}
               context={contextoResumo}
             />
             <Link href="/os?pagamento=atrasado" className="block">
@@ -357,7 +345,7 @@ export default async function DashboardPage({
                 icon="alert-triangle"
                 iconColor="text-red-600"
                 label="OS atrasadas"
-                value={<CountUp value={osAtrasadasCount} format={(n) => String(Math.round(n))} />}
+                value={<CountUp value={osAtrasadasCount} />}
                 context={osAtrasadasCount > 0 ? "cobrança vencida" : "tudo em dia"}
                 highlight={osAtrasadasCount > 0 ? "danger" : undefined}
               />
@@ -373,21 +361,21 @@ export default async function DashboardPage({
           icon="tools"
           iconColor="text-brand-600"
           label="OS abertas"
-          value={<CountUp value={osAbertasCount} format={(n) => String(Math.round(n))} />}
+          value={<CountUp value={osAbertasCount} />}
           context={`${osEmAndamentoCount} em andamento`}
         />
         <MetricCard
           icon="chart-bar"
           iconColor="text-green-600"
           label={`OS concluídas ${rotuloResumo}`}
-          value={<CountUp value={osConcluidasNoMes} format={(n) => String(Math.round(n))} />}
+          value={<CountUp value={osConcluidasNoMes} />}
           context={contextoResumo}
         />
         <MetricCard
           icon="file-text"
           iconColor="text-gray-500"
           label={`Notas anexadas ${rotuloResumo}`}
-          value={<CountUp value={notasNoMes} format={(n) => String(Math.round(n))} />}
+          value={<CountUp value={notasNoMes} />}
           context={contextoResumo}
           className="col-span-2 lg:col-span-1"
         />

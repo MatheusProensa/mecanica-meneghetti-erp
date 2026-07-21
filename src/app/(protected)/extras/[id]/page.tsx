@@ -95,25 +95,25 @@ export default async function ExtraDetalhePage({
           icon="hand-coins"
           iconColor="text-brand-600"
           label="Valor do extra"
-          value={<ValorOculto><CountUp value={extra.valorExtra} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={extra.valorExtra} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Já pago"
-          value={<ValorOculto><CountUp value={totalPago} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={totalPago} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Saldo restante"
-          value={<ValorOculto><CountUp value={saldo} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={saldo} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroEmpresa >= 0 ? "text-green-600" : "text-red-600"}
           label="Lucro da empresa"
-          value={<ValorOculto><CountUp value={lucroEmpresa} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={lucroEmpresa} kind="currency" /></ValorOculto>}
           context="Serviço − extra − outros custos"
           highlight={lucroEmpresa >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"

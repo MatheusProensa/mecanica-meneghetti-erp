@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import { calcularSituacaoDivida, dataMaisAntigaItem, type SituacaoDivida } from "@/lib/dividas";
-import { formatCurrency, formatDate, parseDateInputValue } from "@/lib/format";
+import { formatDate, parseDateInputValue } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 import PageHero from "@/components/ui/PageHero";
 import MetricCard from "@/components/ui/MetricCard";
@@ -117,19 +117,19 @@ export default async function DevedoresPage({
           icon="alert-triangle"
           iconColor="text-red-600"
           label="Total das dívidas"
-          value={<ValorOculto><CountUp value={totalDividas} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={totalDividas} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Total recebido"
-          value={<ValorOculto><CountUp value={totalRecebido} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={totalRecebido} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Saldo a receber"
-          value={<ValorOculto><CountUp value={saldoAReceber} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={saldoAReceber} kind="currency" /></ValorOculto>}
           className="col-span-2 lg:col-span-1"
         />
       </div>

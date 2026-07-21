@@ -105,7 +105,7 @@ export default async function ClienteDetalhePage({
           icon="wallet"
           iconColor="text-brand-600"
           label="Total gasto"
-          value={<ValorOculto><CountUp value={valorTotalGasto} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={valorTotalGasto} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="tools"

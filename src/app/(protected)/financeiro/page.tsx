@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
-import { formatCurrency, parseDateInputValue, formatDate } from "@/lib/format";
+import { parseDateInputValue, formatDate } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 import PageHero from "@/components/ui/PageHero";
 import MetricCard from "@/components/ui/MetricCard";
@@ -164,35 +164,35 @@ export default async function FinanceiroPage({
           icon="trending-up"
           iconColor="text-green-600"
           label={`Recebido ${rotuloResumo}`}
-          value={<ValorOculto><CountUp value={recebidoNoMes} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={recebidoNoMes} kind="currency" /></ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="A receber"
-          value={<ValorOculto><CountUp value={aReceber} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={aReceber} kind="currency" /></ValorOculto>}
           context={`${osAReceber.length} OS em aberto`}
         />
         <MetricCard
           icon="trending-down"
           iconColor="text-red-600"
           label={`Despesas ${rotuloResumo}`}
-          value={<ValorOculto><CountUp value={despesasTotal} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={despesasTotal} kind="currency" /></ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="users"
           iconColor="text-gray-500"
           label={`Funcionários ${rotuloResumo}`}
-          value={<ValorOculto><CountUp value={funcionariosNoMes} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={funcionariosNoMes} kind="currency" /></ValorOculto>}
           context={contextoResumo}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroNoMes >= 0 ? "text-green-600" : "text-red-600"}
           label={`Lucro ${rotuloResumo}`}
-          value={<ValorOculto><CountUp value={lucroNoMes} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={lucroNoMes} kind="currency" /></ValorOculto>}
           context={contextoResumo ?? "Recebido − Despesas"}
           highlight={lucroNoMes >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"

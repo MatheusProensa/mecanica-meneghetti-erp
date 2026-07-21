@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatCurrency } from "@/lib/format";
 
 const DURACAO_MS = 700;
 
 export default function CountUp({
   value,
-  format,
+  kind = "integer",
 }: {
   value: number;
-  format: (n: number) => string;
+  kind?: "currency" | "integer";
 }) {
   const [display, setDisplay] = useState(0);
 
@@ -29,5 +30,5 @@ export default function CountUp({
     return () => cancelAnimationFrame(raf);
   }, [value]);
 
-  return <>{format(display)}</>;
+  return <>{kind === "currency" ? formatCurrency(display) : String(Math.round(display))}</>;
 }

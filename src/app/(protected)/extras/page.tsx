@@ -148,25 +148,25 @@ export default async function ExtrasPage({
           icon="hand-coins"
           iconColor="text-brand-600"
           label="Extras no mês"
-          value={<ValorOculto><CountUp value={totalExtrasNoMes} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={totalExtrasNoMes} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Já pago"
-          value={<ValorOculto><CountUp value={pagoNoMes} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={pagoNoMes} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Falta pagar"
-          value={<ValorOculto><CountUp value={faltaPagarNoMes} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={faltaPagarNoMes} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="wallet"
           iconColor={lucroEmpresaNoMes >= 0 ? "text-green-600" : "text-red-600"}
           label="Lucro da empresa"
-          value={<ValorOculto><CountUp value={lucroEmpresaNoMes} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={lucroEmpresaNoMes} kind="currency" /></ValorOculto>}
           context="Nesses serviços, no mês"
           highlight={lucroEmpresaNoMes >= 0 ? "success" : "danger"}
           className="col-span-2 lg:col-span-1"

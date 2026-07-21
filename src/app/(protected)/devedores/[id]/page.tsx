@@ -86,19 +86,19 @@ export default async function DividaDetalhePage({
           icon="alert-triangle"
           iconColor="text-red-600"
           label="Valor original"
-          value={<ValorOculto><CountUp value={valorOriginal} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={valorOriginal} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="trending-up"
           iconColor="text-green-600"
           label="Já pago"
-          value={<ValorOculto><CountUp value={totalPago} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={totalPago} kind="currency" /></ValorOculto>}
         />
         <MetricCard
           icon="clock"
           iconColor="text-amber-600"
           label="Saldo restante"
-          value={<ValorOculto><CountUp value={saldo} format={formatCurrency} /></ValorOculto>}
+          value={<ValorOculto><CountUp value={saldo} kind="currency" /></ValorOculto>}
         />
       </div>
 
