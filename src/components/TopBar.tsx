@@ -90,7 +90,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
         </>
       )}
 
-      {isDashboard ? (
+      {isDashboard && (
         <form className="relative hidden w-full max-w-sm lg:block" onSubmit={handleSearchSubmit}>
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
@@ -101,14 +101,12 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
             className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-9 pr-3 text-sm text-gray-700 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </form>
-      ) : (
-        <div className="hidden flex-1 lg:block" />
       )}
 
       <button
         type="button"
         onClick={alternar}
-        className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:flex"
+        className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:ml-auto lg:flex"
         aria-label={oculto ? "Mostrar valores" : "Ocultar valores"}
         title={oculto ? "Mostrar valores" : "Ocultar valores"}
       >
