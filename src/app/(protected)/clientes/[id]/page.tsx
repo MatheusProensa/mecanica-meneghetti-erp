@@ -102,13 +102,13 @@ export default async function ClienteDetalhePage({
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <MetricCard
           icon="wallet"
-          iconColor="text-blue-600"
+          iconColor="text-brand-600"
           label="Total gasto"
           value={<ValorOculto>{formatCurrency(valorTotalGasto)}</ValorOculto>}
         />
         <MetricCard
           icon="tools"
-          iconColor="text-blue-600"
+          iconColor="text-brand-600"
           label="Serviços realizados"
           value={quantidadeServicos}
         />
@@ -122,7 +122,7 @@ export default async function ClienteDetalhePage({
       </div>
 
       <div>
-        <SectionHeader icon="users" iconColor="text-blue-600" title="Dados cadastrais" />
+        <SectionHeader icon="users" iconColor="text-brand-600" title="Dados cadastrais" />
         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
           <ClienteForm
             cliente={cliente}
@@ -152,7 +152,7 @@ export default async function ClienteDetalhePage({
       <div>
         <SectionHeader
           icon="tools"
-          iconColor="text-blue-600"
+          iconColor="text-brand-600"
           title="Histórico de ordens de serviço"
           action={
             usuarioAtual.permissoes.editarClientes

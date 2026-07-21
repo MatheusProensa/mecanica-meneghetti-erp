@@ -99,7 +99,7 @@ export default function AgrupamentoToggle({
             onClick={() => handleAgrupamentoChange(a.value)}
             className={`rounded-md px-2.5 py-1.5 transition-all duration-150 ease-out active:scale-95 ${
               selecao === a.value
-                ? "bg-blue-600 text-white shadow-sm"
+                ? "bg-brand-600 text-white shadow-sm"
                 : "text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -110,7 +110,7 @@ export default function AgrupamentoToggle({
           type="button"
           onClick={handlePersonalizado}
           className={`rounded-md px-2.5 py-1.5 transition-all duration-150 ease-out active:scale-95 ${
-            selecao === "personalizado" ? "bg-blue-600 text-white shadow-sm" : "text-gray-600 hover:bg-gray-50"
+            selecao === "personalizado" ? "bg-brand-600 text-white shadow-sm" : "text-gray-600 hover:bg-gray-50"
           }`}
         >
           Personalizado
@@ -138,7 +138,7 @@ export default function AgrupamentoToggle({
             type="button"
             onClick={handleAplicarPersonalizado}
             disabled={!deInput || !ateInput}
-            className="rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="rounded-md bg-brand-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-brand-700 disabled:opacity-50"
           >
             Aplicar
           </button>

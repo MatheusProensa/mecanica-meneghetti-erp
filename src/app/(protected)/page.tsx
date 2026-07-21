@@ -354,11 +354,11 @@ export default async function DashboardPage({
       )}
 
       <div>
-        <SectionHeader icon="tools" iconColor="text-blue-600" title="Operacional" />
+        <SectionHeader icon="tools" iconColor="text-brand-600" title="Operacional" />
         <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
         <MetricCard
           icon="tools"
-          iconColor="text-blue-600"
+          iconColor="text-brand-600"
           label="OS abertas"
           value={osAbertasCount}
           context={`${osEmAndamentoCount} em andamento`}

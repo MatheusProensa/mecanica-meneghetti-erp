@@ -44,7 +44,7 @@ export default function EsqueciSenhaPage() {
 
       <Link
         href="/login"
-        className="mt-4 block text-center text-sm text-gray-500 hover:text-blue-600 hover:underline"
+        className="mt-4 block text-center text-sm text-gray-500 hover:text-brand-600 hover:underline"
       >
         ← Voltar para o login
       </Link>

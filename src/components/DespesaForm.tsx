@@ -163,7 +163,7 @@ export default function DespesaForm({
               href={anexoUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-brand-600 hover:underline"
             >
               Ver anexo atual
             </a>
@@ -179,7 +179,7 @@ export default function DespesaForm({
       {!readOnly && (
         <button
           type="submit"
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 sm:w-auto"
         >
           {despesa ? "Salvar alterações" : "Cadastrar despesa"}
         </button>

@@ -19,7 +19,7 @@ export default function PageHero({ title, description, action }: PageHeroProps) 
         {action && (
           <Link
             href={action.href}
-            className="shrink-0 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+            className="shrink-0 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-700"
           >
             {action.label}
           </Link>

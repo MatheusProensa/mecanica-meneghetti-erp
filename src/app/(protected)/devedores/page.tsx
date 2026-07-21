@@ -234,7 +234,7 @@ function FilterLink({
       href={href}
       className={`rounded-full px-3 py-1 text-xs font-medium ${
         active
-          ? "bg-blue-600 text-white"
+          ? "bg-brand-600 text-white"
           : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
       }`}
     >

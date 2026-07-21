@@ -35,7 +35,7 @@ export default function ProtectedError({
         <button
           type="button"
           onClick={reset}
-          className="min-h-11 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="min-h-11 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
         >
           Tentar novamente
         </button>

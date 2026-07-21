@@ -23,7 +23,7 @@ export default function EmptyState({ icon, title, description, action }: EmptySt
         <button
           type="button"
           onClick={action.onClick}
-          className="mt-2 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
+          className="mt-2 rounded-md bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700"
         >
           {action.label}
         </button>

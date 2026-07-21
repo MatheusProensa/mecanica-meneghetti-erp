@@ -92,7 +92,7 @@ export default async function ExtraDetalhePage({
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <MetricCard
           icon="hand-coins"
-          iconColor="text-blue-600"
+          iconColor="text-brand-600"
           label="Valor do extra"
           value={<ValorOculto>{formatCurrency(extra.valorExtra)}</ValorOculto>}
         />
@@ -120,7 +120,7 @@ export default async function ExtraDetalhePage({
       </div>
 
       <div>
-        <SectionHeader icon="hand-coins" iconColor="text-blue-600" title="Dados do lançamento" />
+        <SectionHeader icon="hand-coins" iconColor="text-brand-600" title="Dados do lançamento" />
         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
           <ExtraForm
             extra={extra}

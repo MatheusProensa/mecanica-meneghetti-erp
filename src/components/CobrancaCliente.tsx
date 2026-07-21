@@ -127,7 +127,7 @@ export default function CobrancaCliente({
         <button
           type="button"
           onClick={toggleTodas}
-          className="shrink-0 text-xs font-medium text-blue-600 hover:underline"
+          className="shrink-0 text-xs font-medium text-brand-600 hover:underline"
         >
           {selecionadas.size === ordensAbertas.length ? "Limpar seleção" : "Selecionar todas"}
         </button>
@@ -146,7 +146,7 @@ export default function CobrancaCliente({
               type="checkbox"
               checked={selecionadas.has(os.id)}
               onChange={() => toggleOS(os.id)}
-              className="h-4 w-4 shrink-0 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 shrink-0 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
             />
             <span className="min-w-0 flex-1">
               <span className="block font-medium text-gray-900">
@@ -175,7 +175,7 @@ export default function CobrancaCliente({
               type="checkbox"
               checked={incluirPix}
               onChange={(e) => setIncluirPix(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
             />
             Incluir dados de pagamento no PDF
           </label>
@@ -196,7 +196,7 @@ export default function CobrancaCliente({
       ) : (
         <p className="mt-3 text-xs text-gray-500">
           Nenhum dado de pagamento cadastrado.{" "}
-          <Link href="/configuracoes?secao=cobranca" className="text-blue-600 hover:underline">
+          <Link href="/configuracoes?secao=cobranca" className="text-brand-600 hover:underline">
             Cadastrar em Configurações
           </Link>
         </p>
@@ -221,7 +221,7 @@ export default function CobrancaCliente({
           type="button"
           onClick={handleBaixar}
           disabled={selecionadas.size === 0 || gerando !== null}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60 sm:w-auto"
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60 sm:w-auto"
         >
           <Download className="h-4 w-4" />
           {gerando === "baixar" ? "Gerando..." : "Baixar PDF"}

@@ -145,7 +145,7 @@ export default async function ExtrasPage({
       <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <MetricCard
           icon="hand-coins"
-          iconColor="text-blue-600"
+          iconColor="text-brand-600"
           label="Extras no mês"
           value={<ValorOculto>{formatCurrency(totalExtrasNoMes)}</ValorOculto>}
         />
@@ -372,7 +372,7 @@ function FilterLink({
       href={href}
       className={`rounded-full px-3 py-1 text-xs font-medium ${
         active
-          ? "bg-blue-600 text-white"
+          ? "bg-brand-600 text-white"
           : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
       }`}
     >

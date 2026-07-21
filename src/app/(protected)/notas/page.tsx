@@ -332,7 +332,7 @@ export default async function NotasPage({
                           href={pdfUrls[nota.arquivoPdfPath]}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                          className="inline-flex items-center gap-1 text-brand-600 hover:underline"
                         >
                           <FileText className="h-4 w-4" /> PDF
                         </a>
@@ -373,7 +373,7 @@ export default async function NotasPage({
                         href={pdfUrls[nota.arquivoPdfPath]}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 px-3 py-1.5 text-sm font-medium text-blue-600 active:bg-blue-50"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 px-3 py-1.5 text-sm font-medium text-brand-600 active:bg-blue-50"
                       >
                         <FileText className="h-4 w-4" /> Ver PDF
                       </a>
@@ -405,7 +405,7 @@ function FilterLink({
       href={href}
       className={`rounded-full px-3 py-1 text-xs font-medium ${
         active
-          ? "bg-blue-600 text-white"
+          ? "bg-brand-600 text-white"
           : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
       }`}
     >

@@ -124,7 +124,7 @@ export default function OSResultados({
                       checked={todosDaPaginaMarcados}
                       onChange={toggleTodosDaPagina}
                       title="Marcar todos"
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
                     />
                   </th>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">OS</th>
@@ -149,7 +149,7 @@ export default function OSResultados({
                         type="checkbox"
                         checked={selecionados.has(os.id)}
                         onChange={() => toggle(os.id)}
-                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
                       />
                     </td>
                     <td className="align-middle px-6 py-3">
@@ -189,7 +189,7 @@ export default function OSResultados({
                     type="checkbox"
                     checked={selecionados.has(os.id)}
                     onChange={() => toggle(os.id)}
-                    className="mt-1 h-4 w-4 shrink-0 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="mt-1 h-4 w-4 shrink-0 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">

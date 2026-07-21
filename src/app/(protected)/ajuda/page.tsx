@@ -26,7 +26,7 @@ const secoes: {
       "Cadastre os clientes da oficina. Na página de cada cliente você vê o histórico de ordens de serviço, o total já gasto, as notas vinculadas e as dívidas antigas em aberto.",
     requer: "verClientes",
     icon: "users",
-    iconColor: "text-blue-600",
+    iconColor: "text-brand-600",
   },
   {
     titulo: "Ordens de Serviço",
@@ -34,7 +34,7 @@ const secoes: {
       "Cada OS é vinculada a um cliente e tem uma lista de serviços/peças, cada um com sua própria data e valor. O total é calculado automaticamente somando os itens. Dá pra marcar status, marcar como paga, anexar fotos, cobrar no WhatsApp quando estiver em atraso, ordenar a lista por cliente (A-Z) e exportar um PDF — de tudo que está filtrado na tela ou só das OS marcadas com a caixinha de seleção.",
     requer: "verOS",
     icon: "tools",
-    iconColor: "text-blue-600",
+    iconColor: "text-brand-600",
   },
   {
     titulo: "Financeiro",
@@ -82,7 +82,7 @@ const iconBgByColor: Record<string, string> = {
   "text-green-600": "bg-green-50",
   "text-red-600": "bg-red-50",
   "text-amber-600": "bg-amber-50",
-  "text-blue-600": "bg-blue-50",
+  "text-brand-600": "bg-blue-50",
   "text-gray-600": "bg-gray-100",
 };
 

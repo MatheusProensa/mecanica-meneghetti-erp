@@ -109,7 +109,7 @@ export default function UsuarioRow({
               <button
                 type="submit"
                 disabled={updatePending}
-                className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+                className="rounded-md bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
               >
                 {updatePending ? "Salvando..." : "Salvar"}
               </button>

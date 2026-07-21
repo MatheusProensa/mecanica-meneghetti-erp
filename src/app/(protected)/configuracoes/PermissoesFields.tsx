@@ -75,7 +75,7 @@ export default function PermissoesFields({
                     type="checkbox"
                     name={p.ver}
                     defaultChecked={check(p.ver)}
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
                   />
                 </td>
                 {role === "funcionario" && (
@@ -86,7 +86,7 @@ export default function PermissoesFields({
                           type="checkbox"
                           name={p.editar}
                           defaultChecked={check(p.editar)}
-                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
                         />
                       ) : (
                         <span className="text-gray-300">—</span>
@@ -98,7 +98,7 @@ export default function PermissoesFields({
                           type="checkbox"
                           name={p.excluir}
                           defaultChecked={check(p.excluir)}
-                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
                         />
                       ) : (
                         <span className="text-gray-300">—</span>
@@ -118,7 +118,7 @@ export default function PermissoesFields({
             type="checkbox"
             name="podeAcessarConfiguracoes"
             defaultChecked={check("podeAcessarConfiguracoes", false)}
-            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-blue-500"
           />
           Acessar Configurações
         </label>

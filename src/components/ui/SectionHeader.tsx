@@ -5,14 +5,14 @@ const iconBgByColor: Record<string, string> = {
   "text-green-600": "bg-green-50",
   "text-red-600": "bg-red-50",
   "text-amber-600": "bg-amber-50",
-  "text-blue-600": "bg-blue-50",
+  "text-brand-600": "bg-blue-50",
   "text-gray-500": "bg-gray-100",
   "text-gray-600": "bg-gray-100",
 };
 
 export default function SectionHeader({
   icon,
-  iconColor = "text-blue-600",
+  iconColor = "text-brand-600",
   title,
   action,
 }: {
@@ -35,7 +35,7 @@ export default function SectionHeader({
       {action && (
         <Link
           href={action.href}
-          className="shrink-0 text-sm font-medium text-blue-600 hover:text-blue-700"
+          className="shrink-0 text-sm font-medium text-brand-600 hover:text-blue-700"
         >
           {action.label}
         </Link>

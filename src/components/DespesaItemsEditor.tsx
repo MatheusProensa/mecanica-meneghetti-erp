@@ -95,7 +95,7 @@ export default function DespesaItemsEditor({
             <button
               type="button"
               onClick={() => onUseTotal(formatNumberToCurrencyInput(total))}
-              className="text-sm font-medium text-blue-600 hover:underline"
+              className="text-sm font-medium text-brand-600 hover:underline"
             >
               Usar este valor
             </button>

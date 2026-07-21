@@ -24,7 +24,7 @@ const iconBgByColor: Record<string, string> = {
   "text-green-600": "bg-green-50",
   "text-red-600": "bg-red-50",
   "text-amber-600": "bg-amber-50",
-  "text-blue-600": "bg-blue-50",
+  "text-brand-600": "bg-blue-50",
   "text-gray-500": "bg-gray-100",
 };
 

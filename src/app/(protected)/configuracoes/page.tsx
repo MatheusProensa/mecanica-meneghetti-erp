@@ -136,7 +136,7 @@ export default async function ConfiguracoesPage({
               >
                 <span
                   className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                    ativo ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"
+                    ativo ? "bg-brand-600 text-white" : "bg-gray-100 text-gray-500"
                   }`}
                 >
                   <Icon className="h-4.5 w-4.5" />
@@ -233,7 +233,7 @@ function SectionCard({
   return (
     <div>
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-brand-600">
           <Icon className="h-5 w-5" />
         </span>
         <div className="min-w-0">
