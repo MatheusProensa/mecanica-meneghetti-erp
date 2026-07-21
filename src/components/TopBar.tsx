@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Search, Menu, X, Eye, EyeOff } from "lucide-react";
 import { useValoresVisibilidade } from "./ValoresVisibilidadeContext";
 
 export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isDashboard = pathname === "/";
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const { oculto, alternar } = useValoresVisibilidade();
 
@@ -65,14 +67,16 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
             <p className="truncate text-sm font-semibold text-gray-900">Oficina Meneghetti</p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setMobileSearchOpen(true)}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:hidden"
-            aria-label="Buscar"
-          >
-            <Search className="h-5 w-5" />
-          </button>
+          {isDashboard && (
+            <button
+              type="button"
+              onClick={() => setMobileSearchOpen(true)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 lg:hidden"
+              aria-label="Buscar"
+            >
+              <Search className="h-5 w-5" />
+            </button>
+          )}
 
           <button
             type="button"
@@ -86,16 +90,20 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
         </>
       )}
 
-      <form className="relative hidden w-full max-w-sm lg:block" onSubmit={handleSearchSubmit}>
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          name="q"
-          autoComplete="off"
-          placeholder="Pesquisar cliente, OS, telefone, nota..."
-          className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-9 pr-3 text-sm text-gray-700 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </form>
+      {isDashboard ? (
+        <form className="relative hidden w-full max-w-sm lg:block" onSubmit={handleSearchSubmit}>
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            name="q"
+            autoComplete="off"
+            placeholder="Pesquisar cliente, OS, telefone, nota..."
+            className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-9 pr-3 text-sm text-gray-700 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </form>
+      ) : (
+        <div className="hidden flex-1 lg:block" />
+      )}
 
       <button
         type="button"
