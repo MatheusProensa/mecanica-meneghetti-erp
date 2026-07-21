@@ -376,7 +376,7 @@ export default async function DashboardPage({
           <div className="flex justify-end">
             <PeriodoSelector
               agrupamento={agrupamento}
-              periodo={usarPersonalizado ? "personalizado" : String(periodo)}
+              periodo={periodoRaw === "personalizado" ? "personalizado" : String(periodo)}
               de={de}
               ate={ate}
             />
