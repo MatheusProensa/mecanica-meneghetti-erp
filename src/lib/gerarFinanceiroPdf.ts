@@ -7,9 +7,11 @@ import {
   desenharCabecalhoPdf,
   desenharResumoCardsPdf,
   desenharRodapePdf,
+  desenharTotalPdf,
   PDF_MARGIN_X,
   TABLE_BODY_STYLES,
   TABLE_HEAD_STYLES,
+  up,
 } from "./pdfShell";
 
 export interface ResumoFinanceiro {
@@ -48,7 +50,7 @@ export async function gerarFinanceiroPdf({
   const emitidoEm = new Date().toLocaleDateString("pt-BR");
   let y = desenharCabecalhoPdf(doc, {
     titulo: "Relatório Financeiro",
-    subtitulo: `${periodoLabel} · Emitido em ${emitidoEm}`,
+    subtitulo: `${periodoLabel} · ${emitidoEm}`,
     logoBase64,
   });
 
@@ -58,22 +60,26 @@ export async function gerarFinanceiroPdf({
       { label: "Recebido", valor: formatCurrency(resumo.recebidoNoMes) },
       { label: "A receber", valor: formatCurrency(resumo.aReceber) },
       { label: "Despesas", valor: formatCurrency(resumo.despesasTotal) },
-      { label: "Funcionários", valor: formatCurrency(resumo.funcionariosNoMes) },
       { label: "Lucro no período", valor: formatCurrency(resumo.lucroNoMes), destaque: true },
     ],
     y
   );
 
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(31, 41, 55);
+  doc.text("Despesas do período", PDF_MARGIN_X, y + 10);
+
   autoTable(doc, {
-    startY: y + 10,
+    startY: y + 15,
     margin: { left: PDF_MARGIN_X, right: PDF_MARGIN_X },
     head: [
       [
-        "Descrição",
-        "Categoria",
-        "Fornecedor",
-        "Data",
-        { content: "Valor", styles: { halign: "right" } },
+        up("Descrição"),
+        up("Categoria"),
+        up("Fornecedor"),
+        up("Data"),
+        { content: up("Valor"), styles: { halign: "right" } },
       ],
     ],
     body: despesas.map((d) => [
@@ -92,6 +98,13 @@ export async function gerarFinanceiroPdf({
     theme: "plain",
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const finalY = (doc as any).lastAutoTable.finalY + 8;
+  desenharTotalPdf(doc, {
+    label: "Total de despesas",
+    valor: formatCurrency(resumo.despesasTotal),
+    y: finalY,
+  });
   desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
 
   return doc;

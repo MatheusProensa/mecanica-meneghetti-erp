@@ -6,17 +6,30 @@ export const PDF_BRAND: [number, number, number] = [37, 99, 235];
 export const PDF_INK_900: [number, number, number] = [31, 41, 55];
 export const PDF_INK_500: [number, number, number] = [100, 116, 139];
 export const PDF_INK_300: [number, number, number] = [156, 163, 175];
+const PDF_GRAY_BG: [number, number, number] = [243, 244, 246];
 
 export const PDF_MARGIN_X = 15;
 
 const HEADER_HEIGHT = 34;
+const CARD_MARGIN = 9;
+const CARD_TOP_GAP = 6;
 
-/** Header navy de largura total, com logo à esquerda e título/subtítulo à direita. Retorna o Y onde o conteúdo deve começar. */
+/** Uppercase pros cabeçalhos de tabela (o handoff usa text-transform:uppercase, que o PDF não aplica sozinho). */
+export function up(s: string): string {
+  return s.toUpperCase();
+}
+
+/**
+ * Header navy de largura total (logo + título/subtítulo em azul da marca), seguido do fundo
+ * cinza claro com o cartão branco arredondado onde o conteúdo é desenhado. Retorna o Y onde
+ * o conteúdo deve começar, já dentro do cartão.
+ */
 export function desenharCabecalhoPdf(
   doc: jsPDF,
   { titulo, subtitulo, logoBase64 }: { titulo: string; subtitulo?: string; logoBase64: string | null }
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
   doc.setFillColor(...PDF_NAVY);
   doc.rect(0, 0, pageWidth, HEADER_HEIGHT, "F");
@@ -40,25 +53,38 @@ export function desenharCabecalhoPdf(
     doc.text(subtitulo, pageWidth - PDF_MARGIN_X, HEADER_HEIGHT / 2 + 5, { align: "right" });
   }
 
-  return HEADER_HEIGHT + 14;
+  doc.setFillColor(...PDF_GRAY_BG);
+  doc.rect(0, HEADER_HEIGHT, pageWidth, pageHeight - HEADER_HEIGHT, "F");
+
+  const cardTop = HEADER_HEIGHT + CARD_TOP_GAP;
+  const cardHeight = pageHeight - CARD_MARGIN - cardTop;
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(CARD_MARGIN, cardTop, pageWidth - CARD_MARGIN * 2, cardHeight, 4, 4, "F");
+
+  return cardTop + 14;
 }
 
-/** Caixa navy de destaque pro total, alinhada à direita. Retorna o Y logo abaixo da caixa. */
+/** Caixa de destaque pro total, alinhada à direita. Retorna o Y logo abaixo da caixa. */
 export function desenharTotalPdf(
   doc: jsPDF,
-  { label, valor, y }: { label: string; valor: string; y: number }
+  {
+    label,
+    valor,
+    y,
+    cor = PDF_NAVY,
+  }: { label: string; valor: string; y: number; cor?: [number, number, number] }
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
   const boxWidth = 74;
   const boxHeight = 14;
   const boxX = pageWidth - PDF_MARGIN_X - boxWidth;
 
-  doc.setFillColor(...PDF_NAVY);
+  doc.setFillColor(...cor);
   doc.roundedRect(boxX, y, boxWidth, boxHeight, 2, 2, "F");
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.setTextColor(...PDF_INK_300);
+  doc.setTextColor(219, 234, 254);
   doc.text(label, boxX + 6, y + boxHeight / 2 + 1.5);
 
   doc.setFont("helvetica", "bold");
@@ -69,7 +95,7 @@ export function desenharTotalPdf(
   return y + boxHeight;
 }
 
-/** Rodapé centralizado no fim da página, com os dados da oficina. */
+/** Rodapé centralizado no fim da página (dentro do cartão), com os dados da oficina. */
 export function desenharRodapePdf(doc: jsPDF, texto: string): void {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -110,7 +136,7 @@ export function desenharResumoCardsPdf(doc: jsPDF, cards: ResumoCardPdf[], y: nu
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7.5);
-    doc.text(card.label.toUpperCase(), x + 5, y + 7);
+    doc.text(up(card.label), x + 5, y + 7);
 
     if (card.destaque) {
       doc.setTextColor(255, 255, 255);
@@ -122,6 +148,39 @@ export function desenharResumoCardsPdf(doc: jsPDF, cards: ResumoCardPdf[], y: nu
   });
 
   return y + cardHeight;
+}
+
+/** Resumo em texto (label ... valor, alinhado à direita) — usado no Extras, seguindo o handoff. */
+export function desenharResumoTextoPdf(
+  doc: jsPDF,
+  linhas: { label: string; valor: string; destaque?: boolean }[],
+  y: number
+): number {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  let cursor = y;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(...PDF_INK_900);
+  doc.text("Resumo", PDF_MARGIN_X, cursor);
+  cursor += 7;
+
+  for (const linha of linhas) {
+    doc.setFont("helvetica", linha.destaque ? "bold" : "normal");
+    doc.setFontSize(linha.destaque ? 10.5 : 9.5);
+    if (linha.destaque) {
+      doc.setTextColor(...PDF_INK_900);
+    } else {
+      doc.setTextColor(55, 65, 81);
+    }
+    doc.text(linha.label, PDF_MARGIN_X, cursor);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...PDF_INK_900);
+    doc.text(linha.valor, pageWidth - PDF_MARGIN_X, cursor, { align: "right" });
+    cursor += linha.destaque ? 7.5 : 6;
+  }
+
+  return cursor;
 }
 
 /** Estilo do cabeçalho da tabela: sem preenchimento, borda inferior grossa (igual ao handoff). */
@@ -139,6 +198,60 @@ export const TABLE_BODY_STYLES = {
   fontSize: 9,
   textColor: PDF_INK_900 as [number, number, number],
   cellPadding: 3,
-  lineColor: [243, 244, 246] as [number, number, number],
+  lineColor: PDF_GRAY_BG,
   lineWidth: 0.15,
 };
+
+export type PdfBadgeTone = "green" | "amber" | "red" | "blue" | "gray";
+
+const BADGE_COLORS: Record<PdfBadgeTone, { bg: [number, number, number]; texto: [number, number, number] }> = {
+  green: { bg: [220, 252, 231], texto: [21, 128, 61] },
+  amber: { bg: [254, 243, 199], texto: [146, 64, 14] },
+  red: { bg: [254, 226, 226], texto: [185, 28, 28] },
+  blue: { bg: [219, 234, 254], texto: [29, 78, 216] },
+  gray: { bg: [243, 244, 246], texto: [55, 65, 81] },
+};
+
+function desenharBadgePdf(doc: jsPDF, texto: string, tone: PdfBadgeTone, cx: number, cy: number): void {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.5);
+  const textWidth = doc.getTextWidth(texto);
+  const paddingX = 3;
+  const boxWidth = textWidth + paddingX * 2;
+  const boxHeight = 5;
+  const boxX = cx - boxWidth / 2;
+  const boxY = cy - boxHeight / 2;
+
+  const { bg, texto: corTexto } = BADGE_COLORS[tone];
+  doc.setFillColor(...bg);
+  doc.roundedRect(boxX, boxY, boxWidth, boxHeight, boxHeight / 2, boxHeight / 2, "F");
+  doc.setTextColor(...corTexto);
+  doc.text(texto, cx, cy + 1.6, { align: "center" });
+}
+
+/**
+ * Hooks de autoTable pra desenhar uma coluna como badge colorido (pill) em vez de texto puro.
+ * Passar em didParseCell/didDrawCell nas opções da tabela.
+ */
+export function criarColunaBadgePdf(colIndex: number, toneMap: Record<string, PdfBadgeTone>) {
+  return {
+    didParseCell: (data: { section: string; column: { index: number }; cell: { text: string[] } }) => {
+      if (data.section === "body" && data.column.index === colIndex) {
+        data.cell.text = [];
+      }
+    },
+    didDrawCell: (data: {
+      section: string;
+      column: { index: number };
+      cell: { raw: unknown; x: number; y: number; width: number; height: number };
+      doc: jsPDF;
+    }) => {
+      if (data.section !== "body" || data.column.index !== colIndex) return;
+      const texto = String(data.cell.raw ?? "");
+      const tone = toneMap[texto] ?? "gray";
+      const cx = data.cell.x + data.cell.width / 2;
+      const cy = data.cell.y + data.cell.height / 2;
+      desenharBadgePdf(data.doc, texto, tone, cx, cy);
+    },
+  };
+}

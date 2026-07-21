@@ -5,18 +5,28 @@ import { formatCurrency, formatDate } from "./format";
 import { carregarLogoComprimida } from "./pdfLogo";
 import type { StatusExtra } from "./extras";
 import {
+  criarColunaBadgePdf,
   desenharCabecalhoPdf,
-  desenharResumoCardsPdf,
+  desenharResumoTextoPdf,
   desenharRodapePdf,
+  desenharTotalPdf,
   PDF_MARGIN_X,
   TABLE_BODY_STYLES,
   TABLE_HEAD_STYLES,
+  up,
+  type PdfBadgeTone,
 } from "./pdfShell";
 
 const STATUS_LABEL: Record<StatusExtra, string> = {
   pendente: "Pendente",
   parcialmente_pago: "Parcialmente pago",
   pago: "Pago",
+};
+
+const STATUS_TONE: Record<string, PdfBadgeTone> = {
+  Pendente: "red",
+  "Parcialmente pago": "amber",
+  Pago: "green",
 };
 
 export interface ResumoExtras {
@@ -55,11 +65,11 @@ export async function gerarExtrasPdf({
   const emitidoEm = new Date().toLocaleDateString("pt-BR");
   let y = desenharCabecalhoPdf(doc, {
     titulo: "Relatório de Extras",
-    subtitulo: periodoLabel ? `${periodoLabel} · Emitido em ${emitidoEm}` : `Emitido em ${emitidoEm}`,
+    subtitulo: periodoLabel ? `${periodoLabel} · ${emitidoEm}` : emitidoEm,
     logoBase64,
   });
 
-  y = desenharResumoCardsPdf(
+  y = desenharResumoTextoPdf(
     doc,
     [
       { label: "Total de extras", valor: formatCurrency(resumo.totalExtras) },
@@ -70,18 +80,20 @@ export async function gerarExtrasPdf({
     y
   );
 
+  const badgeCol = criarColunaBadgePdf(6, STATUS_TONE);
+
   autoTable(doc, {
-    startY: y + 10,
+    startY: y + 6,
     margin: { left: PDF_MARGIN_X, right: PDF_MARGIN_X },
     head: [
       [
-        "Data",
-        "Funcionário",
-        "Cliente / OS",
-        { content: "Extra", styles: { halign: "right" } },
-        { content: "Saldo", styles: { halign: "right" } },
-        { content: "Lucro", styles: { halign: "right" } },
-        "Situação",
+        up("Data"),
+        up("Funcionário"),
+        up("Cliente / OS"),
+        { content: up("Extra"), styles: { halign: "right" } },
+        { content: up("Saldo"), styles: { halign: "right" } },
+        { content: up("Lucro"), styles: { halign: "right" } },
+        { content: up("Situação"), styles: { halign: "center" } },
       ],
     ],
     body: extras.map((e) => [
@@ -99,12 +111,17 @@ export async function gerarExtrasPdf({
       3: { cellWidth: 22, halign: "right" },
       4: { cellWidth: 22, halign: "right" },
       5: { cellWidth: 22, halign: "right" },
-      6: { cellWidth: 24 },
+      6: { cellWidth: 26, halign: "center" },
     },
     styles: { ...TABLE_BODY_STYLES, fontSize: 8.5, cellPadding: 2.5 },
     theme: "plain",
+    didParseCell: badgeCol.didParseCell,
+    didDrawCell: badgeCol.didDrawCell,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const finalY = (doc as any).lastAutoTable.finalY + 8;
+  desenharTotalPdf(doc, { label: "Falta pagar", valor: formatCurrency(resumo.faltaPagar), y: finalY });
   desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
 
   return doc;

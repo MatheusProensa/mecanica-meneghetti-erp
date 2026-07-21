@@ -4,12 +4,14 @@ import type { DadosEmpresa } from "./business";
 import { formatCurrency, formatDate } from "./format";
 import { carregarLogoComprimida } from "./pdfLogo";
 import {
+  criarColunaBadgePdf,
   desenharCabecalhoPdf,
   desenharRodapePdf,
-  desenharTotalPdf,
   PDF_MARGIN_X,
   TABLE_BODY_STYLES,
   TABLE_HEAD_STYLES,
+  up,
+  type PdfBadgeTone,
 } from "./pdfShell";
 
 export interface OSLinha {
@@ -27,6 +29,12 @@ export interface GerarOSPdfParams {
   ordens: OSLinha[];
 }
 
+const PAGAMENTO_TONE: Record<string, PdfBadgeTone> = {
+  Pago: "green",
+  "Em atraso": "red",
+  "A receber": "amber",
+};
+
 export async function gerarOSPdf({
   empresa,
   periodoLabel,
@@ -38,23 +46,23 @@ export async function gerarOSPdf({
   const emitidoEm = new Date().toLocaleDateString("pt-BR");
   const y = desenharCabecalhoPdf(doc, {
     titulo: "Ordens de Serviço",
-    subtitulo: periodoLabel ? `${periodoLabel} · Emitido em ${emitidoEm}` : `Emitido em ${emitidoEm}`,
+    subtitulo: periodoLabel ? `${periodoLabel} · ${emitidoEm}` : emitidoEm,
     logoBase64,
   });
 
-  const valorTotal = ordens.reduce((s, os) => s + os.valor, 0);
+  const badgeCol = criarColunaBadgePdf(4, PAGAMENTO_TONE);
 
   autoTable(doc, {
     startY: y,
     margin: { left: PDF_MARGIN_X, right: PDF_MARGIN_X },
     head: [
       [
-        "OS",
-        "Cliente",
-        "Data",
-        "Status",
-        "Pagamento",
-        { content: "Valor", styles: { halign: "right" } },
+        up("OS"),
+        up("Cliente"),
+        up("Data"),
+        up("Status"),
+        up("Pagamento"),
+        { content: up("Valor"), styles: { halign: "right" } },
       ],
     ],
     body: ordens.map((os) => [
@@ -69,15 +77,15 @@ export async function gerarOSPdf({
     columnStyles: {
       0: { cellWidth: 18 },
       2: { cellWidth: 22 },
+      4: { halign: "center" },
       5: { cellWidth: 26, halign: "right" },
     },
     styles: TABLE_BODY_STYLES,
     theme: "plain",
+    didParseCell: badgeCol.didParseCell,
+    didDrawCell: badgeCol.didDrawCell,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const finalY = (doc as any).lastAutoTable.finalY + 8;
-  desenharTotalPdf(doc, { label: "Total", valor: formatCurrency(valorTotal), y: finalY });
   desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
 
   return doc;

@@ -9,10 +9,12 @@ import {
   desenharCabecalhoPdf,
   desenharRodapePdf,
   desenharTotalPdf,
+  PDF_BRAND,
   PDF_INK_900,
   PDF_MARGIN_X,
   TABLE_BODY_STYLES,
   TABLE_HEAD_STYLES,
+  up,
 } from "./pdfShell";
 
 export interface CobrancaOS {
@@ -48,47 +50,65 @@ export async function gerarCobrancaPdf({
 }: GerarCobrancaPdfParams): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
+  const colDireitaX = pageWidth / 2 + 5;
 
   const logoBase64 = await carregarLogoComprimida();
   // formatDate força UTC (correto pra datas sem hora vindas do banco); aqui é o instante atual,
   // então usa o fuso local do navegador de quem está gerando o PDF, senão a data vem adiantada.
   const emitidoEm = new Date().toLocaleDateString("pt-BR");
-  let y = desenharCabecalhoPdf(doc, {
+  const yInicio = desenharCabecalhoPdf(doc, {
     titulo: "Cobrança de Serviços",
-    subtitulo: `Emitido em ${emitidoEm}`,
+    subtitulo: emitidoEm,
     logoBase64,
   });
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
+  doc.setFontSize(8);
+  doc.setTextColor(156, 163, 175);
+  doc.text(up("Cobrado de"), PDF_MARGIN_X, yInicio);
+  doc.text(up("Emitido por"), colDireitaX, yInicio);
+
+  let yEsq = yInicio + 6;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
   doc.setTextColor(...PDF_INK_900);
-  doc.text("Cliente", PDF_MARGIN_X, y);
-  y += 5;
+  doc.text(cliente.nome, PDF_MARGIN_X, yEsq);
+
+  let yDir = yInicio + 6;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(...PDF_INK_900);
+  doc.text(empresa.nome, colDireitaX, yDir);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(9.5);
-  doc.setTextColor(55, 65, 81);
-  doc.text(cliente.nome, PDF_MARGIN_X, y);
-  y += 5;
+  doc.setFontSize(9);
+  doc.setTextColor(100, 116, 139);
   if (cliente.telefone) {
-    doc.text(cliente.telefone, PDF_MARGIN_X, y);
-    y += 5;
+    yEsq += 5;
+    doc.text(cliente.telefone, PDF_MARGIN_X, yEsq);
   }
   if (cliente.endereco) {
-    doc.text(cliente.endereco, PDF_MARGIN_X, y);
-    y += 5;
+    yEsq += 5;
+    doc.text(cliente.endereco, PDF_MARGIN_X, yEsq);
   }
   if (cliente.cpfCnpj) {
-    doc.text(cliente.cpfCnpj, PDF_MARGIN_X, y);
-    y += 5;
+    yEsq += 5;
+    doc.text(cliente.cpfCnpj, PDF_MARGIN_X, yEsq);
   }
+
+  yDir += 5;
+  doc.text(empresa.endereco, colDireitaX, yDir);
+  yDir += 5;
+  doc.text(`CNPJ ${empresa.cnpj}`, colDireitaX, yDir);
+
+  const y = Math.max(yEsq, yDir) + 8;
 
   const total = ordens.reduce((sum, os) => sum + os.valor, 0);
 
   autoTable(doc, {
-    startY: y + 3,
+    startY: y,
     margin: { left: PDF_MARGIN_X, right: PDF_MARGIN_X },
-    head: [["OS", "Data", "Descrição", { content: "Valor", styles: { halign: "right" } }]],
+    head: [[up("OS"), up("Data"), up("Descrição"), { content: up("Valor"), styles: { halign: "right" } }]],
     body: ordens.map((os) => [
       `#${String(os.id).padStart(4, "0")}`,
       formatDate(os.data),
@@ -111,10 +131,16 @@ export async function gerarCobrancaPdf({
     label: "Total em aberto",
     valor: formatCurrency(total),
     y: afterTableY,
+    cor: PDF_BRAND,
   });
-  afterTableY += 10;
+  afterTableY += 12;
 
   if (pixKey) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(156, 163, 175);
+    doc.text(up("Pagamento via Pix"), PDF_MARGIN_X, afterTableY);
+
     let qrDataUrl: string | null = null;
     try {
       const payload = gerarPayloadPix({
@@ -128,35 +154,29 @@ export async function gerarCobrancaPdf({
       qrDataUrl = null;
     }
 
-    doc.setFont("helvetica", "bold");
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(9.5);
-    doc.setTextColor(...PDF_INK_900);
-    doc.text("Pagamento via Pix", PDF_MARGIN_X, afterTableY);
+    doc.setTextColor(55, 65, 81);
+    doc.text(`Chave: ${pixKey}`, PDF_MARGIN_X, afterTableY + 7);
+
+    doc.setFontSize(8.5);
+    doc.setTextColor(...PDF_BRAND);
+    doc.text("Obrigado pela preferência — " + empresa.nome, PDF_MARGIN_X, afterTableY + 13);
 
     if (qrDataUrl) {
-      const qrSize = 30;
-      const qrY = afterTableY + 3;
-      doc.addImage(qrDataUrl, "PNG", PDF_MARGIN_X, qrY, qrSize, qrSize);
-
-      const textX = PDF_MARGIN_X + qrSize + 6;
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.setTextColor(55, 65, 81);
-      doc.text("Escaneie o QR Code no app do seu banco", textX, qrY + 6);
-      doc.text(`Chave Pix: ${pixKey}`, textX, qrY + 13);
-      doc.text(`Valor: ${formatCurrency(total)}`, textX, qrY + 20);
-
-      afterTableY = qrY + qrSize + 8;
+      const qrSize = 26;
+      const qrX = pageWidth - PDF_MARGIN_X - qrSize - 9;
+      doc.setDrawColor(229, 231, 235);
+      doc.roundedRect(qrX - 3, afterTableY - 4, qrSize + 6, qrSize + 6, 2, 2, "S");
+      doc.addImage(qrDataUrl, "PNG", qrX, afterTableY - 1, qrSize, qrSize);
+      afterTableY += qrSize + 6;
     } else {
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
-      doc.setTextColor(55, 65, 81);
-      doc.text(`Chave Pix: ${pixKey}`, PDF_MARGIN_X, afterTableY + 5);
-      afterTableY += 13;
+      afterTableY += 16;
     }
   }
 
   if (dadosBancarios) {
+    afterTableY += 6;
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
     doc.setTextColor(...PDF_INK_900);
@@ -169,6 +189,7 @@ export async function gerarCobrancaPdf({
   }
 
   if (observacoes) {
+    afterTableY += 6;
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
     doc.setTextColor(...PDF_INK_900);
