@@ -127,11 +127,9 @@ export default async function DashboardPage({
 
   const dePersonalizado = parseDateInputValue(de);
   const atePersonalizado = parseDateInputValue(ate);
+  const modoPersonalizado = periodoRaw === "personalizado";
   const usarPersonalizado = Boolean(
-    periodoRaw === "personalizado" &&
-      dePersonalizado &&
-      atePersonalizado &&
-      dePersonalizado <= atePersonalizado
+    modoPersonalizado && dePersonalizado && atePersonalizado && dePersonalizado <= atePersonalizado
   );
 
   let inicioPeriodo: Date;
@@ -295,7 +293,7 @@ export default async function DashboardPage({
 
       {verFinanceiro && (
         <div className="flex justify-end">
-          <AgrupamentoToggle agrupamento={agrupamento} personalizado={usarPersonalizado} />
+          <AgrupamentoToggle agrupamento={agrupamento} personalizado={modoPersonalizado} />
         </div>
       )}
 
