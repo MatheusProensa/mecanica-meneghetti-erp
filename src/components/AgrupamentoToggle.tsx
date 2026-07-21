@@ -117,33 +117,38 @@ export default function AgrupamentoToggle({
         </button>
       </div>
 
-      {personalizado && (
-        <div className="flex flex-wrap items-center gap-1.5">
-          <input
-            type="date"
-            value={deInput}
-            onChange={(e) => setDeInput(e.target.value)}
-            aria-label="De"
-            className="rounded-md border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-          <span className="text-xs text-gray-400">até</span>
-          <input
-            type="date"
-            value={ateInput}
-            onChange={(e) => setAteInput(e.target.value)}
-            aria-label="Até"
-            className="rounded-md border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-          <button
-            type="button"
-            onClick={handleAplicarPersonalizado}
-            disabled={!deInput || !ateInput}
-            className="rounded-md bg-brand-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-brand-700 disabled:opacity-50"
-          >
-            Aplicar
-          </button>
-        </div>
-      )}
+      <div
+        className={`flex flex-wrap items-center gap-1.5 overflow-hidden transition-all duration-300 ease-out ${
+          personalizado ? "max-w-md opacity-100" : "max-h-0 max-w-0 opacity-0"
+        }`}
+      >
+        <input
+          type="date"
+          value={deInput}
+          onChange={(e) => setDeInput(e.target.value)}
+          aria-label="De"
+          tabIndex={personalizado ? 0 : -1}
+          className="rounded-md border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <span className="text-xs text-gray-400">até</span>
+        <input
+          type="date"
+          value={ateInput}
+          onChange={(e) => setAteInput(e.target.value)}
+          aria-label="Até"
+          tabIndex={personalizado ? 0 : -1}
+          className="rounded-md border border-gray-200 bg-white px-2 py-1.5 text-xs text-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <button
+          type="button"
+          onClick={handleAplicarPersonalizado}
+          disabled={!deInput || !ateInput}
+          tabIndex={personalizado ? 0 : -1}
+          className="rounded-md bg-brand-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+        >
+          Aplicar
+        </button>
+      </div>
     </div>
   );
 }

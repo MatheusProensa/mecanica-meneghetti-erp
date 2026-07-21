@@ -62,7 +62,7 @@ export async function gerarDevedoresPdf({
   const logoBase64 = await carregarLogoComprimida();
   const emitidoEm = new Date().toLocaleDateString("pt-BR");
   let y = desenharCabecalhoPdf(doc, {
-    titulo: "Relatório de Devedores",
+    titulo: "Saldo em Aberto",
     subtitulo: periodoLabel ? `${periodoLabel} · ${emitidoEm}` : emitidoEm,
     logoBase64,
   });
@@ -80,7 +80,7 @@ export async function gerarDevedoresPdf({
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(31, 41, 55);
-  doc.text("Devedores", PDF_MARGIN_X, y + 10);
+  doc.text("Detalhamento", PDF_MARGIN_X, y + 10);
 
   const badgeCol = criarColunaBadgePdf(5, SITUACAO_TONE);
 
