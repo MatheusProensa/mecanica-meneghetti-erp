@@ -10,6 +10,7 @@ import OSForm from "@/components/OSForm";
 import OSFotos from "@/components/OSFotos";
 import OSPagamentoCard from "@/components/OSPagamentoCard";
 import GerarCobrancaOSButton from "@/components/GerarCobrancaOSButton";
+import GerarOSPdfButton from "@/components/GerarOSPdfButton";
 import DarkPatternBg from "@/components/ui/DarkPatternBg";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
@@ -90,6 +91,29 @@ export default async function OSDetalhePage({
             </p>
           </div>
           <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <GerarOSPdfButton
+              empresa={empresa}
+              cliente={{
+                nome: os.cliente.nome,
+                telefone: formatPhoneBR(telefoneOS) || null,
+                endereco: os.cliente.endereco,
+                cpfCnpj: os.cliente.cpfCnpj,
+              }}
+              os={{
+                id: os.id,
+                data: os.data,
+                statusLabel: osStatusMap[os.status]?.label ?? os.status,
+                mecanicoNome: os.mecanico?.nome ?? os.mecanicoResponsavel,
+                previsaoEntrega: os.previsaoEntrega,
+                formaPagamento: os.formaPagamento,
+                observacoes: os.observacoes,
+              }}
+              itens={os.itens.map((item) => ({
+                data: item.data,
+                descricao: item.descricao,
+                valor: item.valor,
+              }))}
+            />
             {!os.pago && (
               <GerarCobrancaOSButton
                 empresa={empresa}
