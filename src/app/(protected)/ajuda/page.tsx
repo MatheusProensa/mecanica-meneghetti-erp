@@ -93,10 +93,10 @@ export default async function AjudaPage() {
   const secoesVisiveis = secoes.filter((s) => !s.requer || usuario.permissoes[s.requer]);
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <PageHero title="Ajuda" description="Um resumo rápido de como usar cada parte do sistema." />
 
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {secoesVisiveis.map((secao) => {
           const Icon = iconMap[secao.icon];
           const iconBg = iconBgByColor[secao.iconColor] ?? "bg-gray-100";
