@@ -230,7 +230,7 @@ function desenharBadgePdf(doc: jsPDF, texto: string, tone: PdfBadgeTone, cx: num
   doc.setFillColor(...bg);
   doc.roundedRect(boxX, boxY, boxWidth, boxHeight, boxHeight / 2, boxHeight / 2, "F");
   doc.setTextColor(...corTexto);
-  doc.text(texto, cx, cy + 1.6, { align: "center" });
+  doc.text(texto, cx, cy, { align: "center", baseline: "middle" });
 }
 
 /**

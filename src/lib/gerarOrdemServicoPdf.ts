@@ -196,8 +196,15 @@ export async function gerarOrdemServicoPdf({
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   doc.setTextColor(...PDF_INK_300);
-  doc.text("Assinatura do cliente", PDF_MARGIN_X, yAssinatura + 5);
-  doc.text(`Assinatura — ${empresa.nome}`, pageWidth - PDF_MARGIN_X - larguraAssinatura, yAssinatura + 5);
+  doc.text("Assinatura do cliente", PDF_MARGIN_X + larguraAssinatura / 2, yAssinatura + 5, {
+    align: "center",
+  });
+  doc.text(
+    `Assinatura — ${empresa.nome}`,
+    pageWidth - PDF_MARGIN_X - larguraAssinatura / 2,
+    yAssinatura + 5,
+    { align: "center" }
+  );
 
   desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
 
