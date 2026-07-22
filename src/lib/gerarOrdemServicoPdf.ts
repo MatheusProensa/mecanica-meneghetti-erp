@@ -103,6 +103,10 @@ export async function gerarOrdemServicoPdf({
   doc.text(empresa.endereco, colDireitaX, yDir);
   yDir += 5;
   doc.text(`CNPJ ${empresa.cnpj}`, colDireitaX, yDir);
+  if (empresa.telefone) {
+    yDir += 5;
+    doc.text(empresa.telefone, colDireitaX, yDir);
+  }
 
   let y = Math.max(yEsq, yDir) + 10;
 
@@ -135,6 +139,8 @@ export async function gerarOrdemServicoPdf({
 
   const total = itens.reduce((sum, i) => sum + i.valor, 0);
 
+  const tableStartY = y;
+
   autoTable(doc, {
     startY: y,
     margin: { left: PDF_MARGIN_X, right: PDF_MARGIN_X },
@@ -150,7 +156,11 @@ export async function gerarOrdemServicoPdf({
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let afterTableY = (doc as any).lastAutoTable.finalY + 8;
+  const tableFinalY = (doc as any).lastAutoTable.finalY as number;
+  doc.setDrawColor(229, 231, 235);
+  doc.roundedRect(PDF_MARGIN_X, tableStartY - 6, usableWidth, tableFinalY - tableStartY + 6, 2, 2, "S");
+
+  let afterTableY = tableFinalY + 8;
   afterTableY = desenharTotalPdf(doc, {
     label: "Total do serviço",
     valor: formatCurrency(total),
@@ -169,10 +179,11 @@ export async function gerarOrdemServicoPdf({
     doc.setTextColor(55, 65, 81);
     const linhas = doc.splitTextToSize(os.observacoes, pageWidth - PDF_MARGIN_X * 2);
     doc.text(linhas, PDF_MARGIN_X, afterTableY + 5);
+    afterTableY += 5 + linhas.length * 4.2;
   }
 
-  // Assinaturas, sempre no mesmo lugar perto do rodapé
-  const yAssinatura = pageHeight - 32;
+  // Assinaturas: acompanha o fim do conteúdo, mas nunca sobe além da posição fixa perto do rodapé
+  const yAssinatura = Math.min(afterTableY + 25, pageHeight - 32);
   const larguraAssinatura = (usableWidth - 20) / 2;
   doc.setDrawColor(156, 163, 175);
   doc.line(PDF_MARGIN_X, yAssinatura, PDF_MARGIN_X + larguraAssinatura, yAssinatura);
