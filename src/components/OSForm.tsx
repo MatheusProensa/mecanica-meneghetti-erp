@@ -37,6 +37,22 @@ export default function OSForm({
       <fieldset disabled={readOnly} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
+          <label htmlFor="osData" className="block text-sm font-medium text-gray-700">
+            Data da OS
+          </label>
+          <input
+            id="osData"
+            name="osData"
+            type="date"
+            defaultValue={toDateInputValue(os?.data ?? new Date())}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Data do serviço — ajuste se o cadastro foi feito depois.
+          </p>
+        </div>
+
+        <div>
           <label htmlFor="clienteId" className="block text-sm font-medium text-gray-700">
             Cliente *
           </label>

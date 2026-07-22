@@ -63,10 +63,12 @@ export async function createOS(formData: FormData) {
   if (itens.length === 0) throw new Error("Adicione ao menos um item de serviço");
 
   const previsaoEntregaRaw = str(formData, "previsaoEntrega");
+  const osDataRaw = str(formData, "osData");
 
   const os = await prisma.ordemServico.create({
     data: {
       clienteId,
+      ...(osDataRaw ? { data: new Date(osDataRaw) } : {}),
       telefone: str(formData, "telefone"),
       status: statusOS(formData),
       mecanicoId: str(formData, "mecanicoId"),
@@ -92,6 +94,7 @@ export async function updateOS(id: number, formData: FormData) {
   if (itens.length === 0) throw new Error("Adicione ao menos um item de serviço");
 
   const previsaoEntregaRaw = str(formData, "previsaoEntrega");
+  const osDataRaw = str(formData, "osData");
 
   await prisma.$transaction([
     prisma.itemServico.deleteMany({ where: { ordemServicoId: id } }),
@@ -99,6 +102,7 @@ export async function updateOS(id: number, formData: FormData) {
       where: { id },
       data: {
         clienteId,
+        ...(osDataRaw ? { data: new Date(osDataRaw) } : {}),
         telefone: str(formData, "telefone"),
         status: statusOS(formData),
         mecanicoId: str(formData, "mecanicoId"),
