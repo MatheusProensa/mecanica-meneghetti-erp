@@ -9,6 +9,7 @@ import { StatusBadge, type BadgeTone } from "@/components/ui/StatusBadge";
 import PageHeader from "@/components/ui/PageHeader";
 import DarkPatternBg from "@/components/ui/DarkPatternBg";
 import PasswordForm from "./PasswordForm";
+import PushNotificationToggle from "@/components/PushNotificationToggle";
 import PixKeyForm from "./PixKeyForm";
 import MecanicosSection from "./MecanicosSection";
 import EmpresaForm from "./EmpresaForm";
@@ -164,6 +165,12 @@ export default async function ConfiguracoesPage({
                   <p className="mt-1 text-sm font-medium text-gray-900">
                     {session?.user?.name} — {session?.user?.email}
                   </p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900">Notificações</h3>
+                  <div className="mt-3">
+                    <PushNotificationToggle />
+                  </div>
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900">Trocar senha</h3>

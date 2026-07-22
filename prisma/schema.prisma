@@ -48,7 +48,8 @@ model User {
   podeAcessarConfiguracoes Boolean   @default(false)
   createdAt                DateTime  @default(now())
 
-  resetTokens PasswordResetToken[]
+  resetTokens       PasswordResetToken[]
+  pushSubscriptions PushSubscription[]
 }
 
 model PasswordResetToken {
@@ -59,6 +60,20 @@ model PasswordResetToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+/// Inscrição de notificação push de um navegador/dispositivo específico. Um
+/// usuário pode ter várias (ex: celular e computador autorizados ao mesmo tempo).
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
 
   @@index([userId])
 }
