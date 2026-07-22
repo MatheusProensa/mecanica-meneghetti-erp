@@ -1,6 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
+import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/requireAuth";
@@ -75,6 +76,7 @@ export async function updatePixKey(
     data: { pixKey, dadosBancarios },
   });
 
+  revalidatePath("/configuracoes");
   return "Dados de pagamento atualizados com sucesso.";
 }
 
@@ -111,5 +113,6 @@ export async function updateEmpresa(
     update: { nome, endereco, cidade, telefone, cnpj },
   });
 
+  revalidatePath("/configuracoes");
   return "Dados da empresa atualizados com sucesso.";
 }
