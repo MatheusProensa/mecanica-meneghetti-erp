@@ -82,12 +82,12 @@ export default async function MecanicosSection() {
                     <p className="flex items-center gap-2 font-medium text-gray-900">
                       {mecanico.nome}
                       {!mecanico.ativo && (
-                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
                           Inativo
                         </span>
                       )}
                     </p>
-                    <p className="mt-0.5 text-sm text-gray-500">
+                    <p className="mt-0.5 text-sm text-gray-600">
                       {stats.quantidade} OS concluída{stats.quantidade === 1 ? "" : "s"} no mês ·{" "}
                       {formatCurrency(stats.faturamento)}
                     </p>

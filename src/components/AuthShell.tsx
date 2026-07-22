@@ -26,16 +26,16 @@ export default function AuthShell({
               priority
             />
             {subtitle && (
-              <p className="mt-2 text-center text-sm text-gray-500">{subtitle}</p>
+              <p className="mt-2 text-center text-sm text-gray-600">{subtitle}</p>
             )}
 
             <div className="mt-6">{children}</div>
           </div>
         </div>
-        <p className="mt-5 text-center text-xs text-gray-500">
+        <p className="mt-5 text-center text-xs text-gray-600">
           © {new Date().getFullYear()} Mecânica Meneghetti
         </p>
-        <p className="mt-1 text-center text-[11px] text-gray-400">
+        <p className="mt-1 text-center text-[11px] text-gray-500">
           Desenvolvido por Matheus Proensa
         </p>
       </div>

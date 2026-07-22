@@ -104,14 +104,14 @@ export default async function BuscarPage({
                         {cliente.nome}
                       </Link>
                     </td>
-                    <td className="px-6 py-3 text-gray-500">
+                    <td className="px-6 py-3 text-gray-600">
                       {cliente.telefone || cliente.whatsapp ? (
                         <WhatsAppLink phone={cliente.telefone ?? cliente.whatsapp} />
                       ) : (
                         "-"
                       )}
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{cliente.cpfCnpj ?? "-"}</td>
+                    <td className="px-6 py-3 text-gray-600">{cliente.cpfCnpj ?? "-"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -126,7 +126,7 @@ export default async function BuscarPage({
                     aria-label={cliente.nome}
                   />
                   <p className="pointer-events-none font-medium text-gray-900">{cliente.nome}</p>
-                  <p className="relative mt-1 text-sm text-gray-500">
+                  <p className="relative mt-1 text-sm text-gray-600">
                     {cliente.telefone || cliente.whatsapp ? (
                       <WhatsAppLink
                         phone={cliente.telefone ?? cliente.whatsapp}
@@ -160,11 +160,11 @@ export default async function BuscarPage({
                         #{String(os.id).padStart(4, "0")} — {os.cliente.nome}
                       </Link>
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
+                    <td className="px-6 py-3 text-gray-600">{formatDate(os.data)}</td>
                     <td className="px-6 py-3">
                       <StatusBadge {...osStatusMap[os.status]} />
                     </td>
-                    <td className="px-6 py-3 text-gray-500">
+                    <td className="px-6 py-3 text-gray-600">
                       {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
                     </td>
                   </tr>
@@ -189,7 +189,7 @@ export default async function BuscarPage({
                   </div>
                   <div className="mt-1.5 flex items-center justify-between gap-2">
                     <StatusBadge {...osStatusMap[os.status]} />
-                    <span className="shrink-0 text-xs text-gray-500">{formatDate(os.data)}</span>
+                    <span className="shrink-0 text-xs text-gray-600">{formatDate(os.data)}</span>
                   </div>
                 </Link>
               ))}
@@ -217,7 +217,7 @@ export default async function BuscarPage({
                     <td className="px-6 py-3">
                       <StatusBadge {...notaTipoMap[nota.tipo]} />
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(nota.dataEmissao)}</td>
+                    <td className="px-6 py-3 text-gray-600">{formatDate(nota.dataEmissao)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -233,7 +233,7 @@ export default async function BuscarPage({
                   <p className="min-w-0 flex-1 truncate font-medium text-gray-900">{nota.numero}</p>
                   <div className="flex shrink-0 items-center gap-2">
                     <StatusBadge {...notaTipoMap[nota.tipo]} />
-                    <span className="text-xs text-gray-500">{formatDate(nota.dataEmissao)}</span>
+                    <span className="text-xs text-gray-600">{formatDate(nota.dataEmissao)}</span>
                   </div>
                 </Link>
               ))}

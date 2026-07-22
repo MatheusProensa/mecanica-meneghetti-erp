@@ -81,7 +81,7 @@ export default function PushNotificationToggle() {
 
   if (estado === "nao-suportado") {
     return (
-      <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-4 text-sm text-gray-500">
+      <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
         <BellOff className="mt-0.5 h-4 w-4 shrink-0" />
         <p>Este navegador não é compatível com notificações push.</p>
       </div>
@@ -91,12 +91,12 @@ export default function PushNotificationToggle() {
   return (
     <div className="rounded-xl border border-gray-200 p-4">
       <div className="flex items-start gap-3">
-        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${estado === "ativo" ? "bg-brand-600 text-white" : "bg-gray-100 text-gray-500"}`}>
+        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${estado === "ativo" ? "bg-brand-600 text-white" : "bg-gray-100 text-gray-600"}`}>
           {estado === "ativo" ? <BellRing className="h-4.5 w-4.5" /> : <Bell className="h-4.5 w-4.5" />}
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-medium text-gray-900">Notificações neste dispositivo</p>
-          <p className="mt-0.5 text-sm text-gray-500">
+          <p className="mt-0.5 text-sm text-gray-600">
             {estado === "ativo"
               ? "Ativadas — você recebe um resumo diário de OS atrasadas e dívidas em aberto."
               : "Receba um aviso no celular quando houver OS atrasada ou dívida em aberto."}

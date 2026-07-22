@@ -177,7 +177,7 @@ export default async function ExtrasPage({
       <form className="mt-6 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
         {situacao && <input type="hidden" name="situacao" value={situacao} />}
         <div className="col-span-2 sm:w-auto sm:flex-1 sm:min-w-[160px]">
-          <label className="block text-xs font-medium text-gray-500">Funcionário</label>
+          <label className="block text-xs font-medium text-gray-600">Funcionário</label>
           <select
             name="funcionarioId"
             defaultValue={funcionarioId ?? ""}
@@ -192,9 +192,9 @@ export default async function ExtrasPage({
           </select>
         </div>
         <div className="col-span-2 sm:w-auto sm:flex-1 sm:min-w-[160px]">
-          <label className="block text-xs font-medium text-gray-500">Cliente</label>
+          <label className="block text-xs font-medium text-gray-600">Cliente</label>
           <div className="relative mt-1">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <input
               type="text"
               name="q"
@@ -206,7 +206,7 @@ export default async function ExtrasPage({
           </div>
         </div>
         <div className="sm:w-40">
-          <label className="block text-center text-xs font-medium text-gray-500">De</label>
+          <label className="block text-center text-xs font-medium text-gray-600">De</label>
           <input
             type="date"
             name="de"
@@ -215,7 +215,7 @@ export default async function ExtrasPage({
           />
         </div>
         <div className="sm:w-40">
-          <label className="block text-center text-xs font-medium text-gray-500">Até</label>
+          <label className="block text-center text-xs font-medium text-gray-600">Até</label>
           <input
             type="date"
             name="ate"
@@ -297,7 +297,7 @@ export default async function ExtrasPage({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="bg-gray-50/80 text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-600">
                 <tr>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Data</th>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
@@ -323,7 +323,7 @@ export default async function ExtrasPage({
               <tbody>
                 {pagAtual.map((e) => (
                   <tr key={e.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-6 py-3 text-gray-500">{formatDate(e.data)}</td>
+                    <td className="px-6 py-3 text-gray-600">{formatDate(e.data)}</td>
                     <td className="px-6 py-3">
                       <Link
                         href={`/extras/${e.id}`}
@@ -332,14 +332,14 @@ export default async function ExtrasPage({
                         {e.mecanico.nome}
                       </Link>
                     </td>
-                    <td className="px-6 py-3 text-gray-500">
+                    <td className="px-6 py-3 text-gray-600">
                       {e.cliente?.nome ?? (e.ordemServico ? `OS #${String(e.ordemServico.id).padStart(4, "0")}` : "-")}
                     </td>
-                    <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(e.valorExtra)}</td>
+                    <td className="px-6 py-3 text-gray-600 tabular-nums">{formatCurrency(e.valorExtra)}</td>
                     <td className="px-6 py-3 font-medium tabular-nums text-gray-900">
                       {formatCurrency(e.saldo)}
                     </td>
-                    <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(e.lucroEmpresa)}</td>
+                    <td className="px-6 py-3 text-gray-600 tabular-nums">{formatCurrency(e.lucroEmpresa)}</td>
                     <td className="px-6 py-3">
                       <StatusBadge {...statusExtraMap[e.status]} />
                     </td>
@@ -357,11 +357,11 @@ export default async function ExtrasPage({
                     </span>
                     <StatusBadge {...statusExtraMap[e.status]} />
                   </div>
-                  <p className="mt-1 truncate text-sm text-gray-500">
+                  <p className="mt-1 truncate text-sm text-gray-600">
                     {e.cliente?.nome ?? (e.ordemServico ? `OS #${String(e.ordemServico.id).padStart(4, "0")}` : "-")}
                   </p>
                   <div className="mt-1.5 flex items-center justify-between gap-2">
-                    <span className="text-xs text-gray-500">{formatDate(e.data)}</span>
+                    <span className="text-xs text-gray-600">{formatDate(e.data)}</span>
                     <span className="text-sm font-semibold tabular-nums text-gray-900">
                       Saldo: {formatCurrency(e.saldo)}
                     </span>

@@ -18,7 +18,7 @@ export default function LoginPage() {
             E-mail
           </label>
           <div className="relative mt-1">
-            <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <input
               id="email"
               name="email"
@@ -35,7 +35,7 @@ export default function LoginPage() {
             Senha
           </label>
           <div className="relative mt-1">
-            <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <PasswordInput
               id="password"
               name="password"
@@ -61,7 +61,7 @@ export default function LoginPage() {
 
       <Link
         href="/esqueci-senha"
-        className="mt-4 block text-center text-sm text-gray-500 hover:text-brand-600 hover:underline"
+        className="mt-4 block text-center text-sm text-gray-600 hover:text-brand-600 hover:underline"
       >
         Esqueci minha senha
       </Link>

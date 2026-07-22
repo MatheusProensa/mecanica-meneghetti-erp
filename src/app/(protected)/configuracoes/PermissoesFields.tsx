@@ -48,14 +48,14 @@ export default function PermissoesFields({
 
   return (
     <div className="space-y-3 rounded-lg bg-gray-50 p-3">
-      <p className="text-xs font-medium text-gray-500">
+      <p className="text-xs font-medium text-gray-600">
         {role === "visualizador" ? "O que esse usuário pode ver:" : "O que esse usuário pode fazer:"}
       </p>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-xs text-gray-500">
+            <tr className="text-xs text-gray-600">
               <th className="pb-1 text-left font-medium">Página</th>
               <th className="px-2 pb-1 font-medium">Ver</th>
               {role === "funcionario" && (

@@ -132,7 +132,7 @@ export default function CobrancaCliente({
           {selecionadas.size === ordensAbertas.length ? "Limpar seleção" : "Selecionar todas"}
         </button>
       </div>
-      <p className="mt-1 text-xs text-gray-500">
+      <p className="mt-1 text-xs text-gray-600">
         Escolha as ordens de serviço em aberto que entram na cobrança.
       </p>
 
@@ -152,7 +152,7 @@ export default function CobrancaCliente({
               <span className="block font-medium text-gray-900">
                 #{String(os.id).padStart(4, "0")} — {formatDate(os.data)}
               </span>
-              <span className="block truncate text-xs text-gray-500">{os.descricao || "-"}</span>
+              <span className="block truncate text-xs text-gray-600">{os.descricao || "-"}</span>
             </span>
             <span className="shrink-0 text-sm font-medium text-gray-900">
               {formatCurrency(os.valor)}
@@ -184,7 +184,7 @@ export default function CobrancaCliente({
               {pixKeyPadrao && (
                 <p>
                   Chave Pix: {pixKeyPadrao}{" "}
-                  <span className="text-gray-400">(QR Code entra automaticamente)</span>
+                  <span className="text-gray-500">(QR Code entra automaticamente)</span>
                 </p>
               )}
               {dadosBancariosPadrao && (
@@ -194,7 +194,7 @@ export default function CobrancaCliente({
           )}
         </div>
       ) : (
-        <p className="mt-3 text-xs text-gray-500">
+        <p className="mt-3 text-xs text-gray-600">
           Nenhum dado de pagamento cadastrado.{" "}
           <Link href="/configuracoes?secao=cobranca" className="text-brand-600 hover:underline">
             Cadastrar em Configurações

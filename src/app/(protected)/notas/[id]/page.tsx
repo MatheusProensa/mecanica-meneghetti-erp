@@ -50,7 +50,7 @@ export default async function NotaDetalhePage({
     <div className="max-w-2xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/notas" className="text-sm text-gray-500 hover:underline">
+          <Link href="/notas" className="text-sm text-gray-600 hover:underline">
             ← Notas
           </Link>
           <h1 className="mt-1 text-xl font-semibold text-gray-900">

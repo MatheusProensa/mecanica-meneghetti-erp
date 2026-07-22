@@ -66,11 +66,11 @@ export default function UsuarioRow({
       >
         <div className="flex items-center gap-2">
           <ChevronDown
-            className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${aberto ? "rotate-180" : ""}`}
+            className={`h-4 w-4 shrink-0 text-gray-500 transition-transform ${aberto ? "rotate-180" : ""}`}
           />
           <p className="font-medium text-gray-900">
             {user.name}
-            {isSelf && <span className="ml-1.5 text-xs text-gray-400">(você)</span>}
+            {isSelf && <span className="ml-1.5 text-xs text-gray-500">(você)</span>}
           </p>
         </div>
         <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
@@ -82,7 +82,7 @@ export default function UsuarioRow({
         <div className="border-t border-gray-100 p-4 sm:p-6">
           <form action={updateAction} className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-gray-500">Perfil</label>
+              <label className="block text-xs font-medium text-gray-600">Perfil</label>
               <select
                 name="role"
                 value={role}
@@ -140,7 +140,7 @@ export default function UsuarioRow({
               className="mt-3 flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3"
             >
               <div>
-                <label className="block text-xs font-medium text-gray-500">Nova senha</label>
+                <label className="block text-xs font-medium text-gray-600">Nova senha</label>
                 <PasswordInput
                   name="novaSenha"
                   required

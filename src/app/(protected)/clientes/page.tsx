@@ -68,7 +68,7 @@ export default async function ClientesPage({
       />
 
       <form className="relative mt-4 max-w-md">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
         <input
           type="text"
           name="q"
@@ -90,7 +90,7 @@ export default async function ClientesPage({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="bg-gray-50/80 text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-600">
                 <tr>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Nome</th>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
@@ -131,21 +131,21 @@ export default async function ClientesPage({
                           {cliente.nome}
                         </Link>
                       </td>
-                      <td className="px-6 py-3 text-gray-500">
+                      <td className="px-6 py-3 text-gray-600">
                         {cliente.cpfCnpj ?? <span className="text-gray-300">não informado</span>}
                       </td>
-                      <td className="px-6 py-3 text-gray-500">
+                      <td className="px-6 py-3 text-gray-600">
                         {cliente.telefone || cliente.whatsapp ? (
                           <WhatsAppLink phone={cliente.telefone ?? cliente.whatsapp} />
                         ) : (
                           <span className="text-gray-300">não informado</span>
                         )}
                       </td>
-                      <td className="px-6 py-3 text-gray-500">
+                      <td className="px-6 py-3 text-gray-600">
                         {cliente.cidade ?? <span className="text-gray-300">não informado</span>}
                       </td>
-                      <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(totalGasto)}</td>
-                      <td className="px-6 py-3 text-gray-500">
+                      <td className="px-6 py-3 text-gray-600 tabular-nums">{formatCurrency(totalGasto)}</td>
+                      <td className="px-6 py-3 text-gray-600">
                         {ultimaVisita ? (
                           formatDate(ultimaVisita)
                         ) : (
@@ -184,7 +184,7 @@ export default async function ClientesPage({
                         </span>
                       )}
                     </div>
-                    <p className="relative mt-1 truncate text-sm text-gray-500">
+                    <p className="relative mt-1 truncate text-sm text-gray-600">
                       {cliente.telefone || cliente.whatsapp ? (
                         <WhatsAppLink
                           phone={cliente.telefone ?? cliente.whatsapp}
@@ -199,7 +199,7 @@ export default async function ClientesPage({
                       <span className="font-medium text-gray-900">
                         {formatCurrency(totalGasto)}
                       </span>
-                      <span className="text-gray-500">
+                      <span className="text-gray-600">
                         {ultimaVisita ? formatDate(ultimaVisita) : "nunca"}
                       </span>
                     </div>

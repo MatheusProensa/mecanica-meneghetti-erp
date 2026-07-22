@@ -38,7 +38,7 @@ export default function DespesaItemsEditor({
       <label className="block text-sm font-medium text-gray-700">
         Itens comprados (opcional)
       </label>
-      <p className="mt-0.5 text-xs text-gray-500">
+      <p className="mt-0.5 text-xs text-gray-600">
         Use para detalhar uma compra com várias peças — o valor total é somado automaticamente.
       </p>
 
@@ -66,7 +66,7 @@ export default function DespesaItemsEditor({
               <button
                 type="button"
                 onClick={() => removeItem(index)}
-                className="shrink-0 rounded-md border border-gray-200 px-3 text-sm text-gray-500 hover:bg-gray-50"
+                className="shrink-0 rounded-md border border-gray-200 px-3 text-sm text-gray-600 hover:bg-gray-50"
               >
                 Remover
               </button>

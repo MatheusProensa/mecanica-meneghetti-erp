@@ -110,7 +110,7 @@ export default function FinanceiroResultados({
         </div>
       </div>
 
-      <p className="mt-2 text-sm text-gray-500">
+      <p className="mt-2 text-sm text-gray-600">
         {usandoSelecao
           ? `${selecionados.size} selecionada${selecionados.size === 1 ? "" : "s"} para exportar`
           : "Nenhuma marcada — a exportação sai com tudo que está filtrado"}
@@ -127,7 +127,7 @@ export default function FinanceiroResultados({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="bg-gray-50/80 text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-600">
                 <tr>
                   <th className="w-10 px-4 py-3">
                     <input
@@ -170,16 +170,16 @@ export default function FinanceiroResultados({
                         {despesa.descricao}
                       </Link>
                     </td>
-                    <td className="align-middle px-6 py-3 text-gray-500">
+                    <td className="align-middle px-6 py-3 text-gray-600">
                       {despesa.categoria ?? "-"}
                     </td>
-                    <td className="align-middle px-6 py-3 text-gray-500">
+                    <td className="align-middle px-6 py-3 text-gray-600">
                       {despesa.fornecedor ?? "-"}
                     </td>
-                    <td className="align-middle px-6 py-3 text-gray-500">
+                    <td className="align-middle px-6 py-3 text-gray-600">
                       {formatDate(despesa.data)}
                     </td>
-                    <td className="align-middle px-6 py-3 text-gray-500 tabular-nums">
+                    <td className="align-middle px-6 py-3 text-gray-600 tabular-nums">
                       {formatCurrency(despesa.valor)}
                     </td>
                   </tr>
@@ -206,11 +206,11 @@ export default function FinanceiroResultados({
                       </span>
                     </div>
                     <div className="mt-1 flex items-center justify-between gap-2">
-                      <p className="min-w-0 flex-1 truncate text-sm text-gray-500">
+                      <p className="min-w-0 flex-1 truncate text-sm text-gray-600">
                         {despesa.categoria ?? "-"}
                         {despesa.fornecedor ? ` · ${despesa.fornecedor}` : ""}
                       </p>
-                      <span className="shrink-0 text-xs text-gray-500">
+                      <span className="shrink-0 text-xs text-gray-600">
                         {formatDate(despesa.data)}
                       </span>
                     </div>

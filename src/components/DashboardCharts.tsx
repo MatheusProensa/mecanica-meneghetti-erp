@@ -32,7 +32,7 @@ function ChartTooltip({ active, payload, label }: TooltipContentProps) {
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
-      <p className="text-xs font-medium text-gray-500">{label}</p>
+      <p className="text-xs font-medium text-gray-600">{label}</p>
       {payload.map((entry) => (
         <p
           key={String(entry.name)}
@@ -62,7 +62,7 @@ export default function DashboardCharts({
         Faturamento das OS ({periodoLabel})
       </p>
       {data.length === 0 ? (
-        <div className="flex h-[220px] w-full items-center justify-center text-sm text-gray-400 sm:h-[300px]">
+        <div className="flex h-[220px] w-full items-center justify-center text-sm text-gray-500 sm:h-[300px]">
           Escolha o período personalizado (De/Até) pra ver o gráfico
         </div>
       ) : (

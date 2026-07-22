@@ -26,7 +26,7 @@ export default function PixKeyForm({
           placeholder="CPF/CNPJ, e-mail, telefone ou chave aleatória"
           className="mt-1 w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-600">
           Usada para gerar o QR Code de pagamento nos PDFs de cobrança.
         </p>
       </div>
@@ -43,7 +43,7 @@ export default function PixKeyForm({
           placeholder={"Ex:\nBanco: Nome do banco (000)\nAgência: 0000\nConta: 00000000-0"}
           className="mt-1 w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-600">
           Aparece como texto no PDF, para clientes que preferem transferência bancária.
         </p>
       </div>

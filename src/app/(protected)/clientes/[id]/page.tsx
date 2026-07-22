@@ -88,7 +88,7 @@ export default async function ClienteDetalhePage({
 
   return (
     <div className="max-w-4xl space-y-8">
-      <Link href="/clientes" className="text-sm text-gray-500 hover:underline">
+      <Link href="/clientes" className="text-sm text-gray-600 hover:underline">
         ← Voltar para clientes
       </Link>
 
@@ -166,7 +166,7 @@ export default async function ClienteDetalhePage({
               ) : (
                 <>
                   <table className="hidden w-full text-left text-sm md:table">
-                    <thead className="bg-gray-50/80 text-gray-500">
+                    <thead className="bg-gray-50/80 text-gray-600">
                       <tr>
                         <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">OS</th>
                         <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
@@ -194,11 +194,11 @@ export default async function ClienteDetalhePage({
                               #{String(os.id).padStart(4, "0")}
                             </Link>
                           </td>
-                          <td className="px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
+                          <td className="px-6 py-3 text-gray-600">{formatDate(os.data)}</td>
                           <td className="px-6 py-3">
                             <StatusBadge {...osStatusMap[os.status]} />
                           </td>
-                          <td className="px-6 py-3 text-gray-500 tabular-nums">
+                          <td className="px-6 py-3 text-gray-600 tabular-nums">
                             {formatCurrency(os.itens.reduce((s, i) => s + i.valor, 0))}
                           </td>
                           <td className="px-6 py-3">
@@ -220,7 +220,7 @@ export default async function ClienteDetalhePage({
                           <p className="font-medium text-gray-900">
                             #{String(os.id).padStart(4, "0")}
                           </p>
-                          <p className="text-sm text-gray-500">{formatDate(os.data)}</p>
+                          <p className="text-sm text-gray-600">{formatDate(os.data)}</p>
                         </div>
                         <div className="flex flex-col items-end gap-1">
                           <StatusBadge {...osStatusMap[os.status]} />
@@ -277,7 +277,7 @@ export default async function ClienteDetalhePage({
                               {formatCurrency(valorOriginal)}
                             </p>
                             {dataServico && (
-                              <p className="text-sm text-gray-500">{formatDate(dataServico)}</p>
+                              <p className="text-sm text-gray-600">{formatDate(dataServico)}</p>
                             )}
                           </div>
                           <div className="flex items-center gap-2">
@@ -322,7 +322,7 @@ export default async function ClienteDetalhePage({
                     >
                       <div>
                         <p className="font-medium text-gray-900">{nota.numero}</p>
-                        <p className="text-sm text-gray-500">{formatDate(nota.dataEmissao)}</p>
+                        <p className="text-sm text-gray-600">{formatDate(nota.dataEmissao)}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <StatusBadge {...notaTipoMap[nota.tipo]} />

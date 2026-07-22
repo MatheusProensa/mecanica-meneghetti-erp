@@ -116,7 +116,7 @@ export default async function OSListPage({
         {status && <input type="hidden" name="status" value={status} />}
         {pagamento && <input type="hidden" name="pagamento" value={pagamento} />}
         <div className="relative w-full max-w-xs">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
             type="text"
             name="q"
@@ -135,7 +135,7 @@ export default async function OSListPage({
       </form>
 
       <div className="mt-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Status</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Status</p>
         <div className="mt-1.5 flex flex-wrap gap-2">
           <FilterLink label="Todas" href={osHref({ status: null })} active={!status} />
           {Object.entries(osStatusMap).map(([value, { label }]) => (
@@ -150,7 +150,7 @@ export default async function OSListPage({
       </div>
 
       <div className="mt-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Pagamento</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Pagamento</p>
         <div className="mt-1.5 flex flex-wrap gap-2">
           <FilterLink
             label="Todos pagamentos"
@@ -176,7 +176,7 @@ export default async function OSListPage({
       </div>
 
       <div className="mt-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Ordenar</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Ordenar</p>
         <div className="mt-1.5 flex flex-wrap gap-2">
           <FilterLink
             label="Mais recentes"

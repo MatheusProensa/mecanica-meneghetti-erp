@@ -161,7 +161,7 @@ export default async function NotasPage({
         />
         <MetricCard
           icon="file-text"
-          iconColor="text-gray-500"
+          iconColor="text-gray-600"
           label="Sem valor informado"
           value={semValorCount}
           context={semValorCount > 0 ? "não entram na soma" : undefined}
@@ -186,7 +186,7 @@ export default async function NotasPage({
       <form className="mt-3 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
         {tipo && <input type="hidden" name="tipo" value={tipo} />}
         <div className="sm:w-36">
-          <label className="block text-center text-xs font-medium text-gray-500">Mês</label>
+          <label className="block text-center text-xs font-medium text-gray-600">Mês</label>
           <select
             name="mes"
             defaultValue={mes ?? ""}
@@ -201,7 +201,7 @@ export default async function NotasPage({
           </select>
         </div>
         <div className="sm:w-24">
-          <label className="block text-center text-xs font-medium text-gray-500">Ano</label>
+          <label className="block text-center text-xs font-medium text-gray-600">Ano</label>
           <select
             name="ano"
             defaultValue={ano ?? ""}
@@ -216,7 +216,7 @@ export default async function NotasPage({
           </select>
         </div>
         <div className="sm:w-40">
-          <label className="block text-center text-xs font-medium text-gray-500">De</label>
+          <label className="block text-center text-xs font-medium text-gray-600">De</label>
           <input
             type="date"
             name="de"
@@ -225,7 +225,7 @@ export default async function NotasPage({
           />
         </div>
         <div className="sm:w-40">
-          <label className="block text-center text-xs font-medium text-gray-500">Até</label>
+          <label className="block text-center text-xs font-medium text-gray-600">Até</label>
           <input
             type="date"
             name="ate"
@@ -234,11 +234,11 @@ export default async function NotasPage({
           />
         </div>
         <div className="col-span-2 sm:w-auto sm:flex-1 sm:min-w-[200px]">
-          <label className="block text-xs font-medium text-gray-500">
+          <label className="block text-xs font-medium text-gray-600">
             Número ou observação
           </label>
           <div className="relative mt-1">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <input
               type="text"
               name="q"
@@ -256,7 +256,7 @@ export default async function NotasPage({
         </button>
       </form>
       {usarPersonalizado && (
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-xs text-gray-600">
           Mostrando o intervalo personalizado — o filtro de Mês/Ano fica em segundo plano enquanto
           &quot;De&quot;/&quot;Até&quot; estiverem preenchidos.
         </p>
@@ -273,7 +273,7 @@ export default async function NotasPage({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="bg-gray-50/80 text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-600">
                 <tr>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
                     Número
@@ -308,8 +308,8 @@ export default async function NotasPage({
                     <td className="px-6 py-3">
                       <StatusBadge {...notaTipoMap[nota.tipo]} />
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(nota.dataEmissao)}</td>
-                    <td className="px-6 py-3 text-gray-500">
+                    <td className="px-6 py-3 text-gray-600">{formatDate(nota.dataEmissao)}</td>
+                    <td className="px-6 py-3 text-gray-600">
                       {nota.cliente ? (
                         <Link href={`/clientes/${nota.cliente.id}`} className="hover:underline">
                           {nota.cliente.nome}
@@ -318,10 +318,10 @@ export default async function NotasPage({
                         "-"
                       )}
                     </td>
-                    <td className="max-w-xs truncate px-6 py-3 text-gray-500">
+                    <td className="max-w-xs truncate px-6 py-3 text-gray-600">
                       {nota.observacoes ?? "-"}
                     </td>
-                    <td className="px-6 py-3 text-gray-500 tabular-nums">
+                    <td className="px-6 py-3 text-gray-600 tabular-nums">
                       {nota.valor !== null ? formatCurrency(nota.valor) : "-"}
                     </td>
                     <td className="px-6 py-3">
@@ -335,7 +335,7 @@ export default async function NotasPage({
                           <FileText className="h-4 w-4" /> PDF
                         </a>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-gray-500">-</span>
                       )}
                     </td>
                   </tr>
@@ -355,12 +355,12 @@ export default async function NotasPage({
                     </Link>
                     <StatusBadge {...notaTipoMap[nota.tipo]} />
                   </div>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-1 text-sm text-gray-600">
                     {formatDate(nota.dataEmissao)}
                     {nota.cliente ? ` · ${nota.cliente.nome}` : ""}
                   </p>
                   {nota.observacoes && (
-                    <p className="mt-1 text-sm text-gray-500">{nota.observacoes}</p>
+                    <p className="mt-1 text-sm text-gray-600">{nota.observacoes}</p>
                   )}
                   <div className="mt-2 flex items-center justify-between gap-2">
                     <span className="text-sm font-medium tabular-nums text-gray-900">

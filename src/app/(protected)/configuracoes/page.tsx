@@ -137,7 +137,7 @@ export default async function ConfiguracoesPage({
               >
                 <span
                   className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                    ativo ? "bg-brand-600 text-white" : "bg-gray-100 text-gray-500"
+                    ativo ? "bg-brand-600 text-white" : "bg-gray-100 text-gray-600"
                   }`}
                 >
                   <Icon className="h-4.5 w-4.5" />
@@ -146,7 +146,7 @@ export default async function ConfiguracoesPage({
                   <span className={`block font-medium ${ativo ? "text-blue-700" : "text-gray-900"}`}>
                     {label}
                   </span>
-                  <span className="block truncate text-xs text-gray-500">{descricao}</span>
+                  <span className="block truncate text-xs text-gray-600">{descricao}</span>
                 </span>
                 <span className="whitespace-nowrap font-medium lg:hidden">{label}</span>
               </Link>
@@ -159,7 +159,7 @@ export default async function ConfiguracoesPage({
             <SectionCard icon={KeyRound} title="Conta" subtitle="Seus dados de acesso e senha">
               <div className="space-y-6">
                 <div className="rounded-xl bg-gray-50 p-4">
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                  <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
                     Logado como
                   </p>
                   <p className="mt-1 text-sm font-medium text-gray-900">
@@ -245,7 +245,7 @@ function SectionCard({
         </span>
         <div className="min-w-0">
           <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
-          {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
+          {subtitle && <p className="text-sm text-gray-600">{subtitle}</p>}
         </div>
       </div>
       <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 sm:p-6">{children}</div>

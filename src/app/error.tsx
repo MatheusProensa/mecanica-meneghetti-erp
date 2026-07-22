@@ -20,7 +20,7 @@ export default function RootError({
         <AlertTriangle className="h-6 w-6 text-red-600" />
       </div>
       <h1 className="text-base font-semibold text-gray-900">Algo deu errado</h1>
-      <p className="max-w-sm text-sm text-gray-500">
+      <p className="max-w-sm text-sm text-gray-600">
         Ocorreu um erro inesperado. Tente novamente em instantes.
       </p>
       <button

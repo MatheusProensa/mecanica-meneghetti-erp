@@ -79,7 +79,7 @@ export default function OSItemsEditor({
                 type="button"
                 onClick={() => removeItem(index)}
                 disabled={itens.length === 1}
-                className="shrink-0 rounded-md border border-gray-200 px-3 text-sm text-gray-500 hover:bg-gray-50 disabled:opacity-40"
+                className="shrink-0 rounded-md border border-gray-200 px-3 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
               >
                 Remover
               </button>

@@ -93,7 +93,7 @@ export default function OSResultados({
   return (
     <>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-600">
           {usandoSelecao
             ? `${selecionados.size} selecionada${selecionados.size === 1 ? "" : "s"} para o PDF`
             : "Nenhuma marcada — o PDF sai com tudo que está filtrado"}
@@ -119,7 +119,7 @@ export default function OSResultados({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="bg-gray-50/80 text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-600">
                 <tr>
                   <th className="w-10 px-4 py-3">
                     <input
@@ -163,8 +163,8 @@ export default function OSResultados({
                         #{String(os.id).padStart(4, "0")}
                       </Link>
                     </td>
-                    <td className="align-middle px-6 py-3 text-gray-500">{os.clienteNome}</td>
-                    <td className="align-middle px-6 py-3 text-gray-500">{formatDate(os.data)}</td>
+                    <td className="align-middle px-6 py-3 text-gray-600">{os.clienteNome}</td>
+                    <td className="align-middle px-6 py-3 text-gray-600">{formatDate(os.data)}</td>
                     <td className="align-middle px-6 py-3">
                       <OSStatusSelect id={os.id} status={os.status} readOnly={!podeEditar} />
                     </td>
@@ -177,7 +177,7 @@ export default function OSResultados({
                         readOnly={!podeEditar}
                       />
                     </td>
-                    <td className="align-middle px-6 py-3 text-gray-500 tabular-nums">
+                    <td className="align-middle px-6 py-3 text-gray-600 tabular-nums">
                       {formatCurrency(os.valor)}
                     </td>
                   </tr>
@@ -218,7 +218,7 @@ export default function OSResultados({
                           readOnly={!podeEditar}
                         />
                       </div>
-                      <span className="ml-auto text-xs text-gray-500">{formatDate(os.data)}</span>
+                      <span className="ml-auto text-xs text-gray-600">{formatDate(os.data)}</span>
                     </div>
                   </div>
                 </div>

@@ -76,7 +76,7 @@ export default function EmpresaForm({ empresa }: { empresa: DadosEmpresa }) {
         />
       </div>
 
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-gray-600">
         Esses dados aparecem no cabeçalho do PDF de cobrança gerado pra clientes.
       </p>
 

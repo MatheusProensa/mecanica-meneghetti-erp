@@ -25,7 +25,7 @@ const iconBgByColor: Record<string, string> = {
   "text-red-600": "bg-red-50",
   "text-amber-600": "bg-amber-50",
   "text-brand-600": "bg-blue-50",
-  "text-gray-500": "bg-gray-100",
+  "text-gray-600": "bg-gray-100",
 };
 
 export default function MetricCard({
@@ -51,7 +51,7 @@ export default function MetricCard({
         <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-9 sm:w-9 ${iconBg}`}>
           <Icon className={`h-4 w-4 sm:h-[18px] sm:w-[18px] ${iconColor}`} />
         </span>
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 sm:text-xs">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
           {label}
         </p>
         <p
@@ -59,7 +59,7 @@ export default function MetricCard({
         >
           {value}
         </p>
-        {context && <p className="text-xs text-gray-500">{context}</p>}
+        {context && <p className="text-xs text-gray-600">{context}</p>}
       </div>
     </div>
   );

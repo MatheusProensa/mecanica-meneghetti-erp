@@ -44,7 +44,7 @@ export default function DividaItemsEditor({
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">Serviços que compõem a dívida</label>
-      <p className="mt-1 text-xs text-gray-500">
+      <p className="mt-1 text-xs text-gray-600">
         Um item por serviço/sessão — fica mais fácil de conferir e enviar pro cliente.
       </p>
 
@@ -80,7 +80,7 @@ export default function DividaItemsEditor({
                 type="button"
                 onClick={() => removeItem(index)}
                 disabled={itens.length === 1}
-                className="shrink-0 rounded-md border border-gray-200 px-3 text-sm text-gray-500 hover:bg-gray-50 disabled:opacity-40"
+                className="shrink-0 rounded-md border border-gray-200 px-3 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
               >
                 Remover
               </button>

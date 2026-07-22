@@ -70,7 +70,7 @@ export default async function OSDetalhePage({
 
   return (
     <div className="max-w-2xl space-y-8">
-      <Link href="/os" className="text-sm text-gray-500 hover:underline">
+      <Link href="/os" className="text-sm text-gray-600 hover:underline">
         ← Voltar para ordens de serviço
       </Link>
 
@@ -143,7 +143,7 @@ export default async function OSDetalhePage({
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <div className="flex min-h-[90px] flex-col items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white p-3.5 text-center shadow-[var(--shadow-card)] sm:min-h-[110px] sm:p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 sm:text-xs">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
             Status
           </p>
           <StatusBadge {...osStatusMap[os.status]} />
@@ -173,7 +173,7 @@ export default async function OSDetalhePage({
           <h3 className="text-sm font-semibold text-gray-900">Cliente</h3>
           <dl className="mt-3 space-y-2.5 text-sm">
             <div className="flex items-center justify-between gap-3">
-              <dt className="text-gray-500">Nome</dt>
+              <dt className="text-gray-600">Nome</dt>
               <dd className="font-medium">
                 <Link href={`/clientes/${os.cliente.id}`} className="text-brand-600 hover:underline">
                   {os.cliente.nome}
@@ -181,11 +181,11 @@ export default async function OSDetalhePage({
               </dd>
             </div>
             <div className="flex items-center justify-between gap-3">
-              <dt className="text-gray-500">Telefone</dt>
+              <dt className="text-gray-600">Telefone</dt>
               <dd className="font-medium text-gray-900">{formatPhoneBR(telefoneOS) || "-"}</dd>
             </div>
             <div className="flex items-center justify-between gap-3">
-              <dt className="text-gray-500">Forma de pagamento</dt>
+              <dt className="text-gray-600">Forma de pagamento</dt>
               <dd className="font-medium text-gray-900">{os.formaPagamento || "-"}</dd>
             </div>
           </dl>
@@ -201,7 +201,7 @@ export default async function OSDetalhePage({
         <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
           <div className="h-[3px] bg-brand-600" />
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50/80 text-gray-500">
+            <thead className="bg-gray-50/80 text-gray-600">
               <tr>
                 <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Descrição</th>
                 <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
@@ -213,7 +213,7 @@ export default async function OSDetalhePage({
               {os.itens.map((item) => (
                 <tr key={item.id} className="border-t border-gray-100">
                   <td className="px-6 py-3 text-gray-900">{item.descricao}</td>
-                  <td className="px-6 py-3 text-right tabular-nums text-gray-500">
+                  <td className="px-6 py-3 text-right tabular-nums text-gray-600">
                     {formatCurrency(item.valor)}
                   </td>
                 </tr>

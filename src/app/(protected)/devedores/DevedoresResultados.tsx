@@ -93,7 +93,7 @@ export default function DevedoresResultados({
   return (
     <>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-600">
           {usandoSelecao
             ? `${selecionados.size} selecionado${selecionados.size === 1 ? "" : "s"} para o PDF`
             : "Nenhum marcado — o PDF sai com tudo que está filtrado"}
@@ -139,7 +139,7 @@ export default function DevedoresResultados({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="bg-gray-50/80 text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-600">
                 <tr>
                   <th className="w-10 px-4 py-3">
                     <input
@@ -185,9 +185,9 @@ export default function DevedoresResultados({
                         {d.clienteNome}
                       </Link>
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(d.dataServico)}</td>
-                    <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(d.valorOriginal)}</td>
-                    <td className="px-6 py-3 text-gray-500 tabular-nums">{formatCurrency(d.totalPago)}</td>
+                    <td className="px-6 py-3 text-gray-600">{formatDate(d.dataServico)}</td>
+                    <td className="px-6 py-3 text-gray-600 tabular-nums">{formatCurrency(d.valorOriginal)}</td>
+                    <td className="px-6 py-3 text-gray-600 tabular-nums">{formatCurrency(d.totalPago)}</td>
                     <td className="px-6 py-3 font-medium tabular-nums text-gray-900">
                       {formatCurrency(d.saldo)}
                     </td>
@@ -216,7 +216,7 @@ export default function DevedoresResultados({
                       <StatusBadge {...situacaoDividaMap[d.situacao]} />
                     </div>
                     <div className="mt-1.5 flex items-center justify-between gap-2">
-                      <span className="text-xs text-gray-500">{formatDate(d.dataServico)}</span>
+                      <span className="text-xs text-gray-600">{formatDate(d.dataServico)}</span>
                       <span className="text-sm font-semibold tabular-nums text-gray-900">
                         Saldo: {formatCurrency(d.saldo)}
                       </span>

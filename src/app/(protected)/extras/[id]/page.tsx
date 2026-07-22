@@ -67,11 +67,11 @@ export default async function ExtraDetalhePage({
     <div className="max-w-2xl space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/extras" className="text-sm text-gray-500 hover:underline">
+          <Link href="/extras" className="text-sm text-gray-600 hover:underline">
             ← Extras
           </Link>
           <h1 className="mt-1 text-xl font-semibold text-gray-900">{extra.mecanico.nome}</h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-600">
             {extra.cliente?.nome ?? ""}
             {extra.cliente && extra.ordemServico ? " · " : ""}
             {extra.ordemServico ? `OS #${String(extra.ordemServico.id).padStart(4, "0")}` : ""}
@@ -150,7 +150,7 @@ export default async function ExtraDetalhePage({
                 <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-6">
                   <div>
                     <p className="font-medium text-gray-900">{formatCurrency(p.valor)}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-600">
                       {formatDate(p.data)}
                       {p.formaPagamento ? ` · ${p.formaPagamento}` : ""}
                     </p>

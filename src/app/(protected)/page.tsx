@@ -373,7 +373,7 @@ export default async function DashboardPage({
         />
         <MetricCard
           icon="file-text"
-          iconColor="text-gray-500"
+          iconColor="text-gray-600"
           label={`Notas anexadas ${rotuloResumo}`}
           value={<CountUp value={notasNoMes} />}
           context={contextoResumo}
@@ -414,7 +414,7 @@ export default async function DashboardPage({
         ) : (
           <>
             <table className="hidden w-full text-left text-sm md:table">
-              <thead className="bg-gray-50/80 text-gray-500">
+              <thead className="bg-gray-50/80 text-gray-600">
                 <tr>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Tipo</th>
                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
@@ -441,11 +441,11 @@ export default async function DashboardPage({
                         {m.descricao}
                       </Link>
                     </td>
-                    <td className="px-6 py-3 text-gray-500">{formatDate(m.data)}</td>
+                    <td className="px-6 py-3 text-gray-600">{formatDate(m.data)}</td>
                     <td className="px-6 py-3">
                       <StatusBadge label={m.badge.label} tone={m.badge.tone} />
                     </td>
-                    <td className="px-6 py-3 text-gray-500">
+                    <td className="px-6 py-3 text-gray-600">
                       {m.valor !== null ? formatCurrency(m.valor) : "-"}
                     </td>
                   </tr>
@@ -478,7 +478,7 @@ export default async function DashboardPage({
                       />
                       <StatusBadge label={m.badge.label} tone={m.badge.tone} />
                     </div>
-                    <span className="shrink-0 text-xs text-gray-500">{formatDate(m.data)}</span>
+                    <span className="shrink-0 text-xs text-gray-600">{formatDate(m.data)}</span>
                   </div>
                 </Link>
               ))}

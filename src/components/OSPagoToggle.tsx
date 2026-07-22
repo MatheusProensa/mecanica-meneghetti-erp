@@ -69,7 +69,7 @@ export default function OSPagoToggle({
               disabled={pending}
               onClick={() => startTransition(() => toggleOSPago(id, false))}
               title="Desmarcar pagamento"
-              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-60"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-60"
             >
               <Undo2 className="h-3.5 w-3.5" />
             </button>
@@ -79,7 +79,7 @@ export default function OSPagoToggle({
               disabled={pending}
               onClick={() => startTransition(() => toggleOSPago(id, false))}
               title="Desmarcar pagamento"
-              className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-60"
+              className="text-xs text-gray-500 underline hover:text-gray-600 disabled:opacity-60"
             >
               desfazer
             </button>

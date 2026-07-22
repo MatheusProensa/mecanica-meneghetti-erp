@@ -27,7 +27,7 @@ export default function OSFotos({
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={foto.url} alt="Foto da OS" className="h-full w-full object-cover" />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-xs text-gray-400">
+                  <div className="flex h-full w-full items-center justify-center text-xs text-gray-500">
                     Indisponível
                   </div>
                 )}

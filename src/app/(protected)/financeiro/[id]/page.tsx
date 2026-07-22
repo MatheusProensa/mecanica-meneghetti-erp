@@ -34,7 +34,7 @@ export default async function DespesaDetalhePage({
     <div className="max-w-2xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/financeiro" className="text-sm text-gray-500 hover:underline">
+          <Link href="/financeiro" className="text-sm text-gray-600 hover:underline">
             ← Financeiro
           </Link>
           <h1 className="mt-1 text-xl font-semibold text-gray-900">{despesa.descricao}</h1>

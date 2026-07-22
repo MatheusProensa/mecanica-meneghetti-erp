@@ -31,7 +31,7 @@ export default function Pagination({
           Anterior
         </Link>
       )}
-      <span className="text-sm text-gray-500">
+      <span className="text-sm text-gray-600">
         Página {paginaAtual} de {totalPaginas}
       </span>
       {semProxima ? (

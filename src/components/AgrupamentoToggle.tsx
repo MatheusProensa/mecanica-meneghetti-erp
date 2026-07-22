@@ -130,7 +130,7 @@ export default function AgrupamentoToggle({
           tabIndex={personalizado ? 0 : -1}
           className="w-[126px] shrink-0 rounded-md border border-gray-200 bg-white px-1.5 py-1.5 text-xs text-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:w-auto sm:px-2"
         />
-        <span className="shrink-0 text-xs text-gray-400">até</span>
+        <span className="shrink-0 text-xs text-gray-500">até</span>
         <input
           type="date"
           value={ateInput}

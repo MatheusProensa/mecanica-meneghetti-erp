@@ -137,9 +137,9 @@ export default async function DevedoresPage({
       <form className="mt-6 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
         {situacao && <input type="hidden" name="situacao" value={situacao} />}
         <div className="col-span-2 sm:w-auto sm:flex-1 sm:min-w-[180px]">
-          <label className="block text-xs font-medium text-gray-500">Cliente</label>
+          <label className="block text-xs font-medium text-gray-600">Cliente</label>
           <div className="relative mt-1">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <input
               type="text"
               name="q"
@@ -151,7 +151,7 @@ export default async function DevedoresPage({
           </div>
         </div>
         <div className="sm:w-40">
-          <label className="block text-center text-xs font-medium text-gray-500">De</label>
+          <label className="block text-center text-xs font-medium text-gray-600">De</label>
           <input
             type="date"
             name="de"
@@ -160,7 +160,7 @@ export default async function DevedoresPage({
           />
         </div>
         <div className="sm:w-40">
-          <label className="block text-center text-xs font-medium text-gray-500">Até</label>
+          <label className="block text-center text-xs font-medium text-gray-600">Até</label>
           <input
             type="date"
             name="ate"

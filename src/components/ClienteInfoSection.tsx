@@ -69,21 +69,21 @@ export default function ClienteInfoSection({
             <h3 className="text-sm font-semibold text-gray-900">Contato</h3>
             <dl className="mt-3 space-y-2.5 text-sm">
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-gray-500">CPF/CNPJ</dt>
+                <dt className="text-gray-600">CPF/CNPJ</dt>
                 <dd className="font-medium text-gray-900">{cliente.cpfCnpj || "-"}</dd>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-gray-500">Telefone</dt>
+                <dt className="text-gray-600">Telefone</dt>
                 <dd className="font-medium text-gray-900">{formatPhoneBR(cliente.telefone) || "-"}</dd>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-gray-500">WhatsApp</dt>
+                <dt className="text-gray-600">WhatsApp</dt>
                 <dd className="font-medium text-gray-900">
                   {cliente.whatsapp ? <WhatsAppLink phone={cliente.whatsapp} /> : "-"}
                 </dd>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-gray-500">E-mail</dt>
+                <dt className="text-gray-600">E-mail</dt>
                 <dd className="font-medium text-gray-900">{cliente.email || "-"}</dd>
               </div>
             </dl>
@@ -92,11 +92,11 @@ export default function ClienteInfoSection({
             <h3 className="text-sm font-semibold text-gray-900">Endereço e observações</h3>
             <dl className="mt-3 space-y-2.5 text-sm">
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-gray-500">Cidade</dt>
+                <dt className="text-gray-600">Cidade</dt>
                 <dd className="font-medium text-gray-900">{cliente.cidade || "-"}</dd>
               </div>
               <div className="flex items-start justify-between gap-3">
-                <dt className="shrink-0 text-gray-500">Endereço</dt>
+                <dt className="shrink-0 text-gray-600">Endereço</dt>
                 <dd className="text-right font-medium text-gray-900">{cliente.endereco || "-"}</dd>
               </div>
             </dl>
