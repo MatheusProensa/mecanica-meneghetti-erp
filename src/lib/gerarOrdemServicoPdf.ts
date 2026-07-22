@@ -85,7 +85,7 @@ export async function gerarOrdemServicoPdf({
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
-  doc.setTextColor(100, 116, 139);
+  doc.setTextColor(71, 85, 105);
   if (cliente.telefone) {
     yEsq += 5;
     doc.text(cliente.telefone, PDF_MARGIN_X, yEsq);

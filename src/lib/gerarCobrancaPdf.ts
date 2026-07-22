@@ -64,7 +64,7 @@ export async function gerarCobrancaPdf({
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
-  doc.setTextColor(156, 163, 175);
+  doc.setTextColor(107, 114, 128);
   doc.text(up("Cobrado de"), PDF_MARGIN_X, yInicio);
   doc.text(up("Emitido por"), colDireitaX, yInicio);
 
@@ -82,7 +82,7 @@ export async function gerarCobrancaPdf({
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
-  doc.setTextColor(100, 116, 139);
+  doc.setTextColor(71, 85, 105);
   if (cliente.telefone) {
     yEsq += 5;
     doc.text(cliente.telefone, PDF_MARGIN_X, yEsq);
@@ -138,7 +138,7 @@ export async function gerarCobrancaPdf({
   if (pixKey) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8);
-    doc.setTextColor(156, 163, 175);
+    doc.setTextColor(107, 114, 128);
     doc.text(up("Pagamento via Pix"), PDF_MARGIN_X, afterTableY);
 
     let qrDataUrl: string | null = null;

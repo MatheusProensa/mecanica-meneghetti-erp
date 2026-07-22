@@ -4,8 +4,8 @@ import { jsPDF } from "jspdf";
 export const PDF_NAVY: [number, number, number] = [15, 17, 23];
 export const PDF_BRAND: [number, number, number] = [37, 99, 235];
 export const PDF_INK_900: [number, number, number] = [31, 41, 55];
-export const PDF_INK_500: [number, number, number] = [100, 116, 139];
-export const PDF_INK_300: [number, number, number] = [156, 163, 175];
+export const PDF_INK_500: [number, number, number] = [71, 85, 105];
+export const PDF_INK_300: [number, number, number] = [107, 114, 128];
 const PDF_GRAY_BG: [number, number, number] = [243, 244, 246];
 
 export const PDF_MARGIN_X = 15;
