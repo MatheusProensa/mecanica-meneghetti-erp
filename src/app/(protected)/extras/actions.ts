@@ -104,7 +104,7 @@ export async function addPagamentoExtra(extraId: string, formData: FormData) {
 export async function deletePagamentoExtra(id: string, extraId: string) {
   await requirePermission("verExtras");
   await requirePermission("excluirExtras");
-  await prisma.pagamentoExtra.delete({ where: { id } });
+  await prisma.pagamentoExtra.delete({ where: { id, extraId } });
 
   revalidatePath(`/extras/${extraId}`);
   revalidatePath("/extras");

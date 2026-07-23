@@ -117,7 +117,7 @@ export async function addPagamento(dividaId: string, formData: FormData) {
 export async function deletePagamento(id: string, dividaId: string) {
   await requirePermission("verDevedores");
   await requirePermission("excluirDevedores");
-  await prisma.pagamentoDivida.delete({ where: { id } });
+  await prisma.pagamentoDivida.delete({ where: { id, dividaId } });
 
   revalidatePath(`/devedores/${dividaId}`);
   revalidatePath("/devedores");
