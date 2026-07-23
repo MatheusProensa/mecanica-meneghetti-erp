@@ -256,6 +256,7 @@ export default async function ExtrasPage({
             mecanicoNome: e.mecanico.nome,
             clienteOuOs:
               e.cliente?.nome ?? (e.ordemServico ? `OS #${String(e.ordemServico.id).padStart(4, "0")}` : "-"),
+            descricao: e.descricao,
             valorExtra: e.valorExtra,
             saldo: e.saldo,
             lucroEmpresa: e.lucroEmpresa,
@@ -277,6 +278,7 @@ export default async function ExtrasPage({
             mecanicoNome: e.mecanico.nome,
             clienteOuOs:
               e.cliente?.nome ?? (e.ordemServico ? `OS #${String(e.ordemServico.id).padStart(4, "0")}` : "-"),
+            descricao: e.descricao,
             valorExtra: e.valorExtra,
             saldo: e.saldo,
             lucroEmpresa: e.lucroEmpresa,

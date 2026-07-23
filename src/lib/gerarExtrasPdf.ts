@@ -40,6 +40,7 @@ export interface ExtraLinha {
   data: Date | string;
   mecanicoNome: string;
   clienteOuOs: string;
+  descricao: string;
   valorExtra: number;
   saldo: number;
   lucroEmpresa: number;
@@ -80,7 +81,7 @@ export async function gerarExtrasPdf({
     y
   );
 
-  const badgeCol = criarColunaBadgePdf(6, STATUS_TONE);
+  const badgeCol = criarColunaBadgePdf(7, STATUS_TONE);
 
   autoTable(doc, {
     startY: y + 6,
@@ -90,6 +91,7 @@ export async function gerarExtrasPdf({
         up("Data"),
         up("Funcionário"),
         up("Cliente / OS"),
+        up("Descrição"),
         { content: up("Extra"), styles: { halign: "right" } },
         { content: up("Saldo"), styles: { halign: "right" } },
         { content: up("Lucro"), styles: { halign: "right" } },
@@ -100,6 +102,7 @@ export async function gerarExtrasPdf({
       formatDate(e.data),
       e.mecanicoNome,
       e.clienteOuOs,
+      e.descricao || "-",
       formatCurrency(e.valorExtra),
       formatCurrency(e.saldo),
       formatCurrency(e.lucroEmpresa),
@@ -107,13 +110,14 @@ export async function gerarExtrasPdf({
     ]),
     headStyles: TABLE_HEAD_STYLES,
     columnStyles: {
-      0: { cellWidth: 20 },
-      3: { cellWidth: 22, halign: "right" },
-      4: { cellWidth: 22, halign: "right" },
-      5: { cellWidth: 22, halign: "right" },
-      6: { cellWidth: 26, halign: "center" },
+      0: { cellWidth: 18 },
+      3: { cellWidth: 32 },
+      4: { cellWidth: 20, halign: "right" },
+      5: { cellWidth: 20, halign: "right" },
+      6: { cellWidth: 20, halign: "right" },
+      7: { cellWidth: 24, halign: "center" },
     },
-    styles: { ...TABLE_BODY_STYLES, fontSize: 8.5, cellPadding: 2.5 },
+    styles: { ...TABLE_BODY_STYLES, fontSize: 8, cellPadding: 2.5 },
     theme: "plain",
     didParseCell: badgeCol.didParseCell,
     didDrawCell: badgeCol.didDrawCell,
