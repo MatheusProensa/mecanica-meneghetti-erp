@@ -35,6 +35,13 @@ export default function CurrencyInput({
     onChange?.(formatted);
   }
 
+  function handleBlur() {
+    if (!current || current.includes(",")) return;
+    const completo = `${current},00`;
+    if (!isControlled) setInternal(completo);
+    onChange?.(completo);
+  }
+
   return (
     <div className="relative">
       <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
@@ -49,6 +56,7 @@ export default function CurrencyInput({
         placeholder={placeholder}
         value={current}
         onChange={(e) => handleChange(e.target.value)}
+        onBlur={handleBlur}
         className={
           className ??
           "w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
