@@ -7,6 +7,7 @@
     "build": "cross-env NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "cross-env NEXT_TELEMETRY_DISABLED=1 next start",
     "lint": "eslint",
+    "test": "vitest run",
     "seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate"
   },
@@ -44,6 +45,7 @@
     "prisma": "^7.8.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }
