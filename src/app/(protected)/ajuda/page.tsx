@@ -31,7 +31,7 @@ const secoes: {
   {
     titulo: "Ordens de Serviço",
     texto:
-      "Cada OS é vinculada a um cliente e tem uma lista de serviços/peças, cada um com sua própria data e valor. O total é calculado automaticamente somando os itens. Dá pra marcar status, marcar como paga, anexar fotos, cobrar no WhatsApp quando estiver em atraso, ordenar a lista por cliente (A-Z) e exportar um PDF — de tudo que está filtrado na tela ou só das OS marcadas com a caixinha de seleção.",
+      "Cada OS é vinculada a um cliente e tem uma lista de serviços/peças, cada um com sua própria data e valor. O total é calculado automaticamente somando os itens. Dá pra marcar status, marcar como paga, anexar fotos, cobrar no WhatsApp quando estiver em atraso, imprimir a ordem de serviço em PDF (pronta pra entregar ao cliente, com assinatura), ordenar a lista por cliente (A-Z) e exportar um relatório em PDF — de tudo que está filtrado na tela ou só das OS marcadas com a caixinha de seleção.",
     requer: "verOS",
     icon: "tools",
     iconColor: "text-brand-600",
@@ -55,7 +55,7 @@ const secoes: {
   {
     titulo: "Extras",
     texto:
-      "Controla pagamentos extras a funcionários vinculados a um cliente e/ou uma OS específica. Mostra o valor cobrado do cliente, o extra do funcionário e o lucro da empresa (calculado automaticamente). Também dá pra registrar pagamentos parciais do extra e acompanhar a situação (pendente, parcialmente pago, pago).",
+      "Controla pagamentos extras a funcionários vinculados a um cliente e/ou uma OS específica. Mostra o valor cobrado do cliente, o extra do funcionário e o lucro da empresa (calculado automaticamente). Também dá pra registrar pagamentos parciais do extra e acompanhar a situação (pendente, parcialmente pago, pago). Ao exportar o PDF ou CSV, dá pra escolher se o nome do funcionário aparece no relatório ou não.",
     requer: "verExtras",
     icon: "hand-coins",
     iconColor: "text-amber-600",
@@ -71,7 +71,7 @@ const secoes: {
   {
     titulo: "Configurações",
     texto:
-      "Trocar sua senha, editar os dados da oficina (usados no PDF de cobrança), cadastrar sua chave Pix, gerenciar os mecânicos da oficina e, se você for Administrador, criar logins novos e controlar o que cada Funcionário pode ver ou fazer no sistema.",
+      "Trocar sua senha, ativar notificações no navegador (avisa todo dia sobre OS atrasadas e dívidas em aberto, mesmo com o sistema fechado), editar os dados da oficina (usados nos PDFs), cadastrar sua chave Pix, gerenciar os mecânicos da oficina e, se você for Administrador, criar logins novos e controlar o que cada Funcionário pode ver ou fazer no sistema.",
     requer: null,
     icon: "settings",
     iconColor: "text-gray-600",
