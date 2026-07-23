@@ -31,7 +31,7 @@ export default async function DespesaDetalhePage({
   const deleteDespesaWithId = deleteDespesa.bind(null, despesa.id);
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/financeiro" className="text-sm text-gray-600 hover:underline">

@@ -56,7 +56,7 @@ export default async function DividaDetalhePage({
   const addPagamentoWithId = addPagamento.bind(null, divida.id);
 
   return (
-    <div className="max-w-4xl space-y-8">
+    <div className="max-w-6xl space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/devedores" className="text-sm text-gray-600 hover:underline">

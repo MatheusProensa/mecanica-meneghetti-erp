@@ -47,7 +47,7 @@ export default async function NotaDetalhePage({
   const deleteNotaWithId = deleteNota.bind(null, nota.id);
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/notas" className="text-sm text-gray-600 hover:underline">

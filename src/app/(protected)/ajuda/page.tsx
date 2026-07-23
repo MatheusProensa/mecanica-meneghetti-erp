@@ -93,7 +93,7 @@ export default async function AjudaPage() {
   const secoesVisiveis = secoes.filter((s) => !s.requer || usuario.permissoes[s.requer]);
 
   return (
-    <div className="max-w-5xl space-y-6">
+    <div className="max-w-6xl space-y-6">
       <PageHero title="Ajuda" description="Um resumo rápido de como usar cada parte do sistema." />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

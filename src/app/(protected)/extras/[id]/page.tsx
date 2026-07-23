@@ -64,7 +64,7 @@ export default async function ExtraDetalhePage({
   const addPagamentoWithId = addPagamentoExtra.bind(null, extra.id);
 
   return (
-    <div className="max-w-4xl space-y-8">
+    <div className="max-w-6xl space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/extras" className="text-sm text-gray-600 hover:underline">
