@@ -149,7 +149,7 @@ export async function gerarCobrancaPdf({
         cidade: empresa.cidade,
         valor: total,
       });
-      qrDataUrl = await QRCode.toDataURL(payload, { margin: 1, width: 300 });
+      qrDataUrl = await QRCode.toDataURL(payload, { margin: 1, width: 400, errorCorrectionLevel: "Q" });
     } catch {
       qrDataUrl = null;
     }
