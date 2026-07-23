@@ -14,8 +14,7 @@ import ValorOculto from "@/components/ui/ValorOculto";
 import CountUp from "@/components/ui/CountUp";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
 import { StatusBadge, statusExtraMap } from "@/components/ui/StatusBadge";
-import ExportarExtrasPdf from "@/components/ExportarExtrasPdf";
-import ExportarExtrasCsv from "@/components/ExportarExtrasCsv";
+import ExtrasExportBar from "@/components/ExtrasExportBar";
 
 const STATUS_OPCOES: { value: StatusExtra; label: string }[] = [
   { value: "pendente", label: "Pendente" },
@@ -243,28 +242,8 @@ export default async function ExtrasPage({
         ))}
       </div>
 
-      <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-end">
-        <ExportarExtrasCsv
-          resumo={{
-            totalExtras: totalExtrasFiltrado,
-            totalPago: pagoFiltrado,
-            faltaPagar: faltaPagarFiltrado,
-            lucroEmpresa: lucroEmpresaFiltrado,
-          }}
-          extras={filtrados.map((e) => ({
-            data: e.data,
-            mecanicoNome: e.mecanico.nome,
-            clienteOuOs:
-              e.cliente?.nome ?? (e.ordemServico ? `OS #${String(e.ordemServico.id).padStart(4, "0")}` : "-"),
-            descricao: e.descricao,
-            valorExtra: e.valorExtra,
-            saldo: e.saldo,
-            lucroEmpresa: e.lucroEmpresa,
-            status: e.status,
-          }))}
-          nomeArquivo={`extras-${new Date().toISOString().slice(0, 10)}.csv`}
-        />
-        <ExportarExtrasPdf
+      <div className="mt-4">
+        <ExtrasExportBar
           empresa={empresa}
           periodoLabel={periodoLabel}
           resumo={{
@@ -284,7 +263,8 @@ export default async function ExtrasPage({
             lucroEmpresa: e.lucroEmpresa,
             status: e.status,
           }))}
-          nomeArquivo={`extras-${new Date().toISOString().slice(0, 10)}.pdf`}
+          nomeArquivoCsv={`extras-${new Date().toISOString().slice(0, 10)}.csv`}
+          nomeArquivoPdf={`extras-${new Date().toISOString().slice(0, 10)}.pdf`}
         />
       </div>
 

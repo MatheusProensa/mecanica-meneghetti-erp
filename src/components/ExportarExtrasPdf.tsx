@@ -11,19 +11,21 @@ export default function ExportarExtrasPdf({
   resumo,
   extras,
   nomeArquivo,
+  mostrarFuncionario = true,
 }: {
   empresa: DadosEmpresa;
   periodoLabel: string;
   resumo: ResumoExtras;
   extras: ExtraLinha[];
   nomeArquivo: string;
+  mostrarFuncionario?: boolean;
 }) {
   const [gerando, setGerando] = useState(false);
 
   async function exportar() {
     setGerando(true);
     try {
-      const doc = await gerarExtrasPdf({ empresa, periodoLabel, resumo, extras });
+      const doc = await gerarExtrasPdf({ empresa, periodoLabel, resumo, extras, mostrarFuncionario });
       doc.save(nomeArquivo);
     } finally {
       setGerando(false);

@@ -18,7 +18,7 @@ interface Resumo {
 }
 
 interface ExtraLinha {
-  data: Date;
+  data: Date | string;
   mecanicoNome: string;
   clienteOuOs: string;
   descricao: string;
@@ -44,10 +44,12 @@ export default function ExportarExtrasCsv({
   resumo,
   extras,
   nomeArquivo,
+  mostrarFuncionario = true,
 }: {
   resumo: Resumo;
   extras: ExtraLinha[];
   nomeArquivo: string;
+  mostrarFuncionario?: boolean;
 }) {
   function exportar() {
     const linhas: string[] = [];
@@ -58,12 +60,14 @@ export default function ExportarExtrasCsv({
     linhas.push(`Falta pagar;${valorCsv(resumo.faltaPagar)}`);
     linhas.push(`Lucro da empresa;${valorCsv(resumo.lucroEmpresa)}`);
     linhas.push("");
-    linhas.push("Data;Funcionário;Cliente / OS;Descrição;Extra;Saldo;Lucro;Situação");
+    linhas.push(
+      ["Data", ...(mostrarFuncionario ? ["Funcionário"] : []), "Cliente / OS", "Descrição", "Extra", "Saldo", "Lucro", "Situação"].join(";")
+    );
     for (const e of extras) {
       linhas.push(
         [
           formatDate(e.data),
-          csvEscape(e.mecanicoNome),
+          ...(mostrarFuncionario ? [csvEscape(e.mecanicoNome)] : []),
           csvEscape(e.clienteOuOs),
           csvEscape(e.descricao),
           valorCsv(e.valorExtra),

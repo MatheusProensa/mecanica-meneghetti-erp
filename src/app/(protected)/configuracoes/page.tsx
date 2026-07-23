@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Building2, User, Wallet, UserCog, Users, KeyRound, ShieldCheck } from "lucide-react";
+import { Building2, User, Wallet, UserCog, Users, KeyRound, ShieldCheck, Lock } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getEmpresa } from "@/lib/getEmpresa";
@@ -174,8 +174,21 @@ export default async function ConfiguracoesPage({
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900">Trocar senha</h3>
-                  <div className="mt-3">
-                    <PasswordForm />
+                  <div className="mt-3 rounded-xl border border-gray-200 p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+                        <Lock className="h-4.5 w-4.5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-gray-900">Senha de acesso</p>
+                        <p className="mt-0.5 text-sm text-gray-600">
+                          Recomendado trocar periodicamente, principalmente se você acha que alguém mais sabe sua senha.
+                        </p>
+                        <div className="mt-4">
+                          <PasswordForm />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

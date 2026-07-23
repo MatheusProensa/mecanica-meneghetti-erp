@@ -52,6 +52,8 @@ export interface GerarExtrasPdfParams {
   periodoLabel: string;
   resumo: ResumoExtras;
   extras: ExtraLinha[];
+  /** Mostra a coluna Funcionário na tabela. Padrão true — desligar quando o PDF for pra fora da oficina. */
+  mostrarFuncionario?: boolean;
 }
 
 export async function gerarExtrasPdf({
@@ -59,6 +61,7 @@ export async function gerarExtrasPdf({
   periodoLabel,
   resumo,
   extras,
+  mostrarFuncionario = true,
 }: GerarExtrasPdfParams): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
 
@@ -81,7 +84,12 @@ export async function gerarExtrasPdf({
     y
   );
 
-  const badgeCol = criarColunaBadgePdf(7, STATUS_TONE);
+  const descricaoIdx = mostrarFuncionario ? 3 : 2;
+  const extraIdx = descricaoIdx + 1;
+  const saldoIdx = extraIdx + 1;
+  const lucroIdx = saldoIdx + 1;
+  const situacaoIdx = lucroIdx + 1;
+  const badgeCol = criarColunaBadgePdf(situacaoIdx, STATUS_TONE);
 
   autoTable(doc, {
     startY: y + 6,
@@ -89,7 +97,7 @@ export async function gerarExtrasPdf({
     head: [
       [
         up("Data"),
-        up("Funcionário"),
+        ...(mostrarFuncionario ? [up("Funcionário")] : []),
         up("Cliente / OS"),
         up("Descrição"),
         { content: up("Extra"), styles: { halign: "right" } },
@@ -100,7 +108,7 @@ export async function gerarExtrasPdf({
     ],
     body: extras.map((e) => [
       formatDate(e.data),
-      e.mecanicoNome,
+      ...(mostrarFuncionario ? [e.mecanicoNome] : []),
       e.clienteOuOs,
       e.descricao || "-",
       formatCurrency(e.valorExtra),
@@ -111,11 +119,11 @@ export async function gerarExtrasPdf({
     headStyles: TABLE_HEAD_STYLES,
     columnStyles: {
       0: { cellWidth: 18 },
-      3: { cellWidth: 32 },
-      4: { cellWidth: 20, halign: "right" },
-      5: { cellWidth: 20, halign: "right" },
-      6: { cellWidth: 20, halign: "right" },
-      7: { cellWidth: 24, halign: "center" },
+      [descricaoIdx]: { cellWidth: 32 },
+      [extraIdx]: { cellWidth: 20, halign: "right" },
+      [saldoIdx]: { cellWidth: 20, halign: "right" },
+      [lucroIdx]: { cellWidth: 20, halign: "right" },
+      [situacaoIdx]: { cellWidth: 24, halign: "center" },
     },
     styles: { ...TABLE_BODY_STYLES, fontSize: 8, cellPadding: 2.5 },
     theme: "plain",
