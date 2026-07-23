@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
@@ -12,6 +11,7 @@ import CountUp from "@/components/ui/CountUp";
 import Tabs from "@/components/ui/Tabs";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import VoltarLink from "@/components/ui/VoltarLink";
 import { StatusBadge, statusExtraMap } from "@/components/ui/StatusBadge";
 import { updateExtra, deleteExtra, addPagamentoExtra, deletePagamentoExtra } from "../actions";
 
@@ -67,10 +67,8 @@ export default async function ExtraDetalhePage({
     <div className="max-w-6xl space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/extras" className="text-sm text-gray-600 hover:underline">
-            ← Extras
-          </Link>
-          <h1 className="mt-1 text-xl font-semibold text-gray-900">{extra.mecanico.nome}</h1>
+          <VoltarLink href="/extras" label="Extras" />
+          <h1 className="mt-2 text-xl font-semibold text-gray-900">{extra.mecanico.nome}</h1>
           <p className="text-sm text-gray-600">
             {extra.cliente?.nome ?? ""}
             {extra.cliente && extra.ordemServico ? " · " : ""}

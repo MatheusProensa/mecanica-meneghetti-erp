@@ -14,6 +14,7 @@ import CountUp from "@/components/ui/CountUp";
 import Tabs from "@/components/ui/Tabs";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import VoltarLink from "@/components/ui/VoltarLink";
 import { StatusBadge, situacaoDividaMap } from "@/components/ui/StatusBadge";
 import { updateDivida, deleteDivida, addPagamento, deletePagamento } from "../actions";
 
@@ -59,10 +60,8 @@ export default async function DividaDetalhePage({
     <div className="max-w-6xl space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/devedores" className="text-sm text-gray-600 hover:underline">
-            ← Devedores
-          </Link>
-          <h1 className="mt-1 text-xl font-semibold text-gray-900">
+          <VoltarLink href="/devedores" label="Devedores" />
+          <h1 className="mt-2 text-xl font-semibold text-gray-900">
             <Link href={`/clientes/${divida.clienteId}`} className="hover:underline">
               {divida.cliente.nome}
             </Link>

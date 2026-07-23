@@ -1,11 +1,10 @@
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getSignedDespesaAnexoUrl } from "@/lib/supabase-storage";
 import DespesaForm from "@/components/DespesaForm";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import VoltarLink from "@/components/ui/VoltarLink";
 import { updateDespesa, deleteDespesa } from "../actions";
 
 export default async function DespesaDetalhePage({
@@ -35,13 +34,7 @@ export default async function DespesaDetalhePage({
     <div className="max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link
-            href="/financeiro"
-            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Financeiro
-          </Link>
+          <VoltarLink href="/financeiro" label="Financeiro" />
           <h1 className="mt-2 text-xl font-semibold text-gray-900">{despesa.descricao}</h1>
         </div>
         {usuario.permissoes.excluirFinanceiro && (

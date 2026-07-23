@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getSignedPdfUrl } from "@/lib/supabase-storage";
 import NotaForm from "@/components/NotaForm";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import VoltarLink from "@/components/ui/VoltarLink";
 import { updateNota, deleteNota } from "../actions";
 
 export default async function NotaDetalhePage({
@@ -50,10 +50,8 @@ export default async function NotaDetalhePage({
     <div className="max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/notas" className="text-sm text-gray-600 hover:underline">
-            ← Notas
-          </Link>
-          <h1 className="mt-1 text-xl font-semibold text-gray-900">
+          <VoltarLink href="/notas" label="Notas" />
+          <h1 className="mt-2 text-xl font-semibold text-gray-900">
             Nota {nota.numero}
           </h1>
         </div>

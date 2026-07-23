@@ -17,6 +17,7 @@ import ValorOculto from "@/components/ui/ValorOculto";
 import CountUp from "@/components/ui/CountUp";
 import Tabs from "@/components/ui/Tabs";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import VoltarLink from "@/components/ui/VoltarLink";
 import { StatusBadge, osStatusMap } from "@/components/ui/StatusBadge";
 import { updateOS, deleteOS } from "../actions";
 
@@ -70,9 +71,7 @@ export default async function OSDetalhePage({
 
   return (
     <div className="max-w-7xl space-y-8">
-      <Link href="/os" className="text-sm text-gray-600 hover:underline">
-        ← Voltar para ordens de serviço
-      </Link>
+      <VoltarLink href="/os" label="Ordens de Serviço" />
 
       <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-900 to-gray-800 shadow-sm">
         <DarkPatternBg />

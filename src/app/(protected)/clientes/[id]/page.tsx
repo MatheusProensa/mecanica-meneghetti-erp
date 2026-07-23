@@ -13,6 +13,7 @@ import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
 import CountUp from "@/components/ui/CountUp";
 import EmptyState from "@/components/ui/EmptyState";
+import VoltarLink from "@/components/ui/VoltarLink";
 import {
   StatusBadge,
   osStatusMap,
@@ -88,9 +89,7 @@ export default async function ClienteDetalhePage({
 
   return (
     <div className="max-w-6xl space-y-8">
-      <Link href="/clientes" className="text-sm text-gray-600 hover:underline">
-        ← Voltar para clientes
-      </Link>
+      <VoltarLink href="/clientes" label="Clientes" />
 
       <ClienteInfoSection
         cliente={cliente}
