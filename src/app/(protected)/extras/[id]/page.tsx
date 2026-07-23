@@ -9,7 +9,7 @@ import CurrencyInput from "@/components/CurrencyInput";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
 import CountUp from "@/components/ui/CountUp";
-import SectionHeader from "@/components/ui/SectionHeader";
+import Tabs from "@/components/ui/Tabs";
 import EmptyState from "@/components/ui/EmptyState";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { StatusBadge, statusExtraMap } from "@/components/ui/StatusBadge";
@@ -120,108 +120,121 @@ export default async function ExtraDetalhePage({
         />
       </div>
 
-      <div>
-        <SectionHeader icon="hand-coins" iconColor="text-brand-600" title="Dados do lançamento" />
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
-          <ExtraForm
-            extra={extra}
-            mecanicos={mecanicos}
-            clientes={clientes}
-            ordens={ordensParaSelect.map((os) => ({ id: os.id, clienteNome: os.cliente.nome }))}
-            action={updateExtraWithId}
-            readOnly={!usuario.permissoes.editarExtras}
-          />
-        </div>
-      </div>
-
-      <div>
-        <SectionHeader icon="trending-up" iconColor="text-green-600" title="Pagamentos" />
-
-        <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-[var(--shadow-card)]">
-          {extra.pagamentos.length === 0 ? (
-            <EmptyState
-              icon="clock"
-              title="Nenhum pagamento registrado"
-              description="Registre os pagamentos do extra conforme forem sendo feitos ao funcionário."
-            />
-          ) : (
-            <div className="divide-y divide-gray-100">
-              {extra.pagamentos.map((p) => (
-                <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-6">
-                  <div>
-                    <p className="font-medium text-gray-900">{formatCurrency(p.valor)}</p>
-                    <p className="text-sm text-gray-600">
-                      {formatDate(p.data)}
-                      {p.formaPagamento ? ` · ${p.formaPagamento}` : ""}
-                    </p>
-                  </div>
-                  {usuario.permissoes.excluirExtras && (
-                    <form action={deletePagamentoExtra.bind(null, p.id, extra.id)}>
-                      <button
-                        type="submit"
-                        className="rounded-md border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
-                      >
-                        Excluir
-                      </button>
-                    </form>
+      <Tabs
+        tabs={[
+          {
+            value: "dados",
+            label: "Dados do lançamento",
+            content: (
+              <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
+                <ExtraForm
+                  extra={extra}
+                  mecanicos={mecanicos}
+                  clientes={clientes}
+                  ordens={ordensParaSelect.map((os) => ({ id: os.id, clienteNome: os.cliente.nome }))}
+                  action={updateExtraWithId}
+                  readOnly={!usuario.permissoes.editarExtras}
+                />
+              </div>
+            ),
+          },
+          {
+            value: "pagamentos",
+            label: "Pagamentos",
+            content: (
+              <div>
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-[var(--shadow-card)]">
+                  {extra.pagamentos.length === 0 ? (
+                    <EmptyState
+                      icon="clock"
+                      title="Nenhum pagamento registrado"
+                      description="Registre os pagamentos do extra conforme forem sendo feitos ao funcionário."
+                    />
+                  ) : (
+                    <div className="divide-y divide-gray-100">
+                      {extra.pagamentos.map((p) => (
+                        <div
+                          key={p.id}
+                          className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-6"
+                        >
+                          <div>
+                            <p className="font-medium text-gray-900">{formatCurrency(p.valor)}</p>
+                            <p className="text-sm text-gray-600">
+                              {formatDate(p.data)}
+                              {p.formaPagamento ? ` · ${p.formaPagamento}` : ""}
+                            </p>
+                          </div>
+                          {usuario.permissoes.excluirExtras && (
+                            <form action={deletePagamentoExtra.bind(null, p.id, extra.id)}>
+                              <button
+                                type="submit"
+                                className="rounded-md border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                              >
+                                Excluir
+                              </button>
+                            </form>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
 
-        {usuario.permissoes.editarExtras && saldo > 0 && (
-          <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
-            <h3 className="text-sm font-semibold text-gray-900">Registrar pagamento</h3>
-            <form action={addPagamentoWithId} className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label htmlFor="data" className="block text-sm font-medium text-gray-700">
-                  Data *
-                </label>
-                <input
-                  id="data"
-                  name="data"
-                  type="date"
-                  required
-                  defaultValue={new Date().toISOString().slice(0, 10)}
-                  className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
+                {usuario.permissoes.editarExtras && saldo > 0 && (
+                  <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-[var(--shadow-card)]">
+                    <h3 className="text-sm font-semibold text-gray-900">Registrar pagamento</h3>
+                    <form action={addPagamentoWithId} className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div>
+                        <label htmlFor="data" className="block text-sm font-medium text-gray-700">
+                          Data *
+                        </label>
+                        <input
+                          id="data"
+                          name="data"
+                          type="date"
+                          required
+                          defaultValue={new Date().toISOString().slice(0, 10)}
+                          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="valor" className="block text-sm font-medium text-gray-700">
+                          Valor *
+                        </label>
+                        <CurrencyInput
+                          id="valor"
+                          name="valor"
+                          required
+                          className="mt-1 w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label htmlFor="formaPagamento" className="block text-sm font-medium text-gray-700">
+                          Forma de pagamento
+                        </label>
+                        <input
+                          id="formaPagamento"
+                          name="formaPagamento"
+                          placeholder="Pix, dinheiro, cartão..."
+                          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <button
+                          type="submit"
+                          className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 sm:w-auto"
+                        >
+                          Registrar pagamento
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
-              <div>
-                <label htmlFor="valor" className="block text-sm font-medium text-gray-700">
-                  Valor *
-                </label>
-                <CurrencyInput
-                  id="valor"
-                  name="valor"
-                  required
-                  className="mt-1 w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label htmlFor="formaPagamento" className="block text-sm font-medium text-gray-700">
-                  Forma de pagamento
-                </label>
-                <input
-                  id="formaPagamento"
-                  name="formaPagamento"
-                  placeholder="Pix, dinheiro, cartão..."
-                  className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <button
-                  type="submit"
-                  className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 sm:w-auto"
-                >
-                  Registrar pagamento
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-      </div>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }

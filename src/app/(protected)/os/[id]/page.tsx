@@ -15,7 +15,7 @@ import DarkPatternBg from "@/components/ui/DarkPatternBg";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
 import CountUp from "@/components/ui/CountUp";
-import SectionHeader from "@/components/ui/SectionHeader";
+import Tabs from "@/components/ui/Tabs";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { StatusBadge, osStatusMap } from "@/components/ui/StatusBadge";
 import { updateOS, deleteOS } from "../actions";
@@ -168,77 +168,93 @@ export default async function OSDetalhePage({
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
-          <h3 className="text-sm font-semibold text-gray-900">Cliente</h3>
-          <dl className="mt-3 space-y-2.5 text-sm">
-            <div className="flex items-center justify-between gap-3">
-              <dt className="text-gray-600">Nome</dt>
-              <dd className="font-medium">
-                <Link href={`/clientes/${os.cliente.id}`} className="text-brand-600 hover:underline">
-                  {os.cliente.nome}
-                </Link>
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <dt className="text-gray-600">Telefone</dt>
-              <dd className="font-medium text-gray-900">{formatPhoneBR(telefoneOS) || "-"}</dd>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <dt className="text-gray-600">Forma de pagamento</dt>
-              <dd className="font-medium text-gray-900">{os.formaPagamento || "-"}</dd>
-            </div>
-          </dl>
-        </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
-          <h3 className="text-sm font-semibold text-gray-900">Observações</h3>
-          <p className="mt-3 text-sm text-gray-600">{os.observacoes || "Nenhuma observação."}</p>
-        </div>
-      </div>
+      <Tabs
+        tabs={[
+          {
+            value: "detalhes",
+            label: "Detalhes",
+            content: (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
+                    <h3 className="text-sm font-semibold text-gray-900">Cliente</h3>
+                    <dl className="mt-3 space-y-2.5 text-sm">
+                      <div className="flex items-center justify-between gap-3">
+                        <dt className="text-gray-600">Nome</dt>
+                        <dd className="font-medium">
+                          <Link href={`/clientes/${os.cliente.id}`} className="text-brand-600 hover:underline">
+                            {os.cliente.nome}
+                          </Link>
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <dt className="text-gray-600">Telefone</dt>
+                        <dd className="font-medium text-gray-900">{formatPhoneBR(telefoneOS) || "-"}</dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <dt className="text-gray-600">Forma de pagamento</dt>
+                        <dd className="font-medium text-gray-900">{os.formaPagamento || "-"}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
+                    <h3 className="text-sm font-semibold text-gray-900">Observações</h3>
+                    <p className="mt-3 text-sm text-gray-600">{os.observacoes || "Nenhuma observação."}</p>
+                  </div>
+                </div>
 
-      <div>
-        <SectionHeader icon="tools" iconColor="text-brand-600" title="Itens de serviço" />
-        <div className="mt-4 overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
-          <div className="h-[3px] bg-brand-600" />
-          <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50/80 text-gray-600">
-              <tr>
-                <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Descrição</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
-                  Valor
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {os.itens.map((item) => (
-                <tr key={item.id} className="border-t border-gray-100">
-                  <td className="px-6 py-3 text-gray-900">{item.descricao}</td>
-                  <td className="px-6 py-3 text-right tabular-nums text-gray-600">
-                    {formatCurrency(item.valor)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div>
-        <SectionHeader icon="settings" iconColor="text-gray-600" title="Editar OS" />
-        <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
-          <OSForm
-            clientes={clientes}
-            mecanicos={mecanicos}
-            os={os}
-            action={updateOSWithId}
-            readOnly={!usuario.permissoes.editarOS}
-          />
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
-        <OSFotos osId={os.id} fotos={fotos} readOnly={!usuario.permissoes.editarOS} />
-      </div>
+                <div className="overflow-hidden rounded-[10px] border border-gray-200 bg-white shadow-[var(--shadow-card)]">
+                  <div className="h-[3px] bg-brand-600" />
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-gray-50/80 text-gray-600">
+                      <tr>
+                        <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Descrição</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
+                          Valor
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {os.itens.map((item) => (
+                        <tr key={item.id} className="border-t border-gray-100">
+                          <td className="px-6 py-3 text-gray-900">{item.descricao}</td>
+                          <td className="px-6 py-3 text-right tabular-nums text-gray-600">
+                            {formatCurrency(item.valor)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ),
+          },
+          {
+            value: "editar",
+            label: "Editar OS",
+            content: (
+              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
+                <OSForm
+                  clientes={clientes}
+                  mecanicos={mecanicos}
+                  os={os}
+                  action={updateOSWithId}
+                  readOnly={!usuario.permissoes.editarOS}
+                />
+              </div>
+            ),
+          },
+          {
+            value: "fotos",
+            label: "Fotos",
+            content: (
+              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
+                <OSFotos osId={os.id} fotos={fotos} readOnly={!usuario.permissoes.editarOS} />
+              </div>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }
