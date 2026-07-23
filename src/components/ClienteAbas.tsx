@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type Aba = "historico" | "dividas" | "notas";
 
@@ -14,6 +14,7 @@ export default function ClienteAbas({
   notas: React.ReactNode;
 }) {
   const [aba, setAba] = useState<Aba>("historico");
+  const barraRef = useRef<HTMLDivElement>(null);
 
   const abas: { value: Aba; label: string }[] = [
     { value: "historico", label: "Histórico de OS" },
@@ -21,14 +22,21 @@ export default function ClienteAbas({
     { value: "notas", label: "Notas" },
   ];
 
+  function trocarAba(value: Aba) {
+    setAba(value);
+    // Sem isso, ao trocar pra uma aba mais curta o navegador "puxa" a rolagem
+    // pro topo abruptamente (a página não tem mais altura pra manter a posição).
+    barraRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
   return (
     <div>
-      <div className="flex gap-1 overflow-x-auto border-b border-gray-200">
+      <div ref={barraRef} className="flex gap-1 overflow-x-auto border-b border-gray-200">
         {abas.map((a) => (
           <button
             key={a.value}
             type="button"
-            onClick={() => setAba(a.value)}
+            onClick={() => trocarAba(a.value)}
             className={`shrink-0 border-b-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
               aba === a.value
                 ? "border-brand-600 text-brand-600"

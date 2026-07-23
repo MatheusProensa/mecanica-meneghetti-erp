@@ -24,7 +24,7 @@ export default function OSPagamentoCard({
         <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-100 sm:text-xs">
           Pagamento
         </p>
-        <p className="text-[20px] font-bold leading-tight tracking-tight text-white sm:text-[26px]">
+        <p className="whitespace-nowrap text-[16px] font-bold leading-tight tracking-tight text-white sm:text-[20px]">
           {info.label}
         </p>
         {!readOnly && (
@@ -32,7 +32,7 @@ export default function OSPagamentoCard({
             type="button"
             disabled={pending}
             onClick={() => startTransition(() => toggleOSPago(id, !pago))}
-            className="mt-0.5 rounded-md bg-white/15 px-2.5 py-1 text-xs font-semibold text-white hover:bg-white/25 disabled:opacity-60"
+            className="mt-1 rounded-md bg-white px-3 py-1.5 text-xs font-bold text-brand-600 shadow-sm hover:bg-blue-50 disabled:opacity-60"
           >
             {pago ? "Desfazer" : "Marcar pago"}
           </button>
