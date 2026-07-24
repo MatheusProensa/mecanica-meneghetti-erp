@@ -12,6 +12,7 @@ import {
   FileText,
   UserX,
   HandCoins,
+  Calculator,
   Settings,
   HelpCircle,
   LogOut,
@@ -32,6 +33,7 @@ const links = [
 ];
 
 const secondaryLinks = [
+  { href: "/calculadora", label: "Calculadora de Serviço", icon: Calculator },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
   { href: "/ajuda", label: "Ajuda", icon: HelpCircle },
 ];

@@ -16,6 +16,7 @@ import {
   Camera,
   LayoutDashboard,
   Settings,
+  Calculator,
   type LucideIcon,
 } from "lucide-react";
 
@@ -37,6 +38,7 @@ export const iconMap = {
   camera: Camera,
   "layout-dashboard": LayoutDashboard,
   settings: Settings,
+  calculator: Calculator,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof iconMap;

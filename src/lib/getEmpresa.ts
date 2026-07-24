@@ -13,5 +13,7 @@ export async function getEmpresa(): Promise<DadosEmpresa> {
     cidade: empresa.cidade,
     telefone: empresa.telefone,
     cnpj: empresa.cnpj,
+    valorHoraTorno: empresa.valorHoraTorno,
+    valorKgBarraRedonda: empresa.valorKgBarraRedonda,
   };
 }

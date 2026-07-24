@@ -69,6 +69,14 @@ const secoes: {
     iconColor: "text-gray-600",
   },
   {
+    titulo: "Calculadora de Serviço",
+    texto:
+      "Ajuda a formar o preço de um serviço: calcula o valor da mão de obra do torno a partir do tempo gasto, e o custo do material (barra redonda de aço) a partir do diâmetro e comprimento usados. O valor da hora e do kg do material ficam salvos, então não precisa digitar de novo toda vez.",
+    requer: null,
+    icon: "calculator",
+    iconColor: "text-brand-600",
+  },
+  {
     titulo: "Configurações",
     texto:
       "Trocar sua senha, ativar notificações no navegador (avisa todo dia sobre OS atrasadas e dívidas em aberto, mesmo com o sistema fechado), editar os dados da oficina (usados nos PDFs), cadastrar sua chave Pix, gerenciar os mecânicos da oficina e, se você for Administrador, criar logins novos e controlar o que cada Funcionário pode ver ou fazer no sistema.",

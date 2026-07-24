@@ -4,6 +4,8 @@ export interface DadosEmpresa {
   cidade: string;
   telefone: string;
   cnpj: string;
+  valorHoraTorno: number;
+  valorKgBarraRedonda: number;
 }
 
 /** Usado só até a oficina configurar os dados dela em Configurações. */
@@ -13,4 +15,6 @@ export const EMPRESA_PADRAO: DadosEmpresa = {
   cidade: "Santa Maria",
   telefone: "(55) 99969-1553",
   cnpj: "20.398.372/0001-25",
+  valorHoraTorno: 120,
+  valorKgBarraRedonda: 11,
 };
