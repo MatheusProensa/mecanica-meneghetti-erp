@@ -64,7 +64,7 @@ export default function CalculadoraServico({
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-brand-600">
               <Clock className="h-4.5 w-4.5" />
             </span>
-            <h2 className="text-sm font-semibold text-gray-900">Hora do Torno</h2>
+            <h2 className="text-sm font-semibold text-gray-900">Cálculo da Hora do Torno</h2>
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-4">
@@ -121,13 +121,22 @@ export default function CalculadoraServico({
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
               <Package className="h-4.5 w-4.5" />
             </span>
-            <div>
-              <h2 className="text-sm font-semibold text-gray-900">Material</h2>
-              <p className="text-xs text-gray-500">Barra redonda de aço</p>
-            </div>
+            <h2 className="text-sm font-semibold text-gray-900">Cálculo do Material</h2>
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-4">
+            <div className="col-span-2">
+              <label htmlFor="tipoMaterial" className="block text-sm font-medium text-gray-700">
+                Tipo do material
+              </label>
+              <select
+                id="tipoMaterial"
+                disabled
+                className="select-compact mt-1 w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+              >
+                <option>Barra Redonda de Aço</option>
+              </select>
+            </div>
             <div>
               <label htmlFor="diametro" className="block text-sm font-medium text-gray-700">
                 Diâmetro (mm)
