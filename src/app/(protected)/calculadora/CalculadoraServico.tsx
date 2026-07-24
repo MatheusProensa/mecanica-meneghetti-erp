@@ -5,29 +5,41 @@ import { Clock, Package, Save } from "lucide-react";
 import CurrencyInput from "@/components/CurrencyInput";
 import { formatCurrency, parseCurrencyBR } from "@/lib/format";
 import { TABELA_BARRA_REDONDA, calcularMaterial, calcularValorHora } from "@/lib/materiais";
-import { salvarValoresCalculadora } from "./actions";
+import { salvarValorHoraTorno, salvarValorMaterial } from "./actions";
+
+export interface MaterialCalculadoraItem {
+  id: string;
+  nome: string;
+  valorKg: number;
+  densidade: number;
+}
 
 export default function CalculadoraServico({
   valorHoraTornoInicial,
-  valorKgBarraRedondaInicial,
+  materiais,
 }: {
   valorHoraTornoInicial: number;
-  valorKgBarraRedondaInicial: number;
+  materiais: MaterialCalculadoraItem[];
 }) {
   const [horas, setHoras] = useState("0");
   const [minutos, setMinutos] = useState("0");
   const [valorHoraStr, setValorHoraStr] = useState(valorHoraTornoInicial.toFixed(2).replace(".", ","));
+  const [salvandoHora, startTransitionHora] = useTransition();
+  const [mensagemHora, setMensagemHora] = useState<string | null>(null);
 
+  const [materialId, setMaterialId] = useState(materiais[0]?.id ?? "");
   const [diametro, setDiametro] = useState("25");
   const [comprimento, setComprimento] = useState("1");
   const [unidade, setUnidade] = useState<"m" | "cm">("m");
-  const [valorKgStr, setValorKgStr] = useState(valorKgBarraRedondaInicial.toFixed(2).replace(".", ","));
-
-  const [pending, startTransition] = useTransition();
-  const [mensagem, setMensagem] = useState<string | null>(null);
+  const [valorKgStr, setValorKgStr] = useState(() =>
+    (materiais[0]?.valorKg ?? 0).toFixed(2).replace(".", ",")
+  );
+  const [salvandoMaterial, startTransitionMaterial] = useTransition();
+  const [mensagemMaterial, setMensagemMaterial] = useState<string | null>(null);
 
   const valorHora = parseCurrencyBR(valorHoraStr);
   const valorKg = parseCurrencyBR(valorKgStr);
+  const materialSelecionado = materiais.find((m) => m.id === materialId) ?? materiais[0];
 
   const valorMaoDeObra = useMemo(
     () => calcularValorHora(Number(horas) || 0, Number(minutos) || 0, valorHora),
@@ -35,23 +47,46 @@ export default function CalculadoraServico({
   );
 
   const resultadoMaterial = useMemo(() => {
+    if (!materialSelecionado) return { kgPorMetro: 0, pesoKg: 0, valor: 0 };
     const comprimentoM = unidade === "cm" ? (Number(comprimento) || 0) / 100 : Number(comprimento) || 0;
-    return calcularMaterial(Number(diametro) || 0, comprimentoM, valorKg);
-  }, [diametro, comprimento, unidade, valorKg]);
+    return calcularMaterial(materialSelecionado.nome, Number(diametro) || 0, comprimentoM, valorKg, materialSelecionado.densidade);
+  }, [materialSelecionado, diametro, comprimento, unidade, valorKg]);
 
   const total = valorMaoDeObra + resultadoMaterial.valor;
 
-  function salvarPadroes() {
-    setMensagem(null);
+  function trocarMaterial(id: string) {
+    setMaterialId(id);
+    const material = materiais.find((m) => m.id === id);
+    if (material) setValorKgStr(material.valorKg.toFixed(2).replace(".", ","));
+    setMensagemMaterial(null);
+  }
+
+  function salvarHoraPadrao() {
+    setMensagemHora(null);
     const formData = new FormData();
     formData.set("valorHoraTorno", String(valorHora));
-    formData.set("valorKgBarraRedonda", String(valorKg));
-    startTransition(async () => {
+    startTransitionHora(async () => {
       try {
-        await salvarValoresCalculadora(formData);
-        setMensagem("Valores padrão salvos.");
+        await salvarValorHoraTorno(formData);
+        setMensagemHora("Salvo.");
       } catch {
-        setMensagem("Não foi possível salvar. Tente de novo.");
+        setMensagemHora("Não foi possível salvar.");
+      }
+    });
+  }
+
+  function salvarValorKgMaterial() {
+    if (!materialSelecionado) return;
+    setMensagemMaterial(null);
+    const formData = new FormData();
+    formData.set("id", materialSelecionado.id);
+    formData.set("valorKg", String(valorKg));
+    startTransitionMaterial(async () => {
+      try {
+        await salvarValorMaterial(formData);
+        setMensagemMaterial("Salvo.");
+      } catch {
+        setMensagemMaterial("Não foi possível salvar.");
       }
     });
   }
@@ -101,12 +136,24 @@ export default function CalculadoraServico({
               <label htmlFor="valorHora" className="block text-sm font-medium text-gray-700">
                 Valor da hora
               </label>
-              <CurrencyInput
-                id="valorHora"
-                value={valorHoraStr}
-                onChange={setValorHoraStr}
-                className="mt-1 w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              />
+              <div className="mt-1 flex items-center gap-2">
+                <CurrencyInput
+                  id="valorHora"
+                  value={valorHoraStr}
+                  onChange={setValorHoraStr}
+                  className="w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <button
+                  type="button"
+                  onClick={salvarHoraPadrao}
+                  disabled={salvandoHora}
+                  title="Salvar como valor padrão"
+                  className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-60"
+                >
+                  <Save className="h-4 w-4" />
+                </button>
+              </div>
+              {mensagemHora && <p className="mt-1 text-xs text-gray-500">{mensagemHora}</p>}
             </div>
           </div>
 
@@ -131,10 +178,15 @@ export default function CalculadoraServico({
               </label>
               <select
                 id="tipoMaterial"
-                disabled
-                className="select-compact mt-1 w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+                value={materialId}
+                onChange={(e) => trocarMaterial(e.target.value)}
+                className="select-compact mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
-                <option>Barra Redonda de Aço</option>
+                {materiais.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.nome}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
@@ -176,20 +228,35 @@ export default function CalculadoraServico({
                 </select>
               </div>
             </div>
-            <div className="col-span-2">
-              <label htmlFor="valorKg" className="block text-sm font-medium text-gray-700">
-                Valor do kg
+          </div>
+
+          <div className="mt-4 rounded-lg bg-gray-50 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <label htmlFor="valorKg" className="text-xs font-medium text-gray-600">
+                Valor do kg cadastrado — {materialSelecionado?.nome}
               </label>
+            </div>
+            <div className="mt-1.5 flex items-center gap-2">
               <CurrencyInput
                 id="valorKg"
                 value={valorKgStr}
                 onChange={setValorKgStr}
-                className="mt-1 w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 bg-white py-1.5 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
+              <button
+                type="button"
+                onClick={salvarValorKgMaterial}
+                disabled={salvandoMaterial}
+                title="Salvar como valor padrão desse material"
+                className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-60"
+              >
+                <Save className="h-3.5 w-3.5" />
+              </button>
             </div>
+            {mensagemMaterial && <p className="mt-1 text-xs text-gray-500">{mensagemMaterial}</p>}
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="mt-4 grid grid-cols-2 gap-3">
             <div className="rounded-lg bg-gray-50 p-4 text-center">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Peso calculado</p>
               <p className="mt-1 text-lg font-bold text-gray-900">
@@ -202,30 +269,22 @@ export default function CalculadoraServico({
             </div>
           </div>
 
-          <p className="mt-3 text-xs text-gray-500">
-            Bitolas de referência (kg/m):{" "}
-            {TABELA_BARRA_REDONDA.map((b) => `Ø${b.diametroMm}mm = ${b.kgPorMetro}`).join(" · ")}
-          </p>
+          {materialSelecionado?.nome === "Aço 1020" && (
+            <p className="mt-3 text-xs text-gray-500">
+              Bitolas de referência (kg/m):{" "}
+              {TABELA_BARRA_REDONDA.map((b) => `Ø${b.diametroMm}mm = ${b.kgPorMetro}`).join(" · ")}
+            </p>
+          )}
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-blue-100 bg-blue-50 p-4 sm:p-6">
+      <div className="flex flex-wrap items-center justify-center gap-3 rounded-xl border border-blue-100 bg-blue-50 p-4 text-center sm:justify-between sm:p-6 sm:text-left">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Total estimado do serviço</p>
           <p className="mt-1 text-2xl font-bold text-brand-700">{formatCurrency(total)}</p>
           <p className="mt-1 text-xs text-gray-600">Mão de obra + material</p>
         </div>
-        <button
-          type="button"
-          onClick={salvarPadroes}
-          disabled={pending}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
-        >
-          <Save className="h-4 w-4" />
-          {pending ? "Salvando..." : "Salvar valores padrão"}
-        </button>
       </div>
-      {mensagem && <p className="text-sm text-gray-600">{mensagem}</p>}
     </div>
   );
 }

@@ -90,6 +90,17 @@ model Empresa {
   updatedAt           DateTime @updatedAt
 }
 
+/** Materiais cadastrados pra Calculadora de Serviço — cada um com o preço do
+ * kg (editável) e a densidade usada pra calcular o peso a partir do diâmetro. */
+model MaterialCalculadora {
+  id         String   @id @default(cuid())
+  nome       String   @unique
+  valorKg    Float
+  densidade  Float
+  ordem      Int      @default(0)
+  updatedAt  DateTime @updatedAt
+}
+
 model Cliente {
   id          String   @id @default(cuid())
   nome        String

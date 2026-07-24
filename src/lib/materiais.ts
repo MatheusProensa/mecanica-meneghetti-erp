@@ -1,5 +1,6 @@
-/** Tabela de referência kg/m de barra redonda de aço, por diâmetro — valores
- * de tabela oficial, mais precisos que a fórmula pura pra bitolas comuns. */
+/** Tabela de referência kg/m de barra redonda de Aço 1020, por diâmetro —
+ * valores de tabela oficial, mais precisos que a fórmula pura pra bitolas
+ * comuns (a densidade cobre as demais). */
 export const TABELA_BARRA_REDONDA: { diametroMm: number; kgPorMetro: number }[] = [
   { diametroMm: 25, kgPorMetro: 3.85 },
   { diametroMm: 30, kgPorMetro: 5.55 },
@@ -11,13 +12,22 @@ export const TABELA_BARRA_REDONDA: { diametroMm: number; kgPorMetro: number }[] 
   { diametroMm: 100, kgPorMetro: 61.65 },
 ];
 
-/** kg/m de uma barra redonda de aço, pro diâmetro informado — usa a tabela de
- * referência quando o diâmetro bate com uma bitola comum, senão calcula pela
- * fórmula padrão (Ø² ÷ 162). */
-export function calcularKgPorMetro(diametroMm: number): number {
+const NOME_ACO_1020 = "Aço 1020";
+
+/** kg/m de uma barra redonda a partir do diâmetro (mm) e da densidade do
+ * material (kg/m³) — fórmula física padrão (área da seção × densidade). */
+export function calcularKgPorMetroPorDensidade(diametroMm: number, densidadeKgM3: number): number {
+  const raioM = diametroMm / 1000 / 2;
+  const areaM2 = Math.PI * raioM * raioM;
+  return areaM2 * densidadeKgM3;
+}
+
+/** kg/m de uma barra redonda de Aço 1020 — usa a tabela de referência quando
+ * o diâmetro bate com uma bitola comum, senão calcula pela densidade. */
+export function calcularKgPorMetro(diametroMm: number, densidadeKgM3 = 7850): number {
   const daTabela = TABELA_BARRA_REDONDA.find((b) => b.diametroMm === diametroMm);
   if (daTabela) return daTabela.kgPorMetro;
-  return (diametroMm * diametroMm) / 162;
+  return calcularKgPorMetroPorDensidade(diametroMm, densidadeKgM3);
 }
 
 export interface ResultadoMaterial {
@@ -26,13 +36,19 @@ export interface ResultadoMaterial {
   valor: number;
 }
 
-/** Peso e custo do material usado — comprimento sempre em metros. */
+/** Peso e custo do material usado — comprimento sempre em metros. Usa a
+ * tabela de referência pro Aço 1020 nas bitolas comuns, senão a densidade. */
 export function calcularMaterial(
+  nomeMaterial: string,
   diametroMm: number,
   comprimentoM: number,
-  valorPorKg: number
+  valorPorKg: number,
+  densidadeKgM3: number
 ): ResultadoMaterial {
-  const kgPorMetro = calcularKgPorMetro(diametroMm);
+  const kgPorMetro =
+    nomeMaterial === NOME_ACO_1020
+      ? calcularKgPorMetro(diametroMm, densidadeKgM3)
+      : calcularKgPorMetroPorDensidade(diametroMm, densidadeKgM3);
   const pesoKg = kgPorMetro * comprimentoM;
   const valor = pesoKg * valorPorKg;
   return { kgPorMetro, pesoKg, valor };
