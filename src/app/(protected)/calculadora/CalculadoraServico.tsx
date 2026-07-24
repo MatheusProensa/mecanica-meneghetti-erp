@@ -278,11 +278,26 @@ export default function CalculadoraServico({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-3 rounded-xl border border-blue-100 bg-blue-50 p-4 text-center sm:justify-between sm:p-6 sm:text-left">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Total estimado do serviço</p>
-          <p className="mt-1 text-2xl font-bold text-brand-700">{formatCurrency(total)}</p>
-          <p className="mt-1 text-xs text-gray-600">Mão de obra + material</p>
+      <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-600 to-blue-800 shadow-[var(--shadow-card)]">
+        <div className="p-5 text-center sm:p-6 sm:text-left">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-100">Total estimado do serviço</p>
+          <p className="mt-1 text-4xl font-bold text-white">{formatCurrency(total)}</p>
+        </div>
+        <div className="flex flex-col divide-y divide-white/15 border-t border-white/15 bg-black/10 sm:flex-row sm:divide-x sm:divide-y-0">
+          <div className="flex flex-1 items-center justify-between gap-2 px-5 py-3 sm:justify-center sm:gap-3 sm:py-4">
+            <span className="flex items-center gap-1.5 text-sm text-blue-100">
+              <Clock className="h-4 w-4" />
+              Mão de obra
+            </span>
+            <span className="text-sm font-bold text-white">{formatCurrency(valorMaoDeObra)}</span>
+          </div>
+          <div className="flex flex-1 items-center justify-between gap-2 px-5 py-3 sm:justify-center sm:gap-3 sm:py-4">
+            <span className="flex items-center gap-1.5 text-sm text-blue-100">
+              <Package className="h-4 w-4" />
+              Material
+            </span>
+            <span className="text-sm font-bold text-white">{formatCurrency(resultadoMaterial.valor)}</span>
+          </div>
         </div>
       </div>
     </div>
