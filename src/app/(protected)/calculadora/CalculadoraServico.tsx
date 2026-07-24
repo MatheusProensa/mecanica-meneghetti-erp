@@ -279,7 +279,7 @@ export default function CalculadoraServico({
       </div>
 
       <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-600 to-blue-800 shadow-[var(--shadow-card)]">
-        <div className="p-5 text-center sm:p-6 sm:text-left">
+        <div className="p-5 text-center sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-blue-100">Total estimado do serviço</p>
           <p className="mt-1 text-4xl font-bold text-white">{formatCurrency(total)}</p>
         </div>
