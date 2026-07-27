@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
 import { calcularSituacaoDivida, dataMaisAntigaItem } from "@/lib/dividas";
-import { getSignedClienteFotoUrls } from "@/lib/supabase-storage";
+import { getSignedClienteFotoUrls, getSignedOSFotoUrls } from "@/lib/supabase-storage";
 import CobrancaCliente from "@/components/CobrancaCliente";
 import ClienteInfoSection from "@/components/ClienteInfoSection";
 import ClienteAbas from "@/components/ClienteAbas";
@@ -44,7 +44,7 @@ export default async function ClienteDetalhePage({
       where: { id },
       include: {
         ordensServico: {
-          include: { itens: true },
+          include: { itens: true, anexos: { orderBy: { createdAt: "desc" } } },
           orderBy: { data: "desc" },
         },
         notas: {
@@ -78,6 +78,10 @@ export default async function ClienteDetalhePage({
   const osConcluidasCount = cliente.ordensServico.filter((os) => STATUS_OS_CONCLUIDAS.has(os.status)).length;
   const ultimaVisita = cliente.ordensServico[0]?.data ?? null;
 
+  const urlsOSPorPath = await getSignedOSFotoUrls(
+    cliente.ordensServico.flatMap((os) => os.anexos.map((a) => a.path))
+  );
+
   const ordensAbertas = cliente.ordensServico
     .filter((os) => !os.pago && os.status !== "cancelada")
     .map((os) => ({
@@ -86,6 +90,7 @@ export default async function ClienteDetalhePage({
       descricao: os.itens.map((i) => i.descricao).join(", "),
       valor: os.itens.reduce((s, i) => s + i.valor, 0),
       itens: os.itens.map((i) => ({ descricao: i.descricao, valor: i.valor })),
+      fotos: os.anexos.flatMap((a) => (urlsOSPorPath[a.path] ? [{ url: urlsOSPorPath[a.path] }] : [])),
     }));
 
   const updateClienteWithId = updateCliente.bind(null, cliente.id);
