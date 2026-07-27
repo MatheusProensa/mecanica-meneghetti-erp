@@ -122,7 +122,13 @@ export default async function OSDetalhePage({
                   endereco: os.cliente.endereco,
                   cpfCnpj: os.cliente.cpfCnpj,
                 }}
-                os={{ id: os.id, data: os.data, descricao: descricaoItens, valor: valorTotal }}
+                os={{
+                  id: os.id,
+                  data: os.data,
+                  descricao: descricaoItens,
+                  valor: valorTotal,
+                  itens: os.itens.map((i) => ({ descricao: i.descricao, valor: i.valor })),
+                }}
                 fotos={fotos.flatMap((f) => (f.url ? [{ url: f.url }] : []))}
                 pixKeyPadrao={usuarioPix?.pixKey ?? null}
                 dadosBancariosPadrao={usuarioPix?.dadosBancarios ?? null}

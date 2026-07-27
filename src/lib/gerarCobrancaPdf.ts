@@ -24,6 +24,7 @@ export interface CobrancaOS {
   descricao: string;
   valor: number;
   fotos?: { url: string }[];
+  itens?: { descricao: string; valor: number }[];
 }
 
 export interface CobrancaCliente {
@@ -109,16 +110,23 @@ export async function gerarCobrancaPdf({
 
   const total = ordens.reduce((sum, os) => sum + os.valor, 0);
 
+  // OS com um único serviço vira uma linha; OS com vários serviços é detalhada
+  // linha a linha (mesma OS/data repetida), pra não esconder valor de cada item.
+  const linhasTabela = ordens.flatMap((os) => {
+    const itens = os.itens && os.itens.length > 0 ? os.itens : [{ descricao: os.descricao, valor: os.valor }];
+    return itens.map((item) => [
+      `#${String(os.id).padStart(4, "0")}`,
+      formatDate(os.data),
+      item.descricao || "-",
+      formatCurrency(item.valor),
+    ]);
+  });
+
   autoTable(doc, {
     startY: y,
     margin: { left: PDF_MARGIN_X, right: PDF_MARGIN_X },
     head: [[up("OS"), up("Data"), up("Descrição"), { content: up("Valor"), styles: { halign: "right" } }]],
-    body: ordens.map((os) => [
-      `#${String(os.id).padStart(4, "0")}`,
-      formatDate(os.data),
-      os.descricao || "-",
-      formatCurrency(os.valor),
-    ]),
+    body: linhasTabela,
     headStyles: TABLE_HEAD_STYLES,
     columnStyles: {
       0: { cellWidth: 20 },

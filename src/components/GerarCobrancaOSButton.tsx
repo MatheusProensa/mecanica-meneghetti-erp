@@ -15,7 +15,13 @@ export default function GerarCobrancaOSButton({
 }: {
   empresa: DadosEmpresa;
   cliente: { nome: string; telefone: string | null; endereco: string | null; cpfCnpj: string | null };
-  os: { id: number; data: Date | string; descricao: string; valor: number };
+  os: {
+    id: number;
+    data: Date | string;
+    descricao: string;
+    valor: number;
+    itens?: { descricao: string; valor: number }[];
+  };
   fotos?: { url: string }[];
   pixKeyPadrao: string | null;
   dadosBancariosPadrao: string | null;

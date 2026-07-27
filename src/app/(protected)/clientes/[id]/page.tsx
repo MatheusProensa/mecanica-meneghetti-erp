@@ -85,6 +85,7 @@ export default async function ClienteDetalhePage({
       data: os.data,
       descricao: os.itens.map((i) => i.descricao).join(", "),
       valor: os.itens.reduce((s, i) => s + i.valor, 0),
+      itens: os.itens.map((i) => ({ descricao: i.descricao, valor: i.valor })),
     }));
 
   const updateClienteWithId = updateCliente.bind(null, cliente.id);
