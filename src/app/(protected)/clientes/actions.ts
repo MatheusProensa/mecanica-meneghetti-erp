@@ -2,9 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { requirePermission } from "@/lib/requireAuth";
+import { uploadClienteFoto, deleteClienteFoto } from "@/lib/supabase-storage";
+import { assinaturaCondizComTipo } from "@/lib/fileSignature";
+
+const ALLOWED_FOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 function str(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -85,4 +90,34 @@ export async function deleteCliente(id: string) {
 
   revalidatePath("/clientes");
   redirect(`/clientes?sucesso=${encodeURIComponent("Cliente excluído")}`);
+}
+
+export async function addAnexoCliente(id: string, formData: FormData) {
+  await requirePermission("verClientes");
+  await requirePermission("editarClientes");
+  const file = formData.get("foto");
+  if (!(file instanceof File) || file.size === 0) throw new Error("Selecione uma foto");
+  if (!ALLOWED_FOTO_TYPES.has(file.type)) {
+    throw new Error("A foto precisa ser uma imagem (JPG, PNG, WEBP ou GIF)");
+  }
+
+  const bytes = Buffer.from(await file.arrayBuffer());
+  if (!assinaturaCondizComTipo(bytes, file.type)) {
+    throw new Error("O arquivo enviado não corresponde a uma imagem válida");
+  }
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const fileName = `cliente-${id}-${randomUUID()}-${safeName}`;
+  const path = await uploadClienteFoto(fileName, bytes, file.type);
+
+  await prisma.anexoCliente.create({ data: { clienteId: id, path } });
+  revalidatePath(`/clientes/${id}`);
+}
+
+export async function deleteAnexoCliente(id: string, clienteId: string) {
+  await requirePermission("verClientes");
+  await requirePermission("excluirClientes");
+  const anexo = await prisma.anexoCliente.findUniqueOrThrow({ where: { id } });
+  await prisma.anexoCliente.delete({ where: { id } });
+  await deleteClienteFoto(anexo.path).catch(() => {});
+  revalidatePath(`/clientes/${clienteId}`);
 }

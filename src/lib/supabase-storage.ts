@@ -4,6 +4,7 @@ const BUCKET = "notas-pdfs";
 const DESPESAS_BUCKET = "despesas-anexos";
 const OS_FOTOS_BUCKET = DESPESAS_BUCKET; // reaproveita o bucket privado já existente
 const DIVIDA_FOTOS_BUCKET = DESPESAS_BUCKET; // reaproveita o bucket privado já existente
+const CLIENTE_FOTOS_BUCKET = DESPESAS_BUCKET; // reaproveita o bucket privado já existente
 const SIGNED_URL_EXPIRES_IN = 60 * 60; // 1 hora
 
 function getClient() {
@@ -150,6 +151,42 @@ export async function getSignedDividaFotoUrls(paths: string[]): Promise<Record<s
   const supabase = getClient();
   const { data, error } = await supabase.storage
     .from(DIVIDA_FOTOS_BUCKET)
+    .createSignedUrls(paths, SIGNED_URL_EXPIRES_IN);
+  if (error || !data) return {};
+
+  const map: Record<string, string> = {};
+  for (const item of data) {
+    if (item.signedUrl && item.path) map[item.path] = item.signedUrl;
+  }
+  return map;
+}
+
+/** Envia uma foto/documento vinculado a um cliente (papéis antigos, etc.) pro bucket privado. */
+export async function uploadClienteFoto(
+  fileName: string,
+  bytes: Buffer,
+  contentType: string
+): Promise<string> {
+  const supabase = getClient();
+  const { error } = await supabase.storage.from(CLIENTE_FOTOS_BUCKET).upload(fileName, bytes, {
+    contentType,
+    upsert: false,
+  });
+  if (error) throw error;
+  return fileName;
+}
+
+export async function deleteClienteFoto(path: string): Promise<void> {
+  const supabase = getClient();
+  await supabase.storage.from(CLIENTE_FOTOS_BUCKET).remove([path]);
+}
+
+/** Versão em lote, para a galeria de fotos do cliente. */
+export async function getSignedClienteFotoUrls(paths: string[]): Promise<Record<string, string>> {
+  if (paths.length === 0) return {};
+  const supabase = getClient();
+  const { data, error } = await supabase.storage
+    .from(CLIENTE_FOTOS_BUCKET)
     .createSignedUrls(paths, SIGNED_URL_EXPIRES_IN);
   if (error || !data) return {};
 

@@ -2,16 +2,18 @@
 
 import { useRef, useState } from "react";
 
-type Aba = "historico" | "dividas" | "notas";
+type Aba = "historico" | "dividas" | "notas" | "fotos";
 
 export default function ClienteAbas({
   historico,
   dividas,
   notas,
+  fotos,
 }: {
   historico: React.ReactNode;
   dividas?: React.ReactNode;
   notas: React.ReactNode;
+  fotos: React.ReactNode;
 }) {
   const [aba, setAba] = useState<Aba>("historico");
   const barraRef = useRef<HTMLDivElement>(null);
@@ -20,6 +22,7 @@ export default function ClienteAbas({
     { value: "historico", label: "Histórico de OS" },
     ...(dividas ? ([{ value: "dividas", label: "Dívidas antigas" }] as const) : []),
     { value: "notas", label: "Notas" },
+    { value: "fotos", label: "Fotos" },
   ];
 
   function trocarAba(value: Aba) {
@@ -51,6 +54,7 @@ export default function ClienteAbas({
         {aba === "historico" && historico}
         {aba === "dividas" && dividas}
         {aba === "notas" && notas}
+        {aba === "fotos" && fotos}
       </div>
     </div>
   );

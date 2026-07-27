@@ -118,8 +118,19 @@ model Cliente {
   notas         Nota[]
   dividas       Divida[]
   extras        ExtraFuncionario[]
+  anexos        AnexoCliente[]
 
   @@index([nome])
+}
+
+model AnexoCliente {
+  id        String   @id @default(cuid())
+  clienteId String
+  cliente   Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  path      String
+  createdAt DateTime @default(now())
+
+  @@index([clienteId])
 }
 
 model Mecanico {

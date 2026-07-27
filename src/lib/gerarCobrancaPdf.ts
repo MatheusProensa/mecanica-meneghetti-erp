@@ -40,6 +40,7 @@ export interface GerarCobrancaPdfParams {
   pixKey?: string | null;
   dadosBancarios?: string | null;
   observacoes?: string | null;
+  fotosCliente?: { url: string }[];
 }
 
 export async function gerarCobrancaPdf({
@@ -49,6 +50,7 @@ export async function gerarCobrancaPdf({
   pixKey,
   dadosBancarios,
   observacoes,
+  fotosCliente,
 }: GerarCobrancaPdfParams): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -205,8 +207,13 @@ export async function gerarCobrancaPdf({
   desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
 
   // Anexos: uma página por foto, com a imagem ocupando o espaço disponível —
-  // pra mandar junto o comprovante/papel original da OS quando tiver.
-  const todasFotos = ordens.flatMap((os) => (os.fotos ?? []).map((foto) => ({ osId: os.id, url: foto.url })));
+  // pra mandar junto o comprovante/papel original da OS ou do cliente quando tiver.
+  const todasFotos = [
+    ...ordens.flatMap((os) =>
+      (os.fotos ?? []).map((foto) => ({ legenda: `Anexo — OS #${String(os.id).padStart(4, "0")}`, url: foto.url }))
+    ),
+    ...(fotosCliente ?? []).map((foto) => ({ legenda: `Anexo — ${cliente.nome}`, url: foto.url })),
+  ];
   if (todasFotos.length > 0) {
     const pageHeight = doc.internal.pageSize.getHeight();
     const areaLargura = pageWidth - PDF_MARGIN_X * 2;
@@ -221,7 +228,7 @@ export async function gerarCobrancaPdf({
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9.5);
       doc.setTextColor(...PDF_INK_900);
-      doc.text(`Anexo — OS #${String(foto.osId).padStart(4, "0")}`, PDF_MARGIN_X, 15);
+      doc.text(foto.legenda, PDF_MARGIN_X, 15);
 
       const proporcaoImagem = imagem.width / imagem.height;
       const proporcaoArea = areaLargura / areaAltura;

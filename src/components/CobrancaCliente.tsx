@@ -31,6 +31,7 @@ export default function CobrancaCliente({
   ordensAbertas,
   pixKeyPadrao,
   dadosBancariosPadrao,
+  fotosCliente,
 }: {
   empresa: DadosEmpresa;
   cliente: {
@@ -42,6 +43,7 @@ export default function CobrancaCliente({
   ordensAbertas: CobrancaOS[];
   pixKeyPadrao: string | null;
   dadosBancariosPadrao: string | null;
+  fotosCliente?: { url: string }[];
 }) {
   const [selecionadas, setSelecionadas] = useState<Set<number>>(
     new Set(ordensAbertas.map((os) => os.id))
@@ -76,6 +78,7 @@ export default function CobrancaCliente({
       pixKey: incluirPix ? pixKeyPadrao : null,
       dadosBancarios: incluirPix ? dadosBancariosPadrao : null,
       observacoes: observacoes.trim() || null,
+      fotosCliente,
     });
   }
 

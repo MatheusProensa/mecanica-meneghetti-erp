@@ -6,9 +6,11 @@ import { getCurrentUser } from "@/lib/getCurrentUser";
 import { getEmpresa } from "@/lib/getEmpresa";
 import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
 import { calcularSituacaoDivida, dataMaisAntigaItem } from "@/lib/dividas";
+import { getSignedClienteFotoUrls } from "@/lib/supabase-storage";
 import CobrancaCliente from "@/components/CobrancaCliente";
 import ClienteInfoSection from "@/components/ClienteInfoSection";
 import ClienteAbas from "@/components/ClienteAbas";
+import ClienteFotos from "@/components/ClienteFotos";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
 import CountUp from "@/components/ui/CountUp";
@@ -52,6 +54,7 @@ export default async function ClienteDetalhePage({
           include: { pagamentos: true, itens: true },
           orderBy: { createdAt: "desc" },
         },
+        anexos: { orderBy: { createdAt: "desc" } },
       },
     }),
     auth(),
@@ -86,6 +89,9 @@ export default async function ClienteDetalhePage({
 
   const updateClienteWithId = updateCliente.bind(null, cliente.id);
   const deleteClienteWithId = deleteCliente.bind(null, cliente.id);
+
+  const urlsPorPath = await getSignedClienteFotoUrls(cliente.anexos.map((a) => a.path));
+  const fotosCliente = cliente.anexos.map((a) => ({ id: a.id, url: urlsPorPath[a.path] ?? null }));
 
   return (
     <div className="max-w-6xl space-y-8">
@@ -141,6 +147,7 @@ export default async function ClienteDetalhePage({
                 ordensAbertas={ordensAbertas}
                 pixKeyPadrao={usuario?.pixKey ?? null}
                 dadosBancariosPadrao={usuario?.dadosBancarios ?? null}
+                fotosCliente={fotosCliente.flatMap((f) => (f.url ? [{ url: f.url }] : []))}
               />
             )}
 
@@ -334,6 +341,15 @@ export default async function ClienteDetalhePage({
                 </div>
               )}
             </div>
+          </div>
+        }
+        fotos={
+          <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
+            <ClienteFotos
+              clienteId={cliente.id}
+              fotos={fotosCliente}
+              readOnly={!usuarioAtual.permissoes.editarClientes}
+            />
           </div>
         }
       />
