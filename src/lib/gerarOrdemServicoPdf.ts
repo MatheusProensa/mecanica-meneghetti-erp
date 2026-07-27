@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { DadosEmpresa } from "./business";
-import { formatCurrency, formatDate } from "./format";
+import { formatCpfCnpj, formatCurrency, formatDate } from "./format";
 import { carregarLogoComprimida } from "./pdfLogo";
 import {
   desenharCabecalhoPdf,
@@ -96,13 +96,13 @@ export async function gerarOrdemServicoPdf({
   }
   if (cliente.cpfCnpj) {
     yEsq += 5;
-    doc.text(cliente.cpfCnpj, PDF_MARGIN_X, yEsq);
+    doc.text(`CNPJ: ${formatCpfCnpj(cliente.cpfCnpj)}`, PDF_MARGIN_X, yEsq);
   }
 
   yDir += 5;
   doc.text(empresa.endereco, colDireitaX, yDir);
   yDir += 5;
-  doc.text(`CNPJ ${empresa.cnpj}`, colDireitaX, yDir);
+  doc.text(`CNPJ: ${formatCpfCnpj(empresa.cnpj)}`, colDireitaX, yDir);
   if (empresa.telefone) {
     yDir += 5;
     doc.text(empresa.telefone, colDireitaX, yDir);
@@ -206,7 +206,7 @@ export async function gerarOrdemServicoPdf({
     { align: "center" }
   );
 
-  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
+  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ: ${formatCpfCnpj(empresa.cnpj)}`);
 
   return doc;
 }

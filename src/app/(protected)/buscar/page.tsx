@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatCpfCnpj, formatCurrency, formatDate } from "@/lib/format";
 import PageHero from "@/components/ui/PageHero";
 import EmptyState from "@/components/ui/EmptyState";
 import { StatusBadge, osStatusMap, notaTipoMap } from "@/components/ui/StatusBadge";
@@ -111,7 +111,7 @@ export default async function BuscarPage({
                         "-"
                       )}
                     </td>
-                    <td className="px-6 py-3 text-gray-600">{cliente.cpfCnpj ?? "-"}</td>
+                    <td className="px-6 py-3 text-gray-600">{formatCpfCnpj(cliente.cpfCnpj) || "-"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -135,7 +135,7 @@ export default async function BuscarPage({
                     ) : (
                       "Telefone não informado"
                     )}
-                    {cliente.cpfCnpj ? ` · ${cliente.cpfCnpj}` : ""}
+                    {cliente.cpfCnpj ? ` · ${formatCpfCnpj(cliente.cpfCnpj)}` : ""}
                   </p>
                 </div>
               ))}

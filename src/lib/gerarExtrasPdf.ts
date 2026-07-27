@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { DadosEmpresa } from "./business";
-import { formatCurrency, formatDate } from "./format";
+import { formatCpfCnpj, formatCurrency, formatDate } from "./format";
 import { carregarLogoComprimida } from "./pdfLogo";
 import type { StatusExtra } from "./extras";
 import {
@@ -134,7 +134,7 @@ export async function gerarExtrasPdf({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const finalY = (doc as any).lastAutoTable.finalY + 8;
   desenharTotalPdf(doc, { label: "Falta pagar", valor: formatCurrency(resumo.faltaPagar), y: finalY });
-  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
+  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ: ${formatCpfCnpj(empresa.cnpj)}`);
 
   return doc;
 }

@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { DadosEmpresa } from "./business";
-import { formatCurrency, formatDate } from "./format";
+import { formatCpfCnpj, formatCurrency, formatDate } from "./format";
 import { carregarLogoComprimida } from "./pdfLogo";
 import {
   criarColunaBadgePdf,
@@ -86,7 +86,7 @@ export async function gerarOSPdf({
     didDrawCell: badgeCol.didDrawCell,
   });
 
-  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
+  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ: ${formatCpfCnpj(empresa.cnpj)}`);
 
   return doc;
 }

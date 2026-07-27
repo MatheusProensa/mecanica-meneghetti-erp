@@ -6,7 +6,7 @@ import ClienteForm from "@/components/ClienteForm";
 import DarkPatternBg from "@/components/ui/DarkPatternBg";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import WhatsAppLink from "@/components/ui/WhatsAppLink";
-import { formatDate, formatPhoneBR } from "@/lib/format";
+import { formatCpfCnpj, formatDate, formatPhoneBR } from "@/lib/format";
 
 export default function ClienteInfoSection({
   cliente,
@@ -70,7 +70,7 @@ export default function ClienteInfoSection({
             <dl className="mt-3 space-y-2.5 text-sm">
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-gray-600">CPF/CNPJ</dt>
-                <dd className="font-medium text-gray-900">{cliente.cpfCnpj || "-"}</dd>
+                <dd className="font-medium text-gray-900">{formatCpfCnpj(cliente.cpfCnpj) || "-"}</dd>
               </div>
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-gray-600">Telefone</dt>

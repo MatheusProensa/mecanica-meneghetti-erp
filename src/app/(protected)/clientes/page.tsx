@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatCpfCnpj, formatCurrency, formatDate } from "@/lib/format";
 import PageHero from "@/components/ui/PageHero";
 import EmptyState from "@/components/ui/EmptyState";
 import Pagination, { PAGE_SIZE } from "@/components/ui/Pagination";
@@ -132,7 +132,11 @@ export default async function ClientesPage({
                         </Link>
                       </td>
                       <td className="px-6 py-3 text-gray-600">
-                        {cliente.cpfCnpj ?? <span className="text-gray-300">não informado</span>}
+                        {cliente.cpfCnpj ? (
+                          formatCpfCnpj(cliente.cpfCnpj)
+                        ) : (
+                          <span className="text-gray-300">não informado</span>
+                        )}
                       </td>
                       <td className="px-6 py-3 text-gray-600">
                         {cliente.telefone || cliente.whatsapp ? (
@@ -193,7 +197,7 @@ export default async function ClientesPage({
                       ) : (
                         "Telefone não informado"
                       )}
-                      {cliente.cpfCnpj ? ` · ${cliente.cpfCnpj}` : ""}
+                      {cliente.cpfCnpj ? ` · ${formatCpfCnpj(cliente.cpfCnpj)}` : ""}
                     </p>
                     <div className="pointer-events-none mt-1.5 flex items-center justify-between text-sm">
                       <span className="font-medium text-gray-900">

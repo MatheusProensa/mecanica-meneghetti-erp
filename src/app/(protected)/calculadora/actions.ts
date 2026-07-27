@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/requireAuth";
+import { EMPRESA_PADRAO } from "@/lib/business";
 
 /** Salva o valor da hora do torno, pra lembrar da próxima vez que abrir a
  * calculadora — qualquer usuário logado pode ajustar, é só um valor de
@@ -21,11 +22,11 @@ export async function salvarValorHoraTorno(formData: FormData) {
     where: { id: "default" },
     create: {
       id: "default",
-      nome: "",
-      endereco: "",
-      cidade: "",
-      telefone: "",
-      cnpj: "",
+      nome: EMPRESA_PADRAO.nome,
+      endereco: EMPRESA_PADRAO.endereco,
+      cidade: EMPRESA_PADRAO.cidade,
+      telefone: EMPRESA_PADRAO.telefone,
+      cnpj: EMPRESA_PADRAO.cnpj,
       valorHoraTorno,
     },
     update: { valorHoraTorno },

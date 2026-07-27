@@ -3,7 +3,7 @@ import autoTable from "jspdf-autotable";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import QRCode from "qrcode";
 import type { DadosEmpresa } from "./business";
-import { formatCurrency, formatDate } from "./format";
+import { formatCpfCnpj, formatCurrency, formatDate } from "./format";
 import { gerarPayloadPix } from "./pixPayload";
 import { carregarLogoComprimida } from "./pdfLogo";
 import { carregarFotoComoDataUrl } from "./pdfFotos";
@@ -93,8 +93,8 @@ export async function gerarCobrancaPdf({
   // então usa o fuso local do navegador de quem está gerando o PDF, senão a data vem adiantada.
   const emitidoEm = new Date().toLocaleDateString("pt-BR");
   const yInicio = desenharCabecalhoPdf(doc, {
-    titulo: "Cobrança de Serviços",
-    subtitulo: emitidoEm,
+    titulo: "Serviços em Aberto",
+    subtitulo: `Emitido em ${emitidoEm}`,
     logoBase64,
   });
 
@@ -114,28 +114,36 @@ export async function gerarCobrancaPdf({
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(...PDF_INK_900);
-  doc.text(empresa.nome, colDireitaX, yDir);
+  doc.text(empresa.nome || "-", colDireitaX, yDir);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(71, 85, 105);
   if (cliente.telefone) {
     yEsq += 5;
-    doc.text(cliente.telefone, PDF_MARGIN_X, yEsq);
+    doc.text(`Tel: ${cliente.telefone}`, PDF_MARGIN_X, yEsq);
   }
   if (cliente.endereco) {
     yEsq += 5;
-    doc.text(cliente.endereco, PDF_MARGIN_X, yEsq);
+    doc.text(`Endereço: ${cliente.endereco}`, PDF_MARGIN_X, yEsq);
   }
   if (cliente.cpfCnpj) {
     yEsq += 5;
-    doc.text(cliente.cpfCnpj, PDF_MARGIN_X, yEsq);
+    doc.text(`CNPJ: ${formatCpfCnpj(cliente.cpfCnpj)}`, PDF_MARGIN_X, yEsq);
   }
 
-  yDir += 5;
-  doc.text(empresa.endereco, colDireitaX, yDir);
-  yDir += 5;
-  doc.text(`CNPJ ${empresa.cnpj}`, colDireitaX, yDir);
+  if (empresa.telefone) {
+    yDir += 5;
+    doc.text(`Tel: ${empresa.telefone}`, colDireitaX, yDir);
+  }
+  if (empresa.endereco) {
+    yDir += 5;
+    doc.text(`Endereço: ${empresa.endereco}`, colDireitaX, yDir);
+  }
+  if (empresa.cnpj) {
+    yDir += 5;
+    doc.text(`CNPJ: ${formatCpfCnpj(empresa.cnpj)}`, colDireitaX, yDir);
+  }
 
   const y = Math.max(yEsq, yDir) + 8;
 
@@ -171,11 +179,23 @@ export async function gerarCobrancaPdf({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let afterTableY = (doc as any).lastAutoTable.finalY + 8;
   afterTableY = desenharTotalPdf(doc, {
-    label: "Total em aberto",
+    label: "Valor Total em Aberto",
     valor: formatCurrency(total),
     y: afterTableY,
     cor: PDF_BRAND,
   });
+
+  const totalOS = ordens.length;
+  const totalServicos = linhasTabela.length;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(107, 114, 128);
+  doc.text(
+    `${totalOS} ordem${totalOS === 1 ? "" : "s"} de serviço · ${totalServicos} serviço${totalServicos === 1 ? "" : "s"}`,
+    pageWidth - PDF_MARGIN_X,
+    afterTableY + 5,
+    { align: "right" }
+  );
   afterTableY += 12;
 
   if (pixKey) {
@@ -243,7 +263,7 @@ export async function gerarCobrancaPdf({
     doc.text(linhas, PDF_MARGIN_X, afterTableY + 5);
   }
 
-  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
+  desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ: ${formatCpfCnpj(empresa.cnpj)}`);
 
   // Anexos: uma página por foto/PDF, pra mandar junto o comprovante/papel
   // original da OS ou do cliente quando tiver.
@@ -299,15 +319,27 @@ export async function gerarCobrancaPdf({
   }
 
   const baseBytes = doc.output("arraybuffer");
-  if (fotosPdf.length === 0) {
-    return new Uint8Array(baseBytes);
-  }
+  const finalPdf = await PDFDocument.load(baseBytes);
+  const fonteBold = await finalPdf.embedFont(StandardFonts.HelveticaBold);
+  const fonteRegular = await finalPdf.embedFont(StandardFonts.Helvetica);
 
-  const mergedPdf = await PDFDocument.load(baseBytes);
-  const fonteBold = await mergedPdf.embedFont(StandardFonts.HelveticaBold);
   for (const foto of fotosPdf) {
-    await anexarPdfNoDocumento(mergedPdf, fonteBold, foto.legenda, foto.url);
+    await anexarPdfNoDocumento(finalPdf, fonteBold, foto.legenda, foto.url);
   }
 
-  return mergedPdf.save();
+  // Numeração de página em todas as páginas do documento final (conteúdo + anexos).
+  const paginas = finalPdf.getPages();
+  paginas.forEach((pagina, index) => {
+    const texto = `Página ${index + 1} de ${paginas.length}`;
+    const largura = fonteRegular.widthOfTextAtSize(texto, 8);
+    pagina.drawText(texto, {
+      x: pagina.getWidth() - 42.5 - largura,
+      y: 10,
+      size: 8,
+      font: fonteRegular,
+      color: rgb(0.42, 0.447, 0.502),
+    });
+  });
+
+  return finalPdf.save();
 }

@@ -49,6 +49,41 @@ export function formatPhoneBR(value: string | null | undefined): string {
   return out.trimEnd();
 }
 
+/**
+ * Formata progressivamente um CPF ou CNPJ, identificando automaticamente qual dos dois pela
+ * quantidade de dígitos: até 11 vira CPF (999.999.999-99), acima disso vira CNPJ
+ * (99.999.999/9999-99). Funciona tanto pra digitar (parcial) quanto pra exibir (completo) —
+ * mesmo padrão do formatPhoneBR.
+ */
+export function formatCpfCnpj(value: string | null | undefined): string {
+  const digits = (value ?? "").replace(/\D/g, "").slice(0, 14);
+  if (digits.length === 0) return "";
+
+  if (digits.length <= 11) {
+    const p1 = digits.slice(0, 3);
+    const p2 = digits.slice(3, 6);
+    const p3 = digits.slice(6, 9);
+    const p4 = digits.slice(9, 11);
+    let out = p1;
+    if (p2) out += `.${p2}`;
+    if (p3) out += `.${p3}`;
+    if (p4) out += `-${p4}`;
+    return out;
+  }
+
+  const p1 = digits.slice(0, 2);
+  const p2 = digits.slice(2, 5);
+  const p3 = digits.slice(5, 8);
+  const p4 = digits.slice(8, 12);
+  const p5 = digits.slice(12, 14);
+  let out = p1;
+  if (p2) out += `.${p2}`;
+  if (p3) out += `.${p3}`;
+  if (p4) out += `/${p4}`;
+  if (p5) out += `-${p5}`;
+  return out;
+}
+
 /** Monta o link do WhatsApp (wa.me) a partir de um telefone brasileiro. Retorna null se não houver dígitos suficientes. */
 export function whatsappUrl(value: string | null | undefined, mensagem?: string): string | null {
   const digits = (value ?? "").replace(/\D/g, "");

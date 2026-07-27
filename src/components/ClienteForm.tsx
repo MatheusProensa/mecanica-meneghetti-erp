@@ -1,5 +1,6 @@
 import type { Cliente } from "@/generated/prisma/client";
 import PhoneInput from "@/components/PhoneInput";
+import CpfCnpjInput from "@/components/CpfCnpjInput";
 
 function Field({
   label,
@@ -45,7 +46,12 @@ export default function ClienteForm({
       <fieldset disabled={readOnly} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Nome *" name="nome" defaultValue={cliente?.nome} required />
-        <Field label="CPF/CNPJ" name="cpfCnpj" defaultValue={cliente?.cpfCnpj} />
+        <div>
+          <label htmlFor="cpfCnpj" className="block text-sm font-medium text-gray-700">
+            CPF/CNPJ
+          </label>
+          <CpfCnpjInput id="cpfCnpj" name="cpfCnpj" defaultValue={cliente?.cpfCnpj} />
+        </div>
         <div>
           <label htmlFor="telefone" className="block text-sm font-medium text-gray-700">
             Telefone

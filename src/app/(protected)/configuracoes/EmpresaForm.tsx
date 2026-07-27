@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { updateEmpresa } from "./actions";
 import type { DadosEmpresa } from "@/lib/business";
+import CpfCnpjInput from "@/components/CpfCnpjInput";
 
 export default function EmpresaForm({ empresa }: { empresa: DadosEmpresa }) {
   const [message, formAction, pending] = useActionState(updateEmpresa, undefined);
@@ -28,12 +29,7 @@ export default function EmpresaForm({ empresa }: { empresa: DadosEmpresa }) {
           <label htmlFor="cnpj" className="block text-sm font-medium text-gray-700">
             CNPJ
           </label>
-          <input
-            id="cnpj"
-            name="cnpj"
-            defaultValue={empresa.cnpj}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
+          <CpfCnpjInput id="cnpj" name="cnpj" defaultValue={empresa.cnpj} />
         </div>
 
         <div>
