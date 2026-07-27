@@ -9,12 +9,14 @@ export default function GerarCobrancaOSButton({
   empresa,
   cliente,
   os,
+  fotos,
   pixKeyPadrao,
   dadosBancariosPadrao,
 }: {
   empresa: DadosEmpresa;
   cliente: { nome: string; telefone: string | null; endereco: string | null; cpfCnpj: string | null };
   os: { id: number; data: Date | string; descricao: string; valor: number };
+  fotos?: { url: string }[];
   pixKeyPadrao: string | null;
   dadosBancariosPadrao: string | null;
 }) {
@@ -26,7 +28,7 @@ export default function GerarCobrancaOSButton({
       const doc = await gerarCobrancaPdf({
         empresa,
         cliente,
-        ordens: [os],
+        ordens: [{ ...os, fotos }],
         pixKey: pixKeyPadrao,
         dadosBancarios: dadosBancariosPadrao,
         observacoes: null,

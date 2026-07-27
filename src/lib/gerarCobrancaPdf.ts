@@ -5,6 +5,7 @@ import type { DadosEmpresa } from "./business";
 import { formatCurrency, formatDate } from "./format";
 import { gerarPayloadPix } from "./pixPayload";
 import { carregarLogoComprimida } from "./pdfLogo";
+import { carregarFotoComoDataUrl } from "./pdfFotos";
 import {
   desenharCabecalhoPdf,
   desenharRodapePdf,
@@ -22,6 +23,7 @@ export interface CobrancaOS {
   data: Date | string;
   descricao: string;
   valor: number;
+  fotos?: { url: string }[];
 }
 
 export interface CobrancaCliente {
@@ -201,6 +203,42 @@ export async function gerarCobrancaPdf({
   }
 
   desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
+
+  // Anexos: uma página por foto, com a imagem ocupando o espaço disponível —
+  // pra mandar junto o comprovante/papel original da OS quando tiver.
+  const todasFotos = ordens.flatMap((os) => (os.fotos ?? []).map((foto) => ({ osId: os.id, url: foto.url })));
+  if (todasFotos.length > 0) {
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const areaLargura = pageWidth - PDF_MARGIN_X * 2;
+    const topoArea = 22;
+    const areaAltura = pageHeight - topoArea - PDF_MARGIN_X;
+
+    for (const foto of todasFotos) {
+      const imagem = await carregarFotoComoDataUrl(foto.url);
+      if (!imagem) continue;
+
+      doc.addPage();
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(...PDF_INK_900);
+      doc.text(`Anexo — OS #${String(foto.osId).padStart(4, "0")}`, PDF_MARGIN_X, 15);
+
+      const proporcaoImagem = imagem.width / imagem.height;
+      const proporcaoArea = areaLargura / areaAltura;
+      let largura: number;
+      let altura: number;
+      if (proporcaoImagem > proporcaoArea) {
+        largura = areaLargura;
+        altura = areaLargura / proporcaoImagem;
+      } else {
+        altura = areaAltura;
+        largura = areaAltura * proporcaoImagem;
+      }
+      const x = PDF_MARGIN_X + (areaLargura - largura) / 2;
+      const y = topoArea + (areaAltura - altura) / 2;
+      doc.addImage(imagem.dataUrl, "JPEG", x, y, largura, altura);
+    }
+  }
 
   return doc;
 }
