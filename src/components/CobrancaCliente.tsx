@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Download, Share2 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { gerarCobrancaPdf, type CobrancaOS } from "@/lib/gerarCobrancaPdf";
+import { salvarPdfBytes } from "@/lib/salvarArquivo";
 import type { DadosEmpresa } from "@/lib/business";
 
 type NavigatorComShare = Navigator & {
@@ -43,7 +44,7 @@ export default function CobrancaCliente({
   ordensAbertas: CobrancaOS[];
   pixKeyPadrao: string | null;
   dadosBancariosPadrao: string | null;
-  fotosCliente?: { url: string }[];
+  fotosCliente?: { url: string; isPdf?: boolean }[];
 }) {
   const [selecionadas, setSelecionadas] = useState<Set<number>>(
     new Set(ordensAbertas.map((os) => os.id))
@@ -85,8 +86,8 @@ export default function CobrancaCliente({
   async function handleBaixar() {
     setGerando("baixar");
     try {
-      const doc = await montarPdf();
-      doc.save(nomeArquivo(cliente.nome));
+      const bytes = await montarPdf();
+      salvarPdfBytes(bytes, nomeArquivo(cliente.nome));
     } finally {
       setGerando(null);
     }
@@ -95,8 +96,8 @@ export default function CobrancaCliente({
   async function handleCompartilhar() {
     setGerando("compartilhar");
     try {
-      const doc = await montarPdf();
-      const blob = doc.output("blob") as Blob;
+      const bytes = await montarPdf();
+      const blob = new Blob([Uint8Array.from(bytes)], { type: "application/pdf" });
       const file = new File([blob], nomeArquivo(cliente.nome), { type: "application/pdf" });
       const nav = navigator as NavigatorComShare;
 
@@ -107,12 +108,12 @@ export default function CobrancaCliente({
           text: `Cobrança de serviços em aberto — ${cliente.nome}`,
         });
       } else {
-        doc.save(nomeArquivo(cliente.nome));
+        salvarPdfBytes(bytes, nomeArquivo(cliente.nome));
       }
     } catch (e) {
       if ((e as Error)?.name !== "AbortError") {
-        const doc = await montarPdf();
-        doc.save(nomeArquivo(cliente.nome));
+        const bytes = await montarPdf();
+        salvarPdfBytes(bytes, nomeArquivo(cliente.nome));
       }
     } finally {
       setGerando(null);

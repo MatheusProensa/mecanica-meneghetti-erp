@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import QRCode from "qrcode";
 import type { DadosEmpresa } from "./business";
 import { formatCurrency, formatDate } from "./format";
@@ -23,7 +24,7 @@ export interface CobrancaOS {
   data: Date | string;
   descricao: string;
   valor: number;
-  fotos?: { url: string }[];
+  fotos?: { url: string; isPdf?: boolean }[];
   itens?: { descricao: string; valor: number }[];
 }
 
@@ -41,7 +42,37 @@ export interface GerarCobrancaPdfParams {
   pixKey?: string | null;
   dadosBancarios?: string | null;
   observacoes?: string | null;
-  fotosCliente?: { url: string }[];
+  fotosCliente?: { url: string; isPdf?: boolean }[];
+}
+
+/** Anexa um PDF externo (papel escaneado) ao documento final, com uma página de capa
+ * identificando a OS/cliente antes das páginas originais do anexo. */
+async function anexarPdfNoDocumento(
+  mergedPdf: PDFDocument,
+  fonteBold: Awaited<ReturnType<PDFDocument["embedFont"]>>,
+  legenda: string,
+  url: string
+): Promise<void> {
+  try {
+    const resposta = await fetch(url);
+    if (!resposta.ok) return;
+    const anexoBytes = await resposta.arrayBuffer();
+    const anexoDoc = await PDFDocument.load(anexoBytes);
+
+    const capa = mergedPdf.addPage([595.28, 841.89]); // A4 em pontos
+    capa.drawText(legenda, {
+      x: 42.5,
+      y: 841.89 - 42,
+      size: 11,
+      font: fonteBold,
+      color: rgb(0.122, 0.161, 0.216),
+    });
+
+    const paginasCopiadas = await mergedPdf.copyPages(anexoDoc, anexoDoc.getPageIndices());
+    paginasCopiadas.forEach((pagina) => mergedPdf.addPage(pagina));
+  } catch {
+    // Anexo indisponível/corrompido — ignora e segue com o resto do PDF.
+  }
 }
 
 export async function gerarCobrancaPdf({
@@ -52,7 +83,7 @@ export async function gerarCobrancaPdf({
   dadosBancarios,
   observacoes,
   fotosCliente,
-}: GerarCobrancaPdfParams): Promise<jsPDF> {
+}: GerarCobrancaPdfParams): Promise<Uint8Array> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const colDireitaX = pageWidth / 2 + 5;
@@ -214,21 +245,33 @@ export async function gerarCobrancaPdf({
 
   desenharRodapePdf(doc, `${empresa.nome} · ${empresa.endereco} · CNPJ ${empresa.cnpj}`);
 
-  // Anexos: uma página por foto, com a imagem ocupando o espaço disponível —
-  // pra mandar junto o comprovante/papel original da OS ou do cliente quando tiver.
-  const todasFotos = [
+  // Anexos: uma página por foto/PDF, pra mandar junto o comprovante/papel
+  // original da OS ou do cliente quando tiver.
+  const todosAnexos = [
     ...ordens.flatMap((os) =>
-      (os.fotos ?? []).map((foto) => ({ legenda: `Anexo — OS #${String(os.id).padStart(4, "0")}`, url: foto.url }))
+      (os.fotos ?? []).map((foto) => ({
+        legenda: `Anexo — OS #${String(os.id).padStart(4, "0")}`,
+        url: foto.url,
+        isPdf: Boolean(foto.isPdf),
+      }))
     ),
-    ...(fotosCliente ?? []).map((foto) => ({ legenda: `Anexo — ${cliente.nome}`, url: foto.url })),
+    ...(fotosCliente ?? []).map((foto) => ({
+      legenda: `Anexo — ${cliente.nome}`,
+      url: foto.url,
+      isPdf: Boolean(foto.isPdf),
+    })),
   ];
-  if (todasFotos.length > 0) {
+
+  const fotosImagem = todosAnexos.filter((a) => !a.isPdf);
+  const fotosPdf = todosAnexos.filter((a) => a.isPdf);
+
+  if (fotosImagem.length > 0) {
     const pageHeight = doc.internal.pageSize.getHeight();
     const areaLargura = pageWidth - PDF_MARGIN_X * 2;
     const topoArea = 22;
     const areaAltura = pageHeight - topoArea - PDF_MARGIN_X;
 
-    for (const foto of todasFotos) {
+    for (const foto of fotosImagem) {
       const imagem = await carregarFotoComoDataUrl(foto.url);
       if (!imagem) continue;
 
@@ -255,5 +298,16 @@ export async function gerarCobrancaPdf({
     }
   }
 
-  return doc;
+  const baseBytes = doc.output("arraybuffer");
+  if (fotosPdf.length === 0) {
+    return new Uint8Array(baseBytes);
+  }
+
+  const mergedPdf = await PDFDocument.load(baseBytes);
+  const fonteBold = await mergedPdf.embedFont(StandardFonts.HelveticaBold);
+  for (const foto of fotosPdf) {
+    await anexarPdfNoDocumento(mergedPdf, fonteBold, foto.legenda, foto.url);
+  }
+
+  return mergedPdf.save();
 }

@@ -10,7 +10,13 @@ import { requirePermission } from "@/lib/requireAuth";
 import { uploadOSFoto, deleteOSFoto } from "@/lib/supabase-storage";
 import { assinaturaCondizComTipo } from "@/lib/fileSignature";
 
-const ALLOWED_FOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+const ALLOWED_FOTO_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "application/pdf",
+]);
 
 const STATUS_VALIDOS: StatusOS[] = [
   "aberta",
@@ -158,14 +164,14 @@ export async function addAnexoOS(id: number, formData: FormData) {
   await requirePermission("verOS");
   await requirePermission("editarOS");
   const file = formData.get("foto");
-  if (!(file instanceof File) || file.size === 0) throw new Error("Selecione uma foto");
+  if (!(file instanceof File) || file.size === 0) throw new Error("Selecione um arquivo");
   if (!ALLOWED_FOTO_TYPES.has(file.type)) {
-    throw new Error("A foto precisa ser uma imagem (JPG, PNG, WEBP ou GIF)");
+    throw new Error("O arquivo precisa ser uma imagem (JPG, PNG, WEBP ou GIF) ou um PDF");
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
   if (!assinaturaCondizComTipo(bytes, file.type)) {
-    throw new Error("O arquivo enviado não corresponde a uma imagem válida");
+    throw new Error("O arquivo enviado não corresponde a uma imagem ou PDF válido");
   }
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const fileName = `os-${id}-${randomUUID()}-${safeName}`;

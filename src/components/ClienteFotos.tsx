@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { FileText, X } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { addAnexoCliente, deleteAnexoCliente } from "@/app/(protected)/clientes/actions";
 
@@ -8,7 +8,7 @@ export default function ClienteFotos({
   readOnly = false,
 }: {
   clienteId: string;
-  fotos: { id: string; url: string | null }[];
+  fotos: { id: string; url: string | null; isPdf?: boolean }[];
   readOnly?: boolean;
 }) {
   const addAnexoWithId = addAnexoCliente.bind(null, clienteId);
@@ -23,13 +23,23 @@ export default function ClienteFotos({
             const deleteWithId = deleteAnexoCliente.bind(null, foto.id, clienteId);
             return (
               <div key={foto.id} className="group relative aspect-square overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
-                {foto.url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={foto.url} alt="Foto do cliente" className="h-full w-full object-cover" />
-                ) : (
+                {!foto.url ? (
                   <div className="flex h-full w-full items-center justify-center text-xs text-gray-500">
                     Indisponível
                   </div>
+                ) : foto.isPdf ? (
+                  <a
+                    href={foto.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-gray-600 hover:bg-gray-100"
+                  >
+                    <FileText className="h-7 w-7" />
+                    <span className="text-xs font-medium">PDF</span>
+                  </a>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={foto.url} alt="Foto do cliente" className="h-full w-full object-cover" />
                 )}
                 {!readOnly && (
                   <form action={deleteWithId} className="absolute right-1 top-1">
@@ -53,7 +63,7 @@ export default function ClienteFotos({
           <input
             type="file"
             name="foto"
-            accept="image/*"
+            accept="image/*,application/pdf"
             required
             className="text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200"
           />
@@ -61,7 +71,7 @@ export default function ClienteFotos({
             type="submit"
             className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
-            + Adicionar foto
+            + Adicionar foto ou PDF
           </button>
         </form>
       )}

@@ -60,7 +60,11 @@ export default async function OSDetalhePage({
     : null;
 
   const urlsPorPath = await getSignedOSFotoUrls(os.anexos.map((a) => a.path));
-  const fotos = os.anexos.map((a) => ({ id: a.id, url: urlsPorPath[a.path] ?? null }));
+  const fotos = os.anexos.map((a) => ({
+    id: a.id,
+    url: urlsPorPath[a.path] ?? null,
+    isPdf: a.path.toLowerCase().endsWith(".pdf"),
+  }));
 
   const valorTotal = os.itens.reduce((s, i) => s + i.valor, 0);
   const descricaoItens = os.itens.map((i) => i.descricao).join(", ");
@@ -129,7 +133,7 @@ export default async function OSDetalhePage({
                   valor: valorTotal,
                   itens: os.itens.map((i) => ({ descricao: i.descricao, valor: i.valor })),
                 }}
-                fotos={fotos.flatMap((f) => (f.url ? [{ url: f.url }] : []))}
+                fotos={fotos.flatMap((f) => (f.url ? [{ url: f.url, isPdf: f.isPdf }] : []))}
                 pixKeyPadrao={usuarioPix?.pixKey ?? null}
                 dadosBancariosPadrao={usuarioPix?.dadosBancarios ?? null}
               />

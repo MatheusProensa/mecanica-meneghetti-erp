@@ -90,14 +90,22 @@ export default async function ClienteDetalhePage({
       descricao: os.itens.map((i) => i.descricao).join(", "),
       valor: os.itens.reduce((s, i) => s + i.valor, 0),
       itens: os.itens.map((i) => ({ descricao: i.descricao, valor: i.valor })),
-      fotos: os.anexos.flatMap((a) => (urlsOSPorPath[a.path] ? [{ url: urlsOSPorPath[a.path] }] : [])),
+      fotos: os.anexos.flatMap((a) =>
+        urlsOSPorPath[a.path]
+          ? [{ url: urlsOSPorPath[a.path], isPdf: a.path.toLowerCase().endsWith(".pdf") }]
+          : []
+      ),
     }));
 
   const updateClienteWithId = updateCliente.bind(null, cliente.id);
   const deleteClienteWithId = deleteCliente.bind(null, cliente.id);
 
   const urlsPorPath = await getSignedClienteFotoUrls(cliente.anexos.map((a) => a.path));
-  const fotosCliente = cliente.anexos.map((a) => ({ id: a.id, url: urlsPorPath[a.path] ?? null }));
+  const fotosCliente = cliente.anexos.map((a) => ({
+    id: a.id,
+    url: urlsPorPath[a.path] ?? null,
+    isPdf: a.path.toLowerCase().endsWith(".pdf"),
+  }));
 
   return (
     <div className="max-w-6xl space-y-8">
@@ -153,7 +161,7 @@ export default async function ClienteDetalhePage({
                 ordensAbertas={ordensAbertas}
                 pixKeyPadrao={usuario?.pixKey ?? null}
                 dadosBancariosPadrao={usuario?.dadosBancarios ?? null}
-                fotosCliente={fotosCliente.flatMap((f) => (f.url ? [{ url: f.url }] : []))}
+                fotosCliente={fotosCliente.flatMap((f) => (f.url ? [{ url: f.url, isPdf: f.isPdf }] : []))}
               />
             )}
 

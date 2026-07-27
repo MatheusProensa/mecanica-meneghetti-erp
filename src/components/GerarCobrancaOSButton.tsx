@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FileDown } from "lucide-react";
 import { gerarCobrancaPdf } from "@/lib/gerarCobrancaPdf";
+import { salvarPdfBytes } from "@/lib/salvarArquivo";
 import type { DadosEmpresa } from "@/lib/business";
 
 export default function GerarCobrancaOSButton({
@@ -22,7 +23,7 @@ export default function GerarCobrancaOSButton({
     valor: number;
     itens?: { descricao: string; valor: number }[];
   };
-  fotos?: { url: string }[];
+  fotos?: { url: string; isPdf?: boolean }[];
   pixKeyPadrao: string | null;
   dadosBancariosPadrao: string | null;
 }) {
@@ -31,7 +32,7 @@ export default function GerarCobrancaOSButton({
   async function gerar() {
     setGerando(true);
     try {
-      const doc = await gerarCobrancaPdf({
+      const bytes = await gerarCobrancaPdf({
         empresa,
         cliente,
         ordens: [{ ...os, fotos }],
@@ -39,7 +40,7 @@ export default function GerarCobrancaOSButton({
         dadosBancarios: dadosBancariosPadrao,
         observacoes: null,
       });
-      doc.save(`cobranca-os-${String(os.id).padStart(4, "0")}.pdf`);
+      salvarPdfBytes(bytes, `cobranca-os-${String(os.id).padStart(4, "0")}.pdf`);
     } finally {
       setGerando(false);
     }
