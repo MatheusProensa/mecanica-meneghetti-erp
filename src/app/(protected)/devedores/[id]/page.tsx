@@ -2,12 +2,14 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/getCurrentUser";
+import { getEmpresa } from "@/lib/getEmpresa";
 import { calcularSituacaoDivida } from "@/lib/dividas";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatCurrency, formatDate, formatPhoneBR } from "@/lib/format";
 import { getSignedDividaFotoUrls } from "@/lib/supabase-storage";
 import DividaForm from "@/components/DividaForm";
 import DividaFotos from "@/components/DividaFotos";
 import RegistrarPagamentoForm from "@/components/RegistrarPagamentoForm";
+import GerarExtratoDividaPdfButton from "@/components/GerarExtratoDividaPdfButton";
 import MetricCard from "@/components/ui/MetricCard";
 import ValorOculto from "@/components/ui/ValorOculto";
 import CountUp from "@/components/ui/CountUp";
@@ -29,7 +31,7 @@ export default async function DividaDetalhePage({
   if (!usuario) redirect("/login");
   if (!usuario.permissoes.verDevedores) redirect("/");
 
-  const [divida, clientes] = await Promise.all([
+  const [divida, clientes, empresa] = await Promise.all([
     prisma.divida.findUnique({
       where: { id },
       include: {
@@ -40,6 +42,7 @@ export default async function DividaDetalhePage({
       },
     }),
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
+    getEmpresa(),
   ]);
 
   if (!divida) notFound();
@@ -70,14 +73,33 @@ export default async function DividaDetalhePage({
             <StatusBadge {...situacaoDividaMap[situacao]} />
           </div>
         </div>
-        {usuario.permissoes.excluirDevedores && (
-          <ConfirmModal
-            triggerLabel="Excluir dívida"
-            title="Excluir esta dívida?"
-            description={`Tem certeza que deseja excluir a dívida de "${divida.cliente.nome}"? Todos os pagamentos registrados também serão apagados. Essa ação não pode ser desfeita.`}
-            action={deleteDividaWithId}
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
+          <GerarExtratoDividaPdfButton
+            empresa={empresa}
+            cliente={{
+              nome: divida.cliente.nome,
+              telefone: formatPhoneBR(divida.cliente.telefone ?? divida.cliente.whatsapp) || null,
+              endereco: divida.cliente.endereco,
+              cpfCnpj: divida.cliente.cpfCnpj,
+            }}
+            situacaoLabel={situacaoDividaMap[situacao].label}
+            itens={divida.itens.map((i) => ({ data: i.data, descricao: i.descricao, valor: i.valor }))}
+            pagamentos={divida.pagamentos.map((p) => ({
+              data: p.data,
+              valor: p.valor,
+              formaPagamento: p.formaPagamento,
+              observacao: p.observacao,
+            }))}
           />
-        )}
+          {usuario.permissoes.excluirDevedores && (
+            <ConfirmModal
+              triggerLabel="Excluir dívida"
+              title="Excluir esta dívida?"
+              description={`Tem certeza que deseja excluir a dívida de "${divida.cliente.nome}"? Todos os pagamentos registrados também serão apagados. Essa ação não pode ser desfeita.`}
+              action={deleteDividaWithId}
+            />
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
